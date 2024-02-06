@@ -1,0 +1,6 @@
+[plugin]
+id = "diag-compiler-plugin"
+class = "io.github.hasithaa.diagram.DiagramCompilerPlugin"
+
+[[dependency]]
+path = "../compiler-plugin/build/libs/diagram-plugin.jar"
