@@ -30,6 +30,7 @@ public abstract class AbstractOperation implements Operation {
     private AbstractOperation next, previous;
     private FlowchartComponent flowchartComponent = null;
     private List<Edge> flowchartEdges = null;
+    private boolean failOnError = false;
 
     public AbstractOperation(int id, String description) {
         this.id = id;
@@ -47,6 +48,11 @@ public abstract class AbstractOperation implements Operation {
     }
 
     @Override
+    public String getComment() {
+        return null;
+    }
+
+    @Override
     public Operation previousOperation() {
         return previous;
     }
@@ -59,13 +65,15 @@ public abstract class AbstractOperation implements Operation {
     @Override
     public FlowchartComponent getFlowchartNode() {
         if (flowchartComponent == null) {
-            new BasicNode(getNodeId(id), getDescription(description), getFlowchartNodeKind());
+            flowchartComponent = new BasicNode(getNodeId(id), getDisplayDescription(description),
+                                               getFlowchartNodeKind());
         }
         return flowchartComponent;
     }
 
     @Override
     public List<Edge> getFlowchartEdges() {
+        // TODO : Fix this, this lead to duplicate edges
         if (flowchartEdges != null) {
             return flowchartEdges;
         }
@@ -93,7 +101,24 @@ public abstract class AbstractOperation implements Operation {
     }
 
     @Override
-    public String getDescription(String description) {
-        return "[" + icon() + " " + getKind().name + "] " + description;
+    public String getDisplayDescription(String description) {
+        StringBuilder displayDescription = new StringBuilder();
+        if (description == null) {
+            displayDescription.append(icon()).append(" ").append(getKind().name);
+        } else {
+            displayDescription.append("[").append(icon()).append(" ").append(getKind().name).append("] ").append(
+                    description);
+        }
+        if (failOnError) {
+            displayDescription.append(" ⚠");
+        }
+        return displayDescription.toString();
     }
+
+    @Override
+    public void setFailOnError() {
+        this.failOnError = true;
+    }
+
+
 }

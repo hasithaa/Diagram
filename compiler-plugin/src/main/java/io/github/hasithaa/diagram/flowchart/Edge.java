@@ -17,6 +17,8 @@
  */
 package io.github.hasithaa.diagram.flowchart;
 
+import java.util.Objects;
+
 public class Edge implements FlowchartComponent {
 
     protected final FlowchartComponent source;
@@ -35,5 +37,22 @@ public class Edge implements FlowchartComponent {
                     ((IdentifiableComponent) target).getIdentifier() + "\n";
         }
         return "";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Edge edge = (Edge) o;
+        return Objects.equals(source, edge.source) && Objects.equals(target, edge.target);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(source, target);
     }
 }

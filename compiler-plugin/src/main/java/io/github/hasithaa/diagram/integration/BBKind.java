@@ -32,6 +32,7 @@ public enum BBKind {
     SWITCH("Switch"),
     TRANSFORM("Transform"),
     START("Start"),
+    NETWORK_EVENT("Network\nEvent"),
     ;
 
     final String name;

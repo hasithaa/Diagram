@@ -15,27 +15,30 @@
  *  specific language governing permissions and limitations
  *  under the License.
  */
-package io.github.hasithaa.diagram.integration;
+package io.github.hasithaa.diagram.integration.templates;
 
-public interface Operation extends FlowChartNode {
+import io.github.hasithaa.diagram.flowchart.NodeKind;
+import io.github.hasithaa.diagram.integration.AbstractOperation;
+import io.github.hasithaa.diagram.integration.BBKind;
 
-    Operation nextOperation();
+public class NetworkEvent extends AbstractOperation {
 
-    void setNextOperation(Operation nextOperation);
+    public NetworkEvent(int id, String description) {
+        super(id, description);
+    }
 
-    Operation previousOperation();
+    @Override
+    public NodeKind getFlowchartNodeKind() {
+        return NodeKind.START;
+    }
 
-    void setPreviousOperation(Operation previousOperation);
+    @Override
+    public BBKind getKind() {
+        return BBKind.NETWORK_EVENT;
+    }
 
-    BBKind getKind();
-
-    String icon();
-
-    String getNodeId(int sequence);
-
-    String getDisplayDescription(String description);
-
-    String getComment();
-
-    void setFailOnError();
+    @Override
+    public String icon() {
+        return "🟢";
+    }
 }

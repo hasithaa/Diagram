@@ -28,7 +28,9 @@ public class FlowChart {
     }
 
     public void add(FlowchartComponent component) {
-        components.add(component);
+        if (!components.contains(component)) {
+            components.add(component);
+        }
     }
 
     public String generateMermaidSyntax() {

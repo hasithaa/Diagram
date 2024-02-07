@@ -21,6 +21,7 @@ import io.github.hasithaa.diagram.integration.Operation;
 import io.github.hasithaa.diagram.integration.Scope;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Sequence implements Scope {
@@ -38,5 +39,7 @@ public class Sequence implements Scope {
         }
     }
 
-
+    public List<Operation> getOperations() {
+        return Collections.unmodifiableList(operations);
+    }
 }

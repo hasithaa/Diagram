@@ -19,9 +19,13 @@ package io.github.hasithaa.diagram.integration;
 
 import io.ballerina.compiler.api.SemanticModel;
 import io.ballerina.compiler.syntax.tree.AssignmentStatementNode;
+import io.ballerina.compiler.syntax.tree.CheckExpressionNode;
 import io.ballerina.compiler.syntax.tree.ClientResourceAccessActionNode;
+import io.ballerina.compiler.syntax.tree.ExpressionStatementNode;
 import io.ballerina.compiler.syntax.tree.FunctionBodyBlockNode;
+import io.ballerina.compiler.syntax.tree.FunctionCallExpressionNode;
 import io.ballerina.compiler.syntax.tree.FunctionDefinitionNode;
+import io.ballerina.compiler.syntax.tree.MethodCallExpressionNode;
 import io.ballerina.compiler.syntax.tree.NamedWorkerDeclarationNode;
 import io.ballerina.compiler.syntax.tree.Node;
 import io.ballerina.compiler.syntax.tree.NodeVisitor;
@@ -47,9 +51,24 @@ public class CodeVisitor extends NodeVisitor {
     final SemanticModel semanticModel;
     final Sequence base;
     Stack<Sequence> sequences = new Stack<>();
-    Stack<Node> statement = new Stack<>();
+    IOperation current = null;
     Stack<Clone> parallel = new Stack<>();
     int count = 0;
+
+    public String getDiagram() {
+
+        for (Operation operation : base.getOperations()) {
+            flowChart.add(operation.getFlowchartNode());
+            operation.getFlowchartEdges().forEach(flowChart::add);
+        }
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("# Flowchart\n\n");
+        sb.append("```mermaid\n");
+        sb.append(flowChart.generateMermaidSyntax());
+        sb.append("```\n");
+        return sb.toString();
+    }
 
     public CodeVisitor(SyntaxNodeAnalysisContext ctx, ModuleId moduleId, SemanticModel semanticModel) {
         this.ctx = ctx;
@@ -62,24 +81,14 @@ public class CodeVisitor extends NodeVisitor {
     public void visit(FunctionDefinitionNode node) {
         super.visit(node);
         // TODO: Generate the diagram
-
-    }
-
-    public String getDiagram() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("# Flowchart\n\n");
-        sb.append("```mermaid\n");
-        sb.append(flowChart.generateMermaidSyntax());
-        sb.append("```\n");
-        return sb.toString();
     }
 
     @Override
     public void visit(FunctionBodyBlockNode node) {
         sequences.push(base);
-        base.addOperation(new Start(count++, "Start"));
-//        super.visit(node);
-        base.addOperation(new End(count++, "End"));
+        base.addOperation(new Start(count++, null));
+        super.visit(node);
+        base.addOperation(new End(count++, null));
     }
 
     @Override
@@ -89,28 +98,46 @@ public class CodeVisitor extends NodeVisitor {
         super.visit(node);
     }
 
+    // Statements
+
+    public void visit(CheckExpressionNode node) {
+        current.checked = true;
+        super.visit(node);
+    }
+
+    @Override
+    public void visit(ExpressionStatementNode node) {
+        current = new IOperation(node);
+        super.visit(node);
+        handleExpressionCase();
+    }
+
     @Override
     public void visit(AssignmentStatementNode node) {
-        statement.add(node);
+        current = new IOperation(node);
         super.visit(node);
         // TODO: Capture Variable
-        if (!statement.isEmpty()) {
-            Expression expression = new Expression(count++, "Expression");
-            sequences.peek().addOperation(expression);
-        }
-        statement.empty();
+        handleExpressionCase();
     }
 
     @Override
     public void visit(VariableDeclarationNode node) {
-        statement.add(node);
+        current = new IOperation(node);
         super.visit(node);
         // TODO: Capture Variable
-        if (!statement.isEmpty()) {
-            Expression expression = new Expression(count++, "Expression");
-            sequences.peek().addOperation(expression);
-        }
-        statement.empty();
+        handleExpressionCase();
+    }
+
+    // Expressions
+
+    @Override
+    public void visit(MethodCallExpressionNode node) {
+
+    }
+
+    @Override
+    public void visit(FunctionCallExpressionNode node) {
+
     }
 
     @Override
@@ -118,13 +145,38 @@ public class CodeVisitor extends NodeVisitor {
         // Make a NetworkCall
         NetworkCall networkCall = new NetworkCall(count++, node.methodName().toString());
         sequences.peek().addOperation(networkCall);
-        statement.empty();
+        current.units.empty();
     }
 
     @Override
     public void visit(ClientResourceAccessActionNode node) {
         NetworkCall networkCall = new NetworkCall(count++, node.methodName().toString());
         sequences.peek().addOperation(networkCall);
-        statement.empty();
+        current.units.empty();
+    }
+
+    // Utils
+
+    private void handleExpressionCase() {
+        if (current == null || current.units.isEmpty()) {
+            return;
+        }
+
+        Expression expression = new Expression(count++, "Expression");
+        if (current.checked) {
+            expression.setFailOnError();
+        }
+        sequences.peek().addOperation(expression);
+    }
+
+    static final class IOperation {
+
+        final Stack<Node> units = new Stack<>();
+        boolean checked = false;
+        boolean done = false;
+
+        IOperation(Node node) {
+            units.push(node);
+        }
     }
 }
