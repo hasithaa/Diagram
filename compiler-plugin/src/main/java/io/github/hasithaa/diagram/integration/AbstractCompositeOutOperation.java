@@ -18,6 +18,7 @@
 package io.github.hasithaa.diagram.integration;
 
 import io.github.hasithaa.diagram.flowchart.Edge;
+import io.github.hasithaa.diagram.integration.templates.Sequence;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,7 +26,7 @@ import java.util.List;
 
 public abstract class AbstractCompositeOutOperation extends AbstractOperation implements CompositeOutOperation {
 
-    List<Operation> outgoingOperations = new ArrayList<>();
+    List<Sequence> outgoingOperations = new ArrayList<>();
     List<Edge> flowchartEdges = null;
 
     public AbstractCompositeOutOperation(int id, String description) {
@@ -36,22 +37,22 @@ public abstract class AbstractCompositeOutOperation extends AbstractOperation im
         if (flowchartEdges != null) {
             return flowchartEdges;
         }
-        List<Edge> flowchartEdges = new ArrayList<>();
+        final List<Edge> flowchartEdges = new ArrayList<>();
         flowchartEdges.addAll(super.getFlowchartEdges());
-        for (Operation operation : outgoingOperations) {
-            flowchartEdges.add(new Edge(operation.getFlowchartNode(), this.getFlowchartNode()));
-        }
-        flowchartEdges = Collections.unmodifiableList(flowchartEdges);
+        // Link the first operation of each sequence to the current operation
+        outgoingOperations.forEach(sequence -> sequence.getOperations().stream().findFirst().ifPresent(
+                operation -> flowchartEdges.add(new Edge(this.getFlowchartNode(), operation.getFlowchartNode()))));
+        this.flowchartEdges = Collections.unmodifiableList(flowchartEdges);
         return flowchartEdges;
     }
 
     @Override
-    public List<Operation> outgoingOperations() {
+    public List<Sequence> outgoingSequence() {
         return Collections.unmodifiableList(outgoingOperations);
     }
 
     @Override
-    public void addOutgoingOperation(Operation operation) {
+    public void addOutgoingSequence(Sequence operation) {
         this.outgoingOperations.add(operation);
     }
 }

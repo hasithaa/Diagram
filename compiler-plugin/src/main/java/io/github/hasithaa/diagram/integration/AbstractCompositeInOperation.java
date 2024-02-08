@@ -18,6 +18,7 @@
 package io.github.hasithaa.diagram.integration;
 
 import io.github.hasithaa.diagram.flowchart.Edge;
+import io.github.hasithaa.diagram.integration.templates.Sequence;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,7 +26,7 @@ import java.util.List;
 
 public abstract class AbstractCompositeInOperation extends AbstractOperation implements CompositeInOperations {
 
-    List<Operation> incomingOperations = new ArrayList<>();
+    List<Sequence> incomingSequences = new ArrayList<>();
     List<Edge> flowchartEdges = null;
 
     public AbstractCompositeInOperation(int id, String description) {
@@ -36,22 +37,26 @@ public abstract class AbstractCompositeInOperation extends AbstractOperation imp
         if (flowchartEdges != null) {
             return flowchartEdges;
         }
-        List<Edge> flowchartEdges = new ArrayList<>();
+        final List<Edge> flowchartEdges = new ArrayList<>();
         flowchartEdges.addAll(super.getFlowchartEdges());
-        for (Operation operation : incomingOperations) {
-            flowchartEdges.add(new Edge(operation.getFlowchartNode(), this.getFlowchartNode()));
+        // Link the last operation of each sequence to the current operation
+        for (Sequence sequence : incomingSequences) {
+            int count = sequence.getOperations().size();
+            if (count > 0) {
+                flowchartEdges.add(
+                        new Edge(sequence.getOperations().get(count - 1).getFlowchartNode(), this.getFlowchartNode()));
+            }
         }
-        flowchartEdges = Collections.unmodifiableList(flowchartEdges);
+        this.flowchartEdges = Collections.unmodifiableList(flowchartEdges);
         return flowchartEdges;
     }
 
     @Override
-    public List<Operation> incomingOperations() {
-        return Collections.unmodifiableList(incomingOperations);
+    public List<Sequence> incomingSequence() {
+        return Collections.unmodifiableList(incomingSequences);
     }
 
-    @Override
-    public void addIncomingOperation(Operation operation) {
-        this.incomingOperations.add(operation);
+    public void addIncomingSequence(Sequence sequence) {
+        this.incomingSequences.add(sequence);
     }
 }

@@ -39,6 +39,13 @@ public class Sequence implements Scope {
         }
     }
 
+    public void addCompositeOperationEnd(Operation operation) {
+        if (operations.isEmpty()) {
+            throw new IllegalStateException("No operations found before composite operation end");
+        }
+        this.operations.add(operation);
+    }
+
     public List<Operation> getOperations() {
         return Collections.unmodifiableList(operations);
     }

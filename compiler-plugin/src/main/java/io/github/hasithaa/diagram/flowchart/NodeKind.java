@@ -29,6 +29,7 @@ public enum NodeKind {
     IO("[/", "/]"),
     SPECIAL("{{", "}}"),
     MERGE("[\\", "/]"),
+    CONNECTOR("((", "))"),
     ;
 
     String start;

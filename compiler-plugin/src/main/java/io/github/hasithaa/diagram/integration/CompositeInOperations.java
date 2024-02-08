@@ -17,11 +17,13 @@
  */
 package io.github.hasithaa.diagram.integration;
 
+import io.github.hasithaa.diagram.integration.templates.Sequence;
+
 import java.util.List;
 
 public interface CompositeInOperations {
 
-    List<Operation> incomingOperations();
+    List<Sequence> incomingSequence();
 
-    void addIncomingOperation(Operation operation);
+    void addIncomingSequence(Sequence sequence);
 }

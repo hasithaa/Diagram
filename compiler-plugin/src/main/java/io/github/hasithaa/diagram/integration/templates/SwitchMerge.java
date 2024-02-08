@@ -18,18 +18,19 @@
 package io.github.hasithaa.diagram.integration.templates;
 
 import io.github.hasithaa.diagram.flowchart.NodeKind;
-import io.github.hasithaa.diagram.integration.AbstractCompositeOutOperation;
+import io.github.hasithaa.diagram.integration.AbstractCompositeInOperation;
 import io.github.hasithaa.diagram.integration.BBKind;
+import io.github.hasithaa.diagram.integration.UnEditable;
 
-public class Switch extends AbstractCompositeOutOperation {
+public class SwitchMerge extends AbstractCompositeInOperation implements UnEditable {
 
-    public Switch(int id, String description) {
+    public SwitchMerge(int id, String description) {
         super(id, description);
     }
 
     @Override
     public NodeKind getFlowchartNodeKind() {
-        return NodeKind.DECISION;
+        return NodeKind.CONNECTOR;
     }
 
     @Override
@@ -39,6 +40,11 @@ public class Switch extends AbstractCompositeOutOperation {
 
     @Override
     public String icon() {
-        return "❓";
+        return "⚪";
+    }
+
+    @Override
+    public String getDisplayDescription(String description) {
+        return icon();
     }
 }

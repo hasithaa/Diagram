@@ -19,12 +19,14 @@ package io.github.hasithaa.diagram.integration;
 
 import io.ballerina.compiler.api.SemanticModel;
 import io.ballerina.compiler.syntax.tree.AssignmentStatementNode;
+import io.ballerina.compiler.syntax.tree.BlockStatementNode;
 import io.ballerina.compiler.syntax.tree.CheckExpressionNode;
 import io.ballerina.compiler.syntax.tree.ClientResourceAccessActionNode;
 import io.ballerina.compiler.syntax.tree.ExpressionStatementNode;
 import io.ballerina.compiler.syntax.tree.FunctionBodyBlockNode;
 import io.ballerina.compiler.syntax.tree.FunctionCallExpressionNode;
 import io.ballerina.compiler.syntax.tree.FunctionDefinitionNode;
+import io.ballerina.compiler.syntax.tree.IfElseStatementNode;
 import io.ballerina.compiler.syntax.tree.MethodCallExpressionNode;
 import io.ballerina.compiler.syntax.tree.NamedWorkerDeclarationNode;
 import io.ballerina.compiler.syntax.tree.Node;
@@ -34,33 +36,33 @@ import io.ballerina.compiler.syntax.tree.VariableDeclarationNode;
 import io.ballerina.projects.ModuleId;
 import io.ballerina.projects.plugins.SyntaxNodeAnalysisContext;
 import io.github.hasithaa.diagram.flowchart.FlowChart;
-import io.github.hasithaa.diagram.integration.templates.Clone;
 import io.github.hasithaa.diagram.integration.templates.End;
 import io.github.hasithaa.diagram.integration.templates.Expression;
 import io.github.hasithaa.diagram.integration.templates.NetworkCall;
 import io.github.hasithaa.diagram.integration.templates.Sequence;
 import io.github.hasithaa.diagram.integration.templates.Start;
+import io.github.hasithaa.diagram.integration.templates.Switch;
+import io.github.hasithaa.diagram.integration.templates.SwitchMerge;
 
 import java.util.Stack;
 
 public class CodeVisitor extends NodeVisitor {
 
-    FlowChart flowChart = new FlowChart();
     final SyntaxNodeAnalysisContext ctx;
     final ModuleId moduleId;
     final SemanticModel semanticModel;
     final Sequence base;
+
+    // Data
+    FlowChart flowChart = new FlowChart();
     Stack<Sequence> sequences = new Stack<>();
-    IOperation current = null;
-    Stack<Clone> parallel = new Stack<>();
+    Stack<Operation> composite = new Stack<>();
     int count = 0;
+    IOperation current = null;
 
     public String getDiagram() {
 
-        for (Operation operation : base.getOperations()) {
-            flowChart.add(operation.getFlowchartNode());
-            operation.getFlowchartEdges().forEach(flowChart::add);
-        }
+        genDiagram(base);
 
         StringBuilder sb = new StringBuilder();
         sb.append("# Flowchart\n\n");
@@ -68,6 +70,18 @@ public class CodeVisitor extends NodeVisitor {
         sb.append(flowChart.generateMermaidSyntax());
         sb.append("```\n");
         return sb.toString();
+    }
+
+    public void genDiagram(Sequence sb) {
+        for (Operation operation : sb.getOperations()) {
+            flowChart.add(operation.getFlowchartNode());
+            if (operation instanceof CompositeOutOperation) {
+                for (Sequence sequence : ((CompositeOutOperation) operation).outgoingSequence()) {
+                    genDiagram(sequence);
+                }
+            }
+            operation.getFlowchartEdges().forEach(flowChart::add);
+        }
     }
 
     public CodeVisitor(SyntaxNodeAnalysisContext ctx, ModuleId moduleId, SemanticModel semanticModel) {
@@ -100,9 +114,34 @@ public class CodeVisitor extends NodeVisitor {
 
     // Statements
 
-    public void visit(CheckExpressionNode node) {
-        current.checked = true;
+    @Override
+    public void visit(IfElseStatementNode node) {
+        Switch aSwitch = new Switch(count++, "If");
+        composite.push(aSwitch);
+        sequences.peek().addOperation(aSwitch);
         super.visit(node);
+        SwitchMerge switchMerge = new SwitchMerge(count++, null);
+        composite.pop();
+        aSwitch.outgoingSequence().forEach(switchMerge::addIncomingSequence);
+        if (aSwitch.outgoingSequence().size() == 1) {
+            // This will be a simple if case
+            sequences.peek().addOperation(switchMerge);
+        } else {
+            sequences.peek().addCompositeOperationEnd(switchMerge);
+        }
+    }
+
+    @Override
+    public void visit(BlockStatementNode node) {
+        if (!(composite.peek() instanceof AbstractCompositeOutOperation)) {
+            throw new IllegalStateException("BlockStatementNode can only be a child of AbstractCompositeOutOperation");
+        }
+        AbstractCompositeOutOperation outOperation = (AbstractCompositeOutOperation) composite.peek();
+        Sequence sequence = new Sequence();
+        outOperation.addOutgoingSequence(sequence);
+        sequences.push(sequence);
+        super.visit(node);
+        sequences.pop();
     }
 
     @Override
@@ -129,6 +168,12 @@ public class CodeVisitor extends NodeVisitor {
     }
 
     // Expressions
+
+    @Override
+    public void visit(CheckExpressionNode node) {
+        current.checked = true;
+        super.visit(node);
+    }
 
     @Override
     public void visit(MethodCallExpressionNode node) {
