@@ -25,7 +25,7 @@ public class CodeAnalyzer<T> implements AnalysisTask<SyntaxNodeAnalysisContext> 
             ctx.node().accept(codeVisitor);
             String fileName = ((FunctionDefinitionNode) ctx.node()).functionName().toString() + ".md";
             try {
-                DiagramSerializer.serialize(fileName, codeVisitor.getDiagram(), ctx.currentPackage().project());
+                DiagramSerializer.serialize(fileName, codeVisitor.getFlowChart(), ctx.currentPackage().project());
             } catch (IOException e) {
                 throw new RuntimeException("Error occurred while generating the diagram for the function: " +
                                                    ((FunctionDefinitionNode) ctx.node()).functionName().toString());

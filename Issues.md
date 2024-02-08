@@ -5,14 +5,16 @@
     - [ ] Network Event Start
 - [ ] End Node
     - [ ] Return Statement
-- [ ] Support Switch Condition
+- Support Switch Condition
     - [x] If statement
     - [x] If-Else statement
     - [X] If-Else-If statement
     - [X] If-Else-If-Else statement
     - [ ] Match statement
 - [x] Support Generic Expression Node
-- [ ] Support Network Call
+- Support Network Call
+  - [x] Connector call
+  - [ ] Sub-Flow Support
 - [ ] Support Data Features
     - [ ] Support Data Transformation
     - [ ] Support Data Conversion

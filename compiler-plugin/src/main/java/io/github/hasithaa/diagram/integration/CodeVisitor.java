@@ -18,10 +18,13 @@
 package io.github.hasithaa.diagram.integration;
 
 import io.ballerina.compiler.api.SemanticModel;
+import io.ballerina.compiler.api.symbols.ModuleSymbol;
+import io.ballerina.compiler.api.symbols.Symbol;
 import io.ballerina.compiler.syntax.tree.AssignmentStatementNode;
 import io.ballerina.compiler.syntax.tree.BlockStatementNode;
 import io.ballerina.compiler.syntax.tree.CheckExpressionNode;
 import io.ballerina.compiler.syntax.tree.ClientResourceAccessActionNode;
+import io.ballerina.compiler.syntax.tree.ExpressionFunctionBodyNode;
 import io.ballerina.compiler.syntax.tree.ExpressionStatementNode;
 import io.ballerina.compiler.syntax.tree.FunctionBodyBlockNode;
 import io.ballerina.compiler.syntax.tree.FunctionCallExpressionNode;
@@ -38,13 +41,16 @@ import io.ballerina.projects.plugins.SyntaxNodeAnalysisContext;
 import io.github.hasithaa.diagram.flowchart.FlowChart;
 import io.github.hasithaa.diagram.integration.templates.End;
 import io.github.hasithaa.diagram.integration.templates.Expression;
+import io.github.hasithaa.diagram.integration.templates.LibraryCall;
 import io.github.hasithaa.diagram.integration.templates.NetworkCall;
 import io.github.hasithaa.diagram.integration.templates.Sequence;
 import io.github.hasithaa.diagram.integration.templates.Start;
 import io.github.hasithaa.diagram.integration.templates.Switch;
 import io.github.hasithaa.diagram.integration.templates.SwitchMerge;
 
+import java.util.Optional;
 import java.util.Stack;
+
 
 public class CodeVisitor extends NodeVisitor {
 
@@ -54,15 +60,14 @@ public class CodeVisitor extends NodeVisitor {
     final Sequence base;
 
     // Data
-    FlowChart flowChart = new FlowChart();
     Stack<Sequence> sequences = new Stack<>();
     Stack<Operation> composite = new Stack<>();
     int count = 0;
     IOperation current = null;
 
-    public String getDiagram() {
-
-        genDiagram(base);
+    public String getFlowChart() {
+        final FlowChart flowChart = new FlowChart();
+        genDiagram(base, flowChart);
 
         StringBuilder sb = new StringBuilder();
         sb.append("# Flowchart\n\n");
@@ -72,12 +77,12 @@ public class CodeVisitor extends NodeVisitor {
         return sb.toString();
     }
 
-    public void genDiagram(Sequence sb) {
+    public void genDiagram(Sequence sb, FlowChart flowChart) {
         for (Operation operation : sb.getOperations()) {
             flowChart.add(operation.getFlowchartNode());
             if (operation instanceof CompositeOutOperation) {
                 for (Sequence sequence : ((CompositeOutOperation) operation).outgoingSequence()) {
-                    genDiagram(sequence);
+                    genDiagram(sequence, flowChart);
                 }
             }
             operation.getFlowchartEdges().forEach(flowChart::add);
@@ -103,6 +108,11 @@ public class CodeVisitor extends NodeVisitor {
         base.addOperation(new Start(count++, null));
         super.visit(node);
         base.addOperation(new End(count++, null));
+    }
+
+    public void visit(ExpressionFunctionBodyNode node) {
+        // Identify this as a data transformation
+
     }
 
     @Override
@@ -177,33 +187,68 @@ public class CodeVisitor extends NodeVisitor {
 
     @Override
     public void visit(MethodCallExpressionNode node) {
-
+        if (handleExternalLibraryCall(node)) {
+            current.done = true;
+        }
+        // Don't do anything further
     }
 
     @Override
     public void visit(FunctionCallExpressionNode node) {
-
+        if (handleExternalLibraryCall(node)) {
+            current.done = true;
+        }
+        // Don't do anything further
     }
 
     @Override
     public void visit(RemoteMethodCallActionNode node) {
-        // Make a NetworkCall
-        NetworkCall networkCall = new NetworkCall(count++, node.methodName().toString());
-        sequences.peek().addOperation(networkCall);
-        current.units.empty();
+        handleNetworkCall(node, node.methodName().toString());
     }
 
     @Override
     public void visit(ClientResourceAccessActionNode node) {
-        NetworkCall networkCall = new NetworkCall(count++, node.methodName().toString());
-        sequences.peek().addOperation(networkCall);
-        current.units.empty();
+        handleNetworkCall(node, node.methodName().toString());
     }
 
     // Utils
 
+    private boolean handleExternalLibraryCall(Node node) {
+        Optional<Symbol> symbol = semanticModel.symbol(node);
+        if (symbol.isPresent() && symbol.get().getModule().isPresent()) {
+
+            ModuleSymbol moduleSymbol = symbol.get().getModule().get();
+            String orgName = moduleSymbol.id().orgName();
+            String moduleName = moduleSymbol.id().moduleName();
+            // TODO Improve this
+            if (orgName.equals("ballerina")) {
+                switch (moduleName) {
+                    case "http":
+                    case "log":
+                    case "io":
+                        LibraryCall libraryCall = new LibraryCall(count++, moduleName);
+                        sequences.peek().addOperation(libraryCall);
+                        return true;
+                    default:
+                }
+            }
+        }
+        return false;
+    }
+
+    private void handleNetworkCall(Node node, String methodName) {
+        Optional<Symbol> symbol = semanticModel.symbol(node);
+        if (symbol.isPresent() && symbol.get().getModule().isPresent()) {
+            ModuleSymbol moduleSymbol = symbol.get().getModule().get();
+            String moduleName = moduleSymbol.id().moduleName();
+            NetworkCall networkCall = new NetworkCall(count++, moduleName + " " + symbol.get().getName().get());
+            sequences.peek().addOperation(networkCall);
+            current.done = true;
+        }
+    }
+
     private void handleExpressionCase() {
-        if (current == null || current.units.isEmpty()) {
+        if (current == null || current.done) {
             return;
         }
 

@@ -41,4 +41,9 @@ public class NetworkCall extends AbstractOperation {
     public String icon() {
         return "📡";
     }
+
+    @Override
+    public String getDisplayDescription(String description) {
+        return icon() + " " + description;
+    }
 }

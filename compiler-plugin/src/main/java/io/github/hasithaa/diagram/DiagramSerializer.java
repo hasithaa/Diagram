@@ -29,7 +29,11 @@ public interface DiagramSerializer {
 
     static void serialize(String fileName, String content, Project project) throws IOException {
         Path packageRootPath = ProjectPaths.packageRoot(project.sourceRoot());
-        Path diagram = packageRootPath.resolve(fileName);
+        Path diagramDirectory = packageRootPath.resolve("diagrams");
+        if (!Files.exists(diagramDirectory)) {
+            Files.createDirectory(diagramDirectory);
+        }
+        Path diagram = diagramDirectory.resolve(fileName);
         if (!Files.exists(diagram)) {
             Files.createFile(diagram);
         }
