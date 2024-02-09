@@ -37,7 +37,7 @@ import io.ballerina.compiler.syntax.tree.NodeVisitor;
 import io.ballerina.compiler.syntax.tree.RemoteMethodCallActionNode;
 import io.ballerina.compiler.syntax.tree.VariableDeclarationNode;
 import io.ballerina.projects.ModuleId;
-import io.ballerina.projects.plugins.SyntaxNodeAnalysisContext;
+import io.ballerina.projects.plugins.CompilationAnalysisContext;
 import io.github.hasithaa.diagram.flowchart.FlowChart;
 import io.github.hasithaa.diagram.integration.templates.End;
 import io.github.hasithaa.diagram.integration.templates.Expression;
@@ -48,58 +48,67 @@ import io.github.hasithaa.diagram.integration.templates.Start;
 import io.github.hasithaa.diagram.integration.templates.Switch;
 import io.github.hasithaa.diagram.integration.templates.SwitchMerge;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.Stack;
 
 
 public class CodeVisitor extends NodeVisitor {
 
-    final SyntaxNodeAnalysisContext ctx;
+    final List<FlowChart> flowCharts = new ArrayList<>();
+    final CompilationAnalysisContext ctx;
     final ModuleId moduleId;
     final SemanticModel semanticModel;
-    final Sequence base;
 
     // Data
-    Stack<Sequence> sequences = new Stack<>();
-    Stack<Operation> composite = new Stack<>();
+    Sequence base;
+    Stack<Sequence> sequences;
+    Stack<Operation> composite;
     int count = 0;
     IOperation current = null;
 
-    public String getFlowChart() {
-        final FlowChart flowChart = new FlowChart();
-        genDiagram(base, flowChart);
 
-        StringBuilder sb = new StringBuilder();
-        sb.append("# Flowchart\n\n");
-        sb.append("```mermaid\n");
-        sb.append(flowChart.generateMermaidSyntax());
-        sb.append("```\n");
-        return sb.toString();
-    }
-
-    public void genDiagram(Sequence sb, FlowChart flowChart) {
-        for (Operation operation : sb.getOperations()) {
-            flowChart.add(operation.getFlowchartNode());
-            if (operation instanceof CompositeOutOperation) {
-                for (Sequence sequence : ((CompositeOutOperation) operation).outgoingSequence()) {
-                    genDiagram(sequence, flowChart);
-                }
-            }
-            operation.getFlowchartEdges().forEach(flowChart::add);
-        }
-    }
-
-    public CodeVisitor(SyntaxNodeAnalysisContext ctx, ModuleId moduleId, SemanticModel semanticModel) {
+    public CodeVisitor(CompilationAnalysisContext ctx, ModuleId moduleId, SemanticModel semanticModel) {
         this.ctx = ctx;
         this.moduleId = moduleId;
         this.semanticModel = semanticModel;
         base = new Sequence();
     }
 
+    private void genFlowChart(Sequence sb, FlowChart flowChart) {
+        for (Operation operation : sb.getOperations()) {
+            flowChart.add(operation.getFlowchartNode());
+            if (operation instanceof CompositeOutOperation) {
+                for (Sequence sequence : ((CompositeOutOperation) operation).outgoingSequence()) {
+                    genFlowChart(sequence, flowChart);
+                }
+            }
+            operation.getFlowchartEdges().forEach(flowChart::add);
+        }
+    }
+
+    private FlowChart newFlowchart(String name) {
+        base = new Sequence();
+        sequences = new Stack<>();
+        sequences.push(base);
+        composite = new Stack<>();
+        count = 0;
+        return new FlowChart(name);
+    }
+
+    public List<FlowChart> getFlowCharts() {
+        return Collections.unmodifiableList(flowCharts);
+    }
+
+
     @Override
     public void visit(FunctionDefinitionNode node) {
+        FlowChart flowChart = newFlowchart(node.functionName().toString());
+        flowCharts.add(flowChart);
         super.visit(node);
-        // TODO: Generate the diagram
+        genFlowChart(base, flowChart);
     }
 
     @Override
@@ -112,7 +121,7 @@ public class CodeVisitor extends NodeVisitor {
 
     public void visit(ExpressionFunctionBodyNode node) {
         // Identify this as a data transformation
-
+        flowCharts.remove(flowCharts.size() - 1);
     }
 
     @Override

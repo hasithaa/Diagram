@@ -23,8 +23,10 @@ import java.util.List;
 public class FlowChart {
 
     private final List<FlowchartComponent> components = new ArrayList<>();
+    private final String name;
 
-    public FlowChart() {
+    public FlowChart(String name) {
+        this.name = name;
     }
 
     public void add(FlowchartComponent component) {
@@ -41,5 +43,9 @@ public class FlowChart {
             builder.append(component.generateMermaidSyntax(startIndex + 1));
         }
         return builder.toString();
+    }
+
+    public String getName() {
+        return name;
     }
 }

@@ -1,37 +1,34 @@
 package io.github.hasithaa.diagram;
 
 import io.ballerina.compiler.api.SemanticModel;
-import io.ballerina.compiler.syntax.tree.FunctionDefinitionNode;
-import io.ballerina.compiler.syntax.tree.SyntaxKind;
 import io.ballerina.projects.ModuleId;
 import io.ballerina.projects.plugins.AnalysisTask;
-import io.ballerina.projects.plugins.SyntaxNodeAnalysisContext;
+import io.ballerina.projects.plugins.CompilationAnalysisContext;
 import io.github.hasithaa.diagram.integration.CodeVisitor;
 
 import java.io.IOException;
 
-public class CodeAnalyzer<T> implements AnalysisTask<SyntaxNodeAnalysisContext> {
+public class CodeAnalyzer<T> implements AnalysisTask<CompilationAnalysisContext> {
 
     @Override
-    public void perform(SyntaxNodeAnalysisContext ctx) {
+    public void perform(CompilationAnalysisContext ctx) {
 
-        if (ctx.syntaxTree().hasDiagnostics()) {
+        if (ctx.compilation().diagnosticResult().hasErrors()) {
             return;
         }
-        if (ctx.node().kind() == SyntaxKind.FUNCTION_DEFINITION) {
-            ModuleId currentModuleId = ctx.moduleId();
-            SemanticModel semanticModel = ctx.compilation().getSemanticModel(currentModuleId);
-            CodeVisitor codeVisitor = new CodeVisitor(ctx, currentModuleId, semanticModel);
-            ctx.node().accept(codeVisitor);
-            String fileName = ((FunctionDefinitionNode) ctx.node()).functionName().toString() + ".md";
-            try {
-                DiagramSerializer.serialize(fileName, codeVisitor.getFlowChart(), ctx.currentPackage().project());
-            } catch (IOException e) {
-                throw new RuntimeException("Error occurred while generating the diagram for the function: " +
-                                                   ((FunctionDefinitionNode) ctx.node()).functionName().toString());
-            }
+        ModuleId currentModuleId = ctx.currentPackage().getDefaultModule().moduleId();
+        SemanticModel semanticModel = ctx.compilation().getSemanticModel(currentModuleId);
+        CodeVisitor codeVisitor = new CodeVisitor(ctx, currentModuleId, semanticModel);
+        ctx.currentPackage().getDefaultModule().documentIds().forEach(documentId -> {
+            ctx.currentPackage().getDefaultModule().document(documentId).syntaxTree().rootNode().accept(codeVisitor);
+        });
+
+
+        try {
+            DiagramSerializer.serialize(codeVisitor.getFlowCharts(), ctx.currentPackage().project());
+        } catch (IOException e) {
+            throw new RuntimeException("Error occurred while generating the diagram for the function:");
         }
 
     }
-
 }

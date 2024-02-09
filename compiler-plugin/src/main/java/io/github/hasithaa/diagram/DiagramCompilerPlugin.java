@@ -3,12 +3,9 @@
  */
 package io.github.hasithaa.diagram;
 
-import io.ballerina.compiler.syntax.tree.SyntaxKind;
 import io.ballerina.projects.plugins.CodeAnalysisContext;
 import io.ballerina.projects.plugins.CompilerPlugin;
 import io.ballerina.projects.plugins.CompilerPluginContext;
-
-import java.util.ArrayList;
 
 public class DiagramCompilerPlugin extends CompilerPlugin {
 
@@ -22,9 +19,7 @@ public class DiagramCompilerPlugin extends CompilerPlugin {
 
         @Override
         public void init(CodeAnalysisContext ctx) {
-            ArrayList<SyntaxKind> syntaxKinds = new ArrayList<>();
-            syntaxKinds.add(SyntaxKind.FUNCTION_DEFINITION);
-            ctx.addSyntaxNodeAnalysisTask(new CodeAnalyzer<>(), syntaxKinds);
+            ctx.addCompilationAnalysisTask(new CodeAnalyzer<>());
         }
     }
 }
