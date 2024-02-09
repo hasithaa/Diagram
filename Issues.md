@@ -38,3 +38,5 @@
   operation start and end.
 
 # Bugs
+
+- [ ] Escape " with &quot; in the description of the node.

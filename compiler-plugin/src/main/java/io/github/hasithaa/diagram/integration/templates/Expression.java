@@ -23,8 +23,8 @@ import io.github.hasithaa.diagram.integration.BBKind;
 
 public class Expression extends AbstractOperation {
 
-    public Expression(int id, String description) {
-        super(id, description);
+    public Expression(int id) {
+        super(id);
     }
 
     @Override

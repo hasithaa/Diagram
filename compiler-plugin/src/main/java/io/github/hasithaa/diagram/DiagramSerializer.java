@@ -47,6 +47,10 @@ public interface DiagramSerializer {
     static String getFlowChartDoc(FlowChart flowChart) {
         StringBuilder sb = new StringBuilder();
         sb.append("# Flowchart\n\n");
+        sb.append("<link\n" +
+                          "  href=\"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css\"\n" +
+                          "  rel=\"stylesheet\"\n" +
+                          "/>\n\n");
         sb.append("```mermaid\n");
         sb.append(flowChart.generateMermaidSyntax());
         sb.append("```\n");

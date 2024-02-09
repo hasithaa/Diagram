@@ -23,8 +23,8 @@ import io.github.hasithaa.diagram.integration.BBKind;
 
 public class NewPayload extends AbstractOperation {
 
-    public NewPayload(int id, String description) {
-        super(id, description);
+    public NewPayload(int id) {
+        super(id);
     }
 
     @Override

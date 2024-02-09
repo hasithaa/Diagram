@@ -18,11 +18,15 @@
 package io.github.hasithaa.diagram.integration;
 
 import io.ballerina.compiler.api.SemanticModel;
+import io.ballerina.compiler.api.symbols.FunctionSymbol;
 import io.ballerina.compiler.api.symbols.ModuleSymbol;
+import io.ballerina.compiler.api.symbols.ParameterSymbol;
 import io.ballerina.compiler.api.symbols.Symbol;
+import io.ballerina.compiler.api.symbols.SymbolKind;
 import io.ballerina.compiler.syntax.tree.AssignmentStatementNode;
 import io.ballerina.compiler.syntax.tree.BlockStatementNode;
 import io.ballerina.compiler.syntax.tree.CheckExpressionNode;
+import io.ballerina.compiler.syntax.tree.ChildNodeEntry;
 import io.ballerina.compiler.syntax.tree.ClientResourceAccessActionNode;
 import io.ballerina.compiler.syntax.tree.ExpressionFunctionBodyNode;
 import io.ballerina.compiler.syntax.tree.ExpressionStatementNode;
@@ -33,8 +37,11 @@ import io.ballerina.compiler.syntax.tree.IfElseStatementNode;
 import io.ballerina.compiler.syntax.tree.MethodCallExpressionNode;
 import io.ballerina.compiler.syntax.tree.NamedWorkerDeclarationNode;
 import io.ballerina.compiler.syntax.tree.Node;
+import io.ballerina.compiler.syntax.tree.NodeList;
 import io.ballerina.compiler.syntax.tree.NodeVisitor;
+import io.ballerina.compiler.syntax.tree.NonTerminalNode;
 import io.ballerina.compiler.syntax.tree.RemoteMethodCallActionNode;
+import io.ballerina.compiler.syntax.tree.SyntaxKind;
 import io.ballerina.compiler.syntax.tree.VariableDeclarationNode;
 import io.ballerina.projects.ModuleId;
 import io.ballerina.projects.plugins.CompilationAnalysisContext;
@@ -53,6 +60,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Stack;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class CodeVisitor extends NodeVisitor {
@@ -114,9 +123,9 @@ public class CodeVisitor extends NodeVisitor {
     @Override
     public void visit(FunctionBodyBlockNode node) {
         sequences.push(base);
-        base.addOperation(new Start(count++, null));
+        base.addOperation(new Start(count++));
         super.visit(node);
-        base.addOperation(new End(count++, null));
+        base.addOperation(new End(count++));
     }
 
     public void visit(ExpressionFunctionBodyNode node) {
@@ -135,11 +144,11 @@ public class CodeVisitor extends NodeVisitor {
 
     @Override
     public void visit(IfElseStatementNode node) {
-        Switch aSwitch = new Switch(count++, "If");
+        Switch aSwitch = new Switch(count++);
         composite.push(aSwitch);
         sequences.peek().addOperation(aSwitch);
         super.visit(node);
-        SwitchMerge switchMerge = new SwitchMerge(count++, null);
+        SwitchMerge switchMerge = new SwitchMerge(count++);
         composite.pop();
         aSwitch.outgoingSequence().forEach(switchMerge::addIncomingSequence);
         if (aSwitch.outgoingSequence().size() == 1) {
@@ -224,25 +233,60 @@ public class CodeVisitor extends NodeVisitor {
 
     private boolean handleExternalLibraryCall(Node node) {
         Optional<Symbol> symbol = semanticModel.symbol(node);
-        if (symbol.isPresent() && symbol.get().getModule().isPresent()) {
-
-            ModuleSymbol moduleSymbol = symbol.get().getModule().get();
-            String orgName = moduleSymbol.id().orgName();
-            String moduleName = moduleSymbol.id().moduleName();
-            // TODO Improve this
-            if (orgName.equals("ballerina")) {
-                switch (moduleName) {
-                    case "http":
-                    case "log":
-                    case "io":
-                        LibraryCall libraryCall = new LibraryCall(count++, moduleName);
-                        sequences.peek().addOperation(libraryCall);
-                        return true;
-                    default:
+        if (symbol.isPresent()) {
+            Symbol funcSymbol = symbol.get();
+            if (funcSymbol.getModule().isPresent()) {
+                String functionName = funcSymbol.getName().orElse("Unknown Function");
+                ModuleSymbol moduleSymbol = funcSymbol.getModule().get();
+                String moduleName = moduleSymbol.id().moduleName();
+                LibraryCall libraryCall = new LibraryCall(count++);
+                libraryCall.setHeading(moduleName + ":" + functionName);
+                libraryCall.setComment(node.lineRange().fileName() + ":" + node.lineRange().startLine());
+                if (funcSymbol.kind() == SymbolKind.FUNCTION) {
+                    // Following logic is demonstration purpose only. This should be improved and completed.
+                    FunctionSymbol functionSymbol = (FunctionSymbol) funcSymbol;
+                    final List<String> params = new ArrayList<>();
+                    functionSymbol.typeDescriptor().params().ifPresent(parameterSymbols -> {
+                        for (ParameterSymbol parameterSymbol : parameterSymbols) {
+                            params.add(parameterSymbol.getName().orElse("Param" + params.size()) + "(" +
+                                               sanitizeExpression(parameterSymbol.typeDescriptor().signature()) + ")");
+                        }
+                    });
+                    AtomicBoolean hasRestParam = new AtomicBoolean(false);
+                    functionSymbol.typeDescriptor().restParam().ifPresent(parameterSymbol -> {
+                        hasRestParam.set(true);
+                        params.add(parameterSymbol.getName().orElse("Rest") + "(" +
+                                           sanitizeExpression(parameterSymbol.typeDescriptor().signature()) + ")");
+                    });
+                    AtomicInteger paramCount = new AtomicInteger();
+                    for (ChildNodeEntry nodeEntry : ((NonTerminalNode) node).childEntries()) {
+                        if (nodeEntry.name().equals("arguments") && nodeEntry.node().isPresent()) {
+                            NodeList<Node> nodes = nodeEntry.nodeList();
+                            nodes.stream().filter(n -> n.kind() == SyntaxKind.POSITIONAL_ARG).forEach(n -> {
+                                libraryCall.addFormData(params.get(paramCount.get()),
+                                                        sanitizeExpression(n.toSourceCode()));
+                                // Hack to support rest params
+                                if (hasRestParam.get() && paramCount.get() < params.size() - 1) {
+                                    paramCount.getAndIncrement();
+                                }
+                            });
+                        }
+                    }
                 }
+                sequences.peek().addOperation(libraryCall);
+                return true;
             }
         }
         return false;
+    }
+
+    private String sanitizeExpression(String str) {
+        String newStr = str;
+        if (str.length() > 15) {
+            newStr = newStr.substring(0, 15) + "...";
+        }
+        newStr = newStr.replace("\n", "").replace("\r", "").replace("\"", "&quot;").replace("'", "&apos;");
+        return newStr;
     }
 
     private void handleNetworkCall(Node node, String methodName) {
@@ -250,7 +294,8 @@ public class CodeVisitor extends NodeVisitor {
         if (symbol.isPresent() && symbol.get().getModule().isPresent()) {
             ModuleSymbol moduleSymbol = symbol.get().getModule().get();
             String moduleName = moduleSymbol.id().moduleName();
-            NetworkCall networkCall = new NetworkCall(count++, moduleName + " " + symbol.get().getName().get());
+            NetworkCall networkCall = new NetworkCall(count++);
+            networkCall.setHeading(moduleName + " " + symbol.get().getName().get());
             sequences.peek().addOperation(networkCall);
             current.done = true;
         }
@@ -261,7 +306,7 @@ public class CodeVisitor extends NodeVisitor {
             return;
         }
 
-        Expression expression = new Expression(count++, "Expression");
+        Expression expression = new Expression(count++);
         if (current.checked) {
             expression.setFailOnError();
         }

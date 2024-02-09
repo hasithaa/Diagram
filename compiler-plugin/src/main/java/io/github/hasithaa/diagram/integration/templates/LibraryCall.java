@@ -23,8 +23,8 @@ import io.github.hasithaa.diagram.integration.BBKind;
 
 public class LibraryCall extends AbstractOperation {
 
-    public LibraryCall(int id, String description) {
-        super(id, description);
+    public LibraryCall(int id) {
+        super(id);
     }
 
     @Override
@@ -41,4 +41,5 @@ public class LibraryCall extends AbstractOperation {
     public String icon() {
         return "🧩";
     }
+
 }

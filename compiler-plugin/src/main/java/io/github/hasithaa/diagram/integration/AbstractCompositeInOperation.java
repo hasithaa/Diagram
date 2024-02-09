@@ -29,8 +29,8 @@ public abstract class AbstractCompositeInOperation extends AbstractOperation imp
     List<Sequence> incomingSequences = new ArrayList<>();
     List<Edge> flowchartEdges = null;
 
-    public AbstractCompositeInOperation(int id, String description) {
-        super(id, description);
+    public AbstractCompositeInOperation(int id) {
+        super(id);
     }
 
     public List<Edge> getFlowchartEdges() {

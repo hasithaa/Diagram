@@ -29,8 +29,8 @@ public class Clone extends AbstractCompositeOutOperation {
 
     final List<Sequence> sequences = new ArrayList<Sequence>();
 
-    public Clone(int id, String description) {
-        super(id, description);
+    public Clone(int id) {
+        super(id);
     }
 
     @Override

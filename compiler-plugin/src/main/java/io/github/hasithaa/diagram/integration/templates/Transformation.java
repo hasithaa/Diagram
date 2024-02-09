@@ -23,8 +23,8 @@ import io.github.hasithaa.diagram.integration.BBKind;
 
 public class Transformation extends AbstractOperation {
 
-    public Transformation(int id, String description) {
-        super(id, description);
+    public Transformation(int id) {
+        super(id);
     }
 
     @Override

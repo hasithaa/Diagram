@@ -23,8 +23,8 @@ import io.github.hasithaa.diagram.integration.BBKind;
 
 public class Switch extends AbstractCompositeOutOperation {
 
-    public Switch(int id, String description) {
-        super(id, description);
+    public Switch(int id) {
+        super(id);
     }
 
     @Override

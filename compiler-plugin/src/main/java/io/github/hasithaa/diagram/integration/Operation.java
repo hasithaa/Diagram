@@ -33,9 +33,9 @@ public interface Operation extends FlowChartNode {
 
     String getNodeId(int sequence);
 
-    String getDisplayDescription(String description);
-
     String getComment();
+
+    void setComment(String comment);
 
     void setFailOnError();
 }

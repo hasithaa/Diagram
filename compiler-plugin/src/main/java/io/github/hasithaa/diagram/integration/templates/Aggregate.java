@@ -23,8 +23,8 @@ import io.github.hasithaa.diagram.integration.BBKind;
 
 public class Aggregate extends AbstractCompositeInOperation {
 
-    public Aggregate(int id, String description) {
-        super(id, description);
+    public Aggregate(int id) {
+        super(id);
     }
 
     @Override

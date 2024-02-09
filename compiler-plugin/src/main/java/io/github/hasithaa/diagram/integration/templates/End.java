@@ -23,8 +23,8 @@ import io.github.hasithaa.diagram.integration.BBKind;
 
 public class End extends AbstractOperation {
 
-    public End(int id, String description) {
-        super(id, description);
+    public End(int id) {
+        super(id);
     }
 
     @Override

@@ -22,6 +22,7 @@ import io.github.hasithaa.diagram.flowchart.FlowchartComponent;
 import io.github.hasithaa.diagram.flowchart.NodeKind;
 
 import java.util.List;
+import java.util.Map;
 
 public interface FlowChartNode {
 
@@ -30,5 +31,15 @@ public interface FlowChartNode {
     List<Edge> getFlowchartEdges();
 
     NodeKind getFlowchartNodeKind();
+
+    String getHeading();
+
+    void setHeading(String heading);
+
+    void addFormData(String data, String value);
+
+    List<Map.Entry<String, String>> getFormData();
+
+    String getFlowChartDisplayContent();
 
 }

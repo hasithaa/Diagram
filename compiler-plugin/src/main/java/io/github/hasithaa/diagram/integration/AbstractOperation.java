@@ -21,20 +21,26 @@ import io.github.hasithaa.diagram.flowchart.BasicNode;
 import io.github.hasithaa.diagram.flowchart.Edge;
 import io.github.hasithaa.diagram.flowchart.FlowchartComponent;
 
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public abstract class AbstractOperation implements Operation {
 
     final private int id;
-    final private String description;
+    final private List<Map.Entry<String, String>> formData;
+    private String heading;
+    private String comment;
     private AbstractOperation next, previous;
     private FlowchartComponent flowchartComponent = null;
     private List<Edge> flowchartEdges = null;
     private boolean failOnError = false;
 
-    public AbstractOperation(int id, String description) {
+    public AbstractOperation(int id) {
         this.id = id;
-        this.description = description;
+        formData = new ArrayList<>();
     }
 
     @Override
@@ -49,7 +55,12 @@ public abstract class AbstractOperation implements Operation {
 
     @Override
     public String getComment() {
-        return null;
+        return comment;
+    }
+
+    @Override
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
     @Override
@@ -65,7 +76,7 @@ public abstract class AbstractOperation implements Operation {
     @Override
     public FlowchartComponent getFlowchartNode() {
         if (flowchartComponent == null) {
-            flowchartComponent = new BasicNode(getNodeId(id), getDisplayDescription(description),
+            flowchartComponent = new BasicNode(getNodeId(id), getFlowChartDisplayContent(),
                                                getFlowchartNodeKind());
         }
         return flowchartComponent;
@@ -101,16 +112,24 @@ public abstract class AbstractOperation implements Operation {
     }
 
     @Override
-    public String getDisplayDescription(String description) {
+    public String getFlowChartDisplayContent() {
         StringBuilder displayDescription = new StringBuilder();
-        if (description == null) {
-            displayDescription.append(icon()).append(" ").append(getKind().name);
+        if (heading == null) {
+            displayDescription.append(icon());
         } else {
-            displayDescription.append("[").append(icon()).append(" ").append(getKind().name).append("] ").append(
-                    description);
+            displayDescription.append(icon()).append(" ").append(heading.replace("\"", "&quot;"));
+        }
+        if (!formData.isEmpty()) {
+            displayDescription.append("\n");
+            displayDescription.append("<table>");
+            for (Map.Entry<String, String> entry : formData) {
+                displayDescription.append("<tr><td>").append(entry.getKey()).append("</td><td>").append(
+                        entry.getValue()).append("</td></tr>");
+            }
+            displayDescription.append("</table>");
         }
         if (failOnError) {
-            displayDescription.append(" ⚠");
+            displayDescription.append("⚠");
         }
         return displayDescription.toString();
     }
@@ -120,5 +139,24 @@ public abstract class AbstractOperation implements Operation {
         this.failOnError = true;
     }
 
+    @Override
+    public String getHeading() {
+        return heading;
+    }
+
+    @Override
+    public void setHeading(String heading) {
+        this.heading = heading;
+    }
+
+    @Override
+    public void addFormData(String data, String value) {
+        formData.add(new AbstractMap.SimpleEntry<>(data, value));
+    }
+
+    @Override
+    public List<Map.Entry<String, String>> getFormData() {
+        return Collections.unmodifiableList(formData);
+    }
 
 }

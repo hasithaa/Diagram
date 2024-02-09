@@ -23,8 +23,8 @@ import io.github.hasithaa.diagram.integration.BBKind;
 
 public class Start extends AbstractOperation {
 
-    public Start(int id, String description) {
-        super(id, description);
+    public Start(int id) {
+        super(id);
     }
 
     @Override

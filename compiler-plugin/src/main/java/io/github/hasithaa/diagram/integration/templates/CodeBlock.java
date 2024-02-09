@@ -23,8 +23,8 @@ import io.github.hasithaa.diagram.integration.BBKind;
 
 public class CodeBlock extends AbstractOperation {
 
-    public CodeBlock(int id, String description) {
-        super(id, description);
+    public CodeBlock(int id) {
+        super(id);
     }
 
     @Override

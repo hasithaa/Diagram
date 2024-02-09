@@ -21,17 +21,27 @@ public class BasicNode implements FlowchartComponent, IdentifiableComponent {
 
     protected final String identifier;
     protected final String description;
+    protected final String comment;
     protected final NodeKind kind;
 
     public BasicNode(String identifier, NodeKind kind) {
         this.identifier = identifier;
         this.description = null;
+        this.comment = null;
         this.kind = kind;
     }
 
     public BasicNode(String identifier, String description, NodeKind kind) {
         this.identifier = identifier;
         this.description = description;
+        this.comment = null;
+        this.kind = kind;
+    }
+
+    public BasicNode(String identifier, String description, String comment, NodeKind kind) {
+        this.identifier = identifier;
+        this.description = description;
+        this.comment = comment;
         this.kind = kind;
     }
 
@@ -43,9 +53,16 @@ public class BasicNode implements FlowchartComponent, IdentifiableComponent {
     @Override
     public String generateMermaidSyntax(int index) {
         final String ws = "  ".repeat(index);
-        if (description == null) {
-            return ws + identifier;
+        StringBuilder sb = new StringBuilder();
+        sb.append(ws).append(identifier).append(kind.start).append("\"");
+        if (description != null) {
+            sb.append(description.trim());
         }
-        return ws + identifier + kind.start + "\"" + description.trim() + "\"" + kind.end + "\n";
+        sb.append("\"").append(kind.end);
+        if (comment != null) {
+            sb.append(" %%").append(comment);
+        }
+        sb.append("\n");
+        return sb.toString();
     }
 }

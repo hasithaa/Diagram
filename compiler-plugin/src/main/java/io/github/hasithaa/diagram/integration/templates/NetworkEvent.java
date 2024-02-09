@@ -23,8 +23,8 @@ import io.github.hasithaa.diagram.integration.BBKind;
 
 public class NetworkEvent extends AbstractOperation {
 
-    public NetworkEvent(int id, String description) {
-        super(id, description);
+    public NetworkEvent(int id) {
+        super(id);
     }
 
     @Override

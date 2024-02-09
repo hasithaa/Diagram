@@ -23,8 +23,8 @@ import io.github.hasithaa.diagram.integration.BBKind;
 
 public class Foreach extends AbstractOperation {
 
-    public Foreach(int id, String description) {
-        super(id, description);
+    public Foreach(int id) {
+        super(id);
     }
 
     @Override

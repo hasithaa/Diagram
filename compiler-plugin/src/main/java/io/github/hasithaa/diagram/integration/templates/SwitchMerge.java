@@ -24,8 +24,8 @@ import io.github.hasithaa.diagram.integration.UnEditable;
 
 public class SwitchMerge extends AbstractCompositeInOperation implements UnEditable {
 
-    public SwitchMerge(int id, String description) {
-        super(id, description);
+    public SwitchMerge(int id) {
+        super(id);
     }
 
     @Override
@@ -44,7 +44,7 @@ public class SwitchMerge extends AbstractCompositeInOperation implements UnEdita
     }
 
     @Override
-    public String getDisplayDescription(String description) {
+    public String getFlowChartDisplayContent() {
         return icon();
     }
 }

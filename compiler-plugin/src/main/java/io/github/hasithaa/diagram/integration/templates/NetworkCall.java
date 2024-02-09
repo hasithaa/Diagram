@@ -23,8 +23,8 @@ import io.github.hasithaa.diagram.integration.BBKind;
 
 public class NetworkCall extends AbstractOperation {
 
-    public NetworkCall(int id, String description) {
-        super(id, description);
+    public NetworkCall(int id) {
+        super(id);
     }
 
     @Override
@@ -40,10 +40,5 @@ public class NetworkCall extends AbstractOperation {
     @Override
     public String icon() {
         return "📡";
-    }
-
-    @Override
-    public String getDisplayDescription(String description) {
-        return icon() + " " + description;
     }
 }

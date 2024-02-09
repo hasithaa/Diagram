@@ -29,8 +29,8 @@ public abstract class AbstractCompositeOutOperation extends AbstractOperation im
     List<Sequence> outgoingOperations = new ArrayList<>();
     List<Edge> flowchartEdges = null;
 
-    public AbstractCompositeOutOperation(int id, String description) {
-        super(id, description);
+    public AbstractCompositeOutOperation(int id) {
+        super(id);
     }
 
     public List<Edge> getFlowchartEdges() {
