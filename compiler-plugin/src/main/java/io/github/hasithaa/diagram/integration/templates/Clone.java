@@ -17,10 +17,9 @@
  */
 package io.github.hasithaa.diagram.integration.templates;
 
-import io.github.hasithaa.diagram.flowchart.Edge;
-import io.github.hasithaa.diagram.flowchart.NodeKind;
 import io.github.hasithaa.diagram.integration.AbstractCompositeOutOperation;
-import io.github.hasithaa.diagram.integration.BBKind;
+import io.github.hasithaa.diagram.integration.Sequence;
+import io.github.hasithaa.diagram.integration.TemplateKind;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,18 +33,8 @@ public class Clone extends AbstractCompositeOutOperation {
     }
 
     @Override
-    public List<Edge> getFlowchartEdges() {
-        return super.getFlowchartEdges();
-    }
-
-    @Override
-    public NodeKind getFlowchartNodeKind() {
-        return NodeKind.SPECIAL;
-    }
-
-    @Override
-    public BBKind getKind() {
-        return BBKind.CLONE;
+    public TemplateKind getKind() {
+        return TemplateKind.CLONE;
     }
 
     @Override

@@ -18,7 +18,6 @@
 package io.github.hasithaa.diagram.integration;
 
 import io.github.hasithaa.diagram.flowchart.Edge;
-import io.github.hasithaa.diagram.integration.templates.Sequence;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,30 +34,6 @@ public abstract class AbstractCompositeInOperation extends AbstractOperation imp
 
     public AbstractCompositeInOperation(int id, AbstractOperation parent) {
         super(id, parent);
-    }
-
-    public List<Edge> getFlowchartEdges() {
-        if (flowchartEdges != null) {
-            return flowchartEdges;
-        }
-        final List<Edge> flowchartEdges = new ArrayList<>();
-        // Link the last operation of each sequence to the current operation
-        for (Sequence sequence : incomingSequences) {
-            if (!sequence.getOperations().isEmpty()) {
-                int lastIndex = sequence.getOperations().size() - 1;
-                flowchartEdges.add(
-                        new Edge(sequence.getOperations().get(lastIndex).getFlowchartNode(), this.getFlowchartNode(),
-                                 sequence.getLabel()));
-            } else {
-                // Implicit Edge.
-                flowchartEdges.add(
-                        new Edge(sequence.getSource().getFlowchartNode(), this.getFlowchartNode(),
-                                 sequence.getLabel()));
-            }
-        }
-        flowchartEdges.addAll(super.getFlowchartEdges());
-        this.flowchartEdges = Collections.unmodifiableList(flowchartEdges);
-        return flowchartEdges;
     }
 
     @Override

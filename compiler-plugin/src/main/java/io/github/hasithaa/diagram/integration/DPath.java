@@ -17,27 +17,20 @@
  */
 package io.github.hasithaa.diagram.integration;
 
-public enum BBKind {
+public class DPath {
 
-    AGGREGATE("Aggregate"),
-    CLONE("Clone"),
-    CODE_BLOCK("CodeBlock"),
-    CONVERSION("Data Conversion"),
-    END("End"),
-    EXPRESSION("Expression"),
-    FOREACH("ForEach"),
-    LIBRARY_CALL("Library Call"),
-    NETWORK_CALL("Network Call"),
-    NEW_PAYLOAD("New Payload"),
-    SWITCH("Switch"),
-    TRANSFORM("Transform"),
-    START("Start"),
-    NETWORK_EVENT("Network\nEvent"),
-    ;
+    public Operation source, target;
+    public String label = null;
+    public boolean hidden = false;
 
-    final String name;
+    public DPath(Operation source, Operation target) {
+        this.source = source;
+        this.target = target;
+    }
 
-    BBKind(String name) {
-        this.name = name;
+    public DPath(Operation source, Operation target, String label) {
+        this.source = source;
+        this.target = target;
+        this.label = label;
     }
 }

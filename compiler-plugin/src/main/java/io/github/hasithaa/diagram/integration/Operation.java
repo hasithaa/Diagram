@@ -27,11 +27,11 @@ public interface Operation extends FlowChartNode {
 
     void setPreviousOperation(Operation previousOperation);
 
-    BBKind getKind();
+    TemplateKind getKind();
 
     String icon();
 
-    String getNodeId(int sequence);
+    String getNodeId();
 
     String getComment();
 

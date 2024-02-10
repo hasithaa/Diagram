@@ -17,9 +17,8 @@
  */
 package io.github.hasithaa.diagram.integration.templates;
 
-import io.github.hasithaa.diagram.flowchart.NodeKind;
 import io.github.hasithaa.diagram.integration.AbstractOperation;
-import io.github.hasithaa.diagram.integration.BBKind;
+import io.github.hasithaa.diagram.integration.TemplateKind;
 
 public class End extends AbstractOperation {
 
@@ -28,13 +27,8 @@ public class End extends AbstractOperation {
     }
 
     @Override
-    public NodeKind getFlowchartNodeKind() {
-        return NodeKind.TERMINAL;
-    }
-
-    @Override
-    public BBKind getKind() {
-        return BBKind.END;
+    public TemplateKind getKind() {
+        return TemplateKind.END;
     }
 
     @Override

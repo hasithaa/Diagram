@@ -15,10 +15,7 @@
  *  specific language governing permissions and limitations
  *  under the License.
  */
-package io.github.hasithaa.diagram.integration.templates;
-
-import io.github.hasithaa.diagram.integration.Operation;
-import io.github.hasithaa.diagram.integration.Scope;
+package io.github.hasithaa.diagram.integration;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,7 +25,8 @@ public class Sequence implements Scope {
 
     private final List<Operation> operations = new ArrayList<>();
     private final Operation source, target;
-    String label = null;
+    boolean generated = false;
+    private String label = null;
 
     public Sequence(Operation source, Operation target) {
         this.source = source;
@@ -59,10 +57,6 @@ public class Sequence implements Scope {
 
     public void setLabel(String label) {
         this.label = label;
-    }
-
-    public Operation getSource() {
-        return source;
     }
 
     public Operation getTarget() {

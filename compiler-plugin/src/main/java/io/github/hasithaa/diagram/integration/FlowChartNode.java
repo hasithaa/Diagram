@@ -17,20 +17,10 @@
  */
 package io.github.hasithaa.diagram.integration;
 
-import io.github.hasithaa.diagram.flowchart.Edge;
-import io.github.hasithaa.diagram.flowchart.FlowchartComponent;
-import io.github.hasithaa.diagram.flowchart.NodeKind;
-
 import java.util.List;
 import java.util.Map;
 
 public interface FlowChartNode {
-
-    FlowchartComponent getFlowchartNode();
-
-    List<Edge> getFlowchartEdges();
-
-    NodeKind getFlowchartNodeKind();
 
     String getHeading();
 

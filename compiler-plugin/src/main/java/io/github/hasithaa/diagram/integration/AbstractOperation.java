@@ -17,10 +17,6 @@
  */
 package io.github.hasithaa.diagram.integration;
 
-import io.github.hasithaa.diagram.flowchart.BasicNode;
-import io.github.hasithaa.diagram.flowchart.Edge;
-import io.github.hasithaa.diagram.flowchart.FlowchartComponent;
-
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,8 +31,6 @@ public abstract class AbstractOperation implements Operation {
     private String heading;
     private String comment;
     private AbstractOperation next, previous;
-    private FlowchartComponent flowchartComponent = null;
-    private List<Edge> flowchartEdges = null;
     private boolean failOnError = false;
     private String nextNodeLabel;
 
@@ -84,41 +78,13 @@ public abstract class AbstractOperation implements Operation {
     }
 
     @Override
-    public FlowchartComponent getFlowchartNode() {
-        if (flowchartComponent == null) {
-            flowchartComponent = new BasicNode(getNodeId(id), getFlowChartDisplayContent(),
-                                               getFlowchartNodeKind());
-        }
-        return flowchartComponent;
-    }
-
-    @Override
-    public List<Edge> getFlowchartEdges() {
-        // TODO : Fix this, this lead to duplicate edges
-        if (flowchartEdges != null) {
-            return flowchartEdges;
-        }
-        if (previous == null && next == null) {
-            flowchartEdges = List.of();
-        } else if (previous == null) {
-            flowchartEdges = List.of(new Edge(getFlowchartNode(), next.getFlowchartNode()));
-        } else if (next == null) {
-            flowchartEdges = List.of(new Edge(previous.getFlowchartNode(), getFlowchartNode()));
-        } else {
-            flowchartEdges = List.of(new Edge(previous.getFlowchartNode(), getFlowchartNode()),
-                                     new Edge(getFlowchartNode(), next.getFlowchartNode()));
-        }
-        return flowchartEdges;
-    }
-
-    @Override
     public String icon() {
         return "⚙️";
     }
 
     @Override
-    public String getNodeId(int sequence) {
-        return "Node" + sequence;
+    public String getNodeId() {
+        return "Node" + id;
     }
 
     @Override

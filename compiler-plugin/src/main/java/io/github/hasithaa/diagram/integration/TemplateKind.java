@@ -15,25 +15,29 @@
  *  specific language governing permissions and limitations
  *  under the License.
  */
-package io.github.hasithaa.diagram.integration.templates;
+package io.github.hasithaa.diagram.integration;
 
-import io.github.hasithaa.diagram.integration.AbstractOperation;
-import io.github.hasithaa.diagram.integration.TemplateKind;
+public enum TemplateKind {
 
-public class LibraryCall extends AbstractOperation {
+    AGGREGATE("Aggregate"),
+    CLONE("Clone"),
+    CODE_BLOCK("CodeBlock"),
+    CONVERSION("Data Conversion"),
+    END("End"),
+    EXPRESSION("Expression"),
+    FOREACH("ForEach"),
+    LIBRARY_CALL("Library Call"),
+    NETWORK_CALL("Network Call"),
+    NEW_PAYLOAD("New Payload"),
+    SWITCH("Switch"),
+    TRANSFORM("Transform"),
+    START("Start"),
+    NETWORK_EVENT("Network\nEvent"),
+    ;
 
-    public LibraryCall(int id) {
-        super(id);
+    final String name;
+
+    TemplateKind(String name) {
+        this.name = name;
     }
-
-    @Override
-    public TemplateKind getKind() {
-        return TemplateKind.LIBRARY_CALL;
-    }
-
-    @Override
-    public String icon() {
-        return "🧩";
-    }
-
 }

@@ -18,7 +18,6 @@
 package io.github.hasithaa.diagram.integration;
 
 import io.github.hasithaa.diagram.flowchart.Edge;
-import io.github.hasithaa.diagram.integration.templates.Sequence;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,28 +30,6 @@ public abstract class AbstractCompositeOutOperation extends AbstractOperation im
 
     public AbstractCompositeOutOperation(int id) {
         super(id);
-    }
-
-    public List<Edge> getFlowchartEdges() {
-        if (flowchartEdges != null) {
-            return flowchartEdges;
-        }
-        final List<Edge> flowchartEdges = new ArrayList<>();
-        // Link the first operation of each sequence to the current operation
-        for (Sequence sequence : outgoingOperations) {
-            if (!sequence.getOperations().isEmpty()) {
-                flowchartEdges.add(
-                        new Edge(this.getFlowchartNode(), sequence.getOperations().get(0).getFlowchartNode(),
-                                 sequence.getLabel()));
-            } else {
-                // Implicit Edge.
-                flowchartEdges.add(new Edge(this.getFlowchartNode(), sequence.getTarget().getFlowchartNode(),
-                                            sequence.getLabel()));
-            }
-        }
-        flowchartEdges.addAll(super.getFlowchartEdges());
-        this.flowchartEdges = Collections.unmodifiableList(flowchartEdges);
-        return flowchartEdges;
     }
 
     @Override

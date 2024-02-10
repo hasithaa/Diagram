@@ -42,12 +42,10 @@ import io.ballerina.compiler.syntax.tree.NonTerminalNode;
 import io.ballerina.compiler.syntax.tree.RemoteMethodCallActionNode;
 import io.ballerina.compiler.syntax.tree.SyntaxKind;
 import io.ballerina.compiler.syntax.tree.VariableDeclarationNode;
-import io.github.hasithaa.diagram.flowchart.FlowChart;
 import io.github.hasithaa.diagram.integration.templates.End;
 import io.github.hasithaa.diagram.integration.templates.Expression;
 import io.github.hasithaa.diagram.integration.templates.LibraryCall;
 import io.github.hasithaa.diagram.integration.templates.NetworkCall;
-import io.github.hasithaa.diagram.integration.templates.Sequence;
 import io.github.hasithaa.diagram.integration.templates.Start;
 import io.github.hasithaa.diagram.integration.templates.Switch;
 import io.github.hasithaa.diagram.integration.templates.SwitchMerge;
@@ -63,7 +61,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class CodeVisitor extends NodeVisitor {
 
-    private final List<FlowChart> flowCharts = new ArrayList<>();
+    private final List<Diagram> diagrams = new ArrayList<>();
     private final SemanticModel semanticModel;
 
     // Data
@@ -72,49 +70,36 @@ public class CodeVisitor extends NodeVisitor {
     int count = 0;
     IOperation current = null; // TODO : Remove this
 
-
     public CodeVisitor(SemanticModel semanticModel) {
         this.semanticModel = semanticModel;
         base = new Sequence(null, null);
     }
 
-    private void genFlowChart(Sequence sb, FlowChart flowChart) {
-        for (Operation operation : sb.getOperations()) {
-            flowChart.add(operation.getFlowchartNode());
-            if (operation instanceof CompositeOutOperation) {
-                for (Sequence sequence : ((CompositeOutOperation) operation).outgoingSequence()) {
-                    genFlowChart(sequence, flowChart);
-                }
-            }
-            operation.getFlowchartEdges().forEach(flowChart::add);
-        }
-    }
 
-    private FlowChart newFlowchart(String name) {
-        base = new Sequence(null, null);
-        sequences = new Stack<>();
-        sequences.push(base);
-        count = 0;
-        FlowChart currentFlowChart = new FlowChart(name);
-        flowCharts.add(currentFlowChart);
-        return currentFlowChart;
-    }
-
-    public List<FlowChart> getFlowCharts() {
-        return Collections.unmodifiableList(flowCharts);
+    public List<Diagram> getDiagrams() {
+        return Collections.unmodifiableList(diagrams);
     }
 
 
     @Override
     public void visit(FunctionDefinitionNode node) {
-        FlowChart flowChart = newFlowchart(node.functionName().toString());
+        Diagram diagram = newDiagram(node.functionName().toString());
         super.visit(node);
-        genFlowChart(base, flowChart);
+        diagram.generatePaths();
+    }
+
+    private Diagram newDiagram(String name) {
+        base = new Sequence(null, null);
+        sequences = new Stack<>();
+        sequences.push(base);
+        count = 0;
+        Diagram diagram = new Diagram(name, base);
+        diagrams.add(diagram);
+        return diagram;
     }
 
     @Override
     public void visit(FunctionBodyBlockNode node) {
-        sequences.push(base);
         base.addOperation(new Start(count++));
         super.visit(node);
         base.addOperation(new End(count++));
@@ -122,7 +107,7 @@ public class CodeVisitor extends NodeVisitor {
 
     public void visit(ExpressionFunctionBodyNode node) {
         // Identify this as a data transformation
-        flowCharts.remove(flowCharts.size() - 1);
+        diagrams.remove(diagrams.size() - 1);
     }
 
     @Override
@@ -276,7 +261,7 @@ public class CodeVisitor extends NodeVisitor {
         if (str.length() > 15) {
             newStr = newStr.substring(0, 15) + "...";
         }
-        newStr = newStr.replace("\n", "").replace("\r", "").replace("\"", "&quot;").replace("'", "&apos;");
+        newStr = newStr.replace("\n", "").replace("\r", "").replace("\"", "").replace("'", "&apos;");
         return newStr;
     }
 

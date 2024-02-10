@@ -17,9 +17,8 @@
  */
 package io.github.hasithaa.diagram.integration.templates;
 
-import io.github.hasithaa.diagram.flowchart.NodeKind;
 import io.github.hasithaa.diagram.integration.AbstractCompositeInOperation;
-import io.github.hasithaa.diagram.integration.BBKind;
+import io.github.hasithaa.diagram.integration.TemplateKind;
 
 public class Aggregate extends AbstractCompositeInOperation {
 
@@ -28,13 +27,8 @@ public class Aggregate extends AbstractCompositeInOperation {
     }
 
     @Override
-    public NodeKind getFlowchartNodeKind() {
-        return NodeKind.MERGE;
-    }
-
-    @Override
-    public BBKind getKind() {
-        return BBKind.AGGREGATE;
+    public TemplateKind getKind() {
+        return TemplateKind.AGGREGATE;
     }
 
     @Override

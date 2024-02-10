@@ -4,9 +4,12 @@ import io.ballerina.compiler.api.SemanticModel;
 import io.ballerina.projects.ModuleId;
 import io.ballerina.projects.plugins.AnalysisTask;
 import io.ballerina.projects.plugins.CompilationAnalysisContext;
+import io.github.hasithaa.diagram.flowchart.FlowChart;
+import io.github.hasithaa.diagram.flowchart.FlowChartGenerator;
 import io.github.hasithaa.diagram.integration.CodeVisitor;
 
 import java.io.IOException;
+import java.util.List;
 
 public class CodeAnalyzer<T> implements AnalysisTask<CompilationAnalysisContext> {
 
@@ -25,9 +28,11 @@ public class CodeAnalyzer<T> implements AnalysisTask<CompilationAnalysisContext>
 
 
         try {
-            DiagramSerializer.serialize(codeVisitor.getFlowCharts(), ctx.currentPackage().project());
+            List<FlowChart> list = codeVisitor.getDiagrams().stream().map(FlowChartGenerator::generateFlowChart)
+                                              .toList();
+            DiagramSerializer.serialize(list, ctx.currentPackage().project());
         } catch (IOException e) {
-            throw new RuntimeException("Error occurred while generating the diagram for the function:");
+            throw new RuntimeException("Error occurred while generating the diagram for the function:", e);
         }
 
     }

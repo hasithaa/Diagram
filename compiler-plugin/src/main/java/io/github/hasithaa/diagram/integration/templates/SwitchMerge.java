@@ -17,10 +17,9 @@
  */
 package io.github.hasithaa.diagram.integration.templates;
 
-import io.github.hasithaa.diagram.flowchart.NodeKind;
 import io.github.hasithaa.diagram.integration.AbstractCompositeInOperation;
 import io.github.hasithaa.diagram.integration.AbstractOperation;
-import io.github.hasithaa.diagram.integration.BBKind;
+import io.github.hasithaa.diagram.integration.TemplateKind;
 import io.github.hasithaa.diagram.integration.UnEditable;
 
 public class SwitchMerge extends AbstractCompositeInOperation implements UnEditable {
@@ -30,13 +29,8 @@ public class SwitchMerge extends AbstractCompositeInOperation implements UnEdita
     }
 
     @Override
-    public NodeKind getFlowchartNodeKind() {
-        return NodeKind.CONNECTOR;
-    }
-
-    @Override
-    public BBKind getKind() {
-        return BBKind.SWITCH;
+    public TemplateKind getKind() {
+        return TemplateKind.SWITCH;
     }
 
     @Override

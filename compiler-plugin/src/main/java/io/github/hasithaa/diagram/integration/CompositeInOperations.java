@@ -17,8 +17,6 @@
  */
 package io.github.hasithaa.diagram.integration;
 
-import io.github.hasithaa.diagram.integration.templates.Sequence;
-
 import java.util.List;
 
 public interface CompositeInOperations {

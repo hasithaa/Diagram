@@ -17,9 +17,8 @@
  */
 package io.github.hasithaa.diagram.integration.templates;
 
-import io.github.hasithaa.diagram.flowchart.NodeKind;
 import io.github.hasithaa.diagram.integration.AbstractCompositeOutOperation;
-import io.github.hasithaa.diagram.integration.BBKind;
+import io.github.hasithaa.diagram.integration.TemplateKind;
 
 public class Switch extends AbstractCompositeOutOperation {
 
@@ -28,13 +27,8 @@ public class Switch extends AbstractCompositeOutOperation {
     }
 
     @Override
-    public NodeKind getFlowchartNodeKind() {
-        return NodeKind.PROCESS;
-    }
-
-    @Override
-    public BBKind getKind() {
-        return BBKind.SWITCH;
+    public TemplateKind getKind() {
+        return TemplateKind.SWITCH;
     }
 
     @Override
