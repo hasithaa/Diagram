@@ -39,4 +39,5 @@
 
 # Bugs
 
-- [ ] Escape " with &quot; in the description of the node.
+- [x] Escape " with &quot; in the description of the node.
+- [ ] Optimize switch merge logic for If-Else-If-Else statement.

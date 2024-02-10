@@ -29,18 +29,28 @@ import java.util.Map;
 
 public abstract class AbstractOperation implements Operation {
 
-    final private int id;
-    final private List<Map.Entry<String, String>> formData;
+    private final int id;
+    private final List<Map.Entry<String, String>> formData;
+    private final AbstractOperation parent;
     private String heading;
     private String comment;
     private AbstractOperation next, previous;
     private FlowchartComponent flowchartComponent = null;
     private List<Edge> flowchartEdges = null;
     private boolean failOnError = false;
+    private String nextNodeLabel;
+
 
     public AbstractOperation(int id) {
         this.id = id;
         formData = new ArrayList<>();
+        this.parent = null;
+    }
+
+    public AbstractOperation(int id, AbstractOperation parent) {
+        this.id = id;
+        formData = new ArrayList<>();
+        this.parent = parent;
     }
 
     @Override
@@ -157,6 +167,11 @@ public abstract class AbstractOperation implements Operation {
     @Override
     public List<Map.Entry<String, String>> getFormData() {
         return Collections.unmodifiableList(formData);
+    }
+
+    @Override
+    public AbstractOperation getParent() {
+        return parent;
     }
 
 }

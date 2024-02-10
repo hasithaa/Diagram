@@ -38,4 +38,6 @@ public interface Operation extends FlowChartNode {
     void setComment(String comment);
 
     void setFailOnError();
+
+    AbstractOperation getParent();
 }

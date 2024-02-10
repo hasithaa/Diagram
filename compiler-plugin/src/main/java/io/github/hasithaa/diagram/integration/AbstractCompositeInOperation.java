@@ -33,20 +33,30 @@ public abstract class AbstractCompositeInOperation extends AbstractOperation imp
         super(id);
     }
 
+    public AbstractCompositeInOperation(int id, AbstractOperation parent) {
+        super(id, parent);
+    }
+
     public List<Edge> getFlowchartEdges() {
         if (flowchartEdges != null) {
             return flowchartEdges;
         }
         final List<Edge> flowchartEdges = new ArrayList<>();
-        flowchartEdges.addAll(super.getFlowchartEdges());
         // Link the last operation of each sequence to the current operation
         for (Sequence sequence : incomingSequences) {
-            int count = sequence.getOperations().size();
-            if (count > 0) {
+            if (!sequence.getOperations().isEmpty()) {
+                int lastIndex = sequence.getOperations().size() - 1;
                 flowchartEdges.add(
-                        new Edge(sequence.getOperations().get(count - 1).getFlowchartNode(), this.getFlowchartNode()));
+                        new Edge(sequence.getOperations().get(lastIndex).getFlowchartNode(), this.getFlowchartNode(),
+                                 sequence.getLabel()));
+            } else {
+                // Implicit Edge.
+                flowchartEdges.add(
+                        new Edge(sequence.getSource().getFlowchartNode(), this.getFlowchartNode(),
+                                 sequence.getLabel()));
             }
         }
+        flowchartEdges.addAll(super.getFlowchartEdges());
         this.flowchartEdges = Collections.unmodifiableList(flowchartEdges);
         return flowchartEdges;
     }

@@ -18,7 +18,7 @@ public class CodeAnalyzer<T> implements AnalysisTask<CompilationAnalysisContext>
         }
         ModuleId currentModuleId = ctx.currentPackage().getDefaultModule().moduleId();
         SemanticModel semanticModel = ctx.compilation().getSemanticModel(currentModuleId);
-        CodeVisitor codeVisitor = new CodeVisitor(ctx, currentModuleId, semanticModel);
+        CodeVisitor codeVisitor = new CodeVisitor(semanticModel);
         ctx.currentPackage().getDefaultModule().documentIds().forEach(documentId -> {
             ctx.currentPackage().getDefaultModule().document(documentId).syntaxTree().rootNode().accept(codeVisitor);
         });

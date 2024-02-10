@@ -19,13 +19,14 @@ package io.github.hasithaa.diagram.integration.templates;
 
 import io.github.hasithaa.diagram.flowchart.NodeKind;
 import io.github.hasithaa.diagram.integration.AbstractCompositeInOperation;
+import io.github.hasithaa.diagram.integration.AbstractOperation;
 import io.github.hasithaa.diagram.integration.BBKind;
 import io.github.hasithaa.diagram.integration.UnEditable;
 
 public class SwitchMerge extends AbstractCompositeInOperation implements UnEditable {
 
-    public SwitchMerge(int id) {
-        super(id);
+    public SwitchMerge(int id, AbstractOperation parent) {
+        super(id, parent);
     }
 
     @Override

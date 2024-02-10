@@ -29,7 +29,7 @@ public class Switch extends AbstractCompositeOutOperation {
 
     @Override
     public NodeKind getFlowchartNodeKind() {
-        return NodeKind.DECISION;
+        return NodeKind.PROCESS;
     }
 
     @Override

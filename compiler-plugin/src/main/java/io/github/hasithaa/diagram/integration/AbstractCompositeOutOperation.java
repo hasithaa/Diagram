@@ -38,10 +38,19 @@ public abstract class AbstractCompositeOutOperation extends AbstractOperation im
             return flowchartEdges;
         }
         final List<Edge> flowchartEdges = new ArrayList<>();
-        flowchartEdges.addAll(super.getFlowchartEdges());
         // Link the first operation of each sequence to the current operation
-        outgoingOperations.forEach(sequence -> sequence.getOperations().stream().findFirst().ifPresent(
-                operation -> flowchartEdges.add(new Edge(this.getFlowchartNode(), operation.getFlowchartNode()))));
+        for (Sequence sequence : outgoingOperations) {
+            if (!sequence.getOperations().isEmpty()) {
+                flowchartEdges.add(
+                        new Edge(this.getFlowchartNode(), sequence.getOperations().get(0).getFlowchartNode(),
+                                 sequence.getLabel()));
+            } else {
+                // Implicit Edge.
+                flowchartEdges.add(new Edge(this.getFlowchartNode(), sequence.getTarget().getFlowchartNode(),
+                                            sequence.getLabel()));
+            }
+        }
+        flowchartEdges.addAll(super.getFlowchartEdges());
         this.flowchartEdges = Collections.unmodifiableList(flowchartEdges);
         return flowchartEdges;
     }

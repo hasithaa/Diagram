@@ -24,7 +24,6 @@ import io.ballerina.compiler.api.symbols.ParameterSymbol;
 import io.ballerina.compiler.api.symbols.Symbol;
 import io.ballerina.compiler.api.symbols.SymbolKind;
 import io.ballerina.compiler.syntax.tree.AssignmentStatementNode;
-import io.ballerina.compiler.syntax.tree.BlockStatementNode;
 import io.ballerina.compiler.syntax.tree.CheckExpressionNode;
 import io.ballerina.compiler.syntax.tree.ChildNodeEntry;
 import io.ballerina.compiler.syntax.tree.ClientResourceAccessActionNode;
@@ -43,8 +42,6 @@ import io.ballerina.compiler.syntax.tree.NonTerminalNode;
 import io.ballerina.compiler.syntax.tree.RemoteMethodCallActionNode;
 import io.ballerina.compiler.syntax.tree.SyntaxKind;
 import io.ballerina.compiler.syntax.tree.VariableDeclarationNode;
-import io.ballerina.projects.ModuleId;
-import io.ballerina.projects.plugins.CompilationAnalysisContext;
 import io.github.hasithaa.diagram.flowchart.FlowChart;
 import io.github.hasithaa.diagram.integration.templates.End;
 import io.github.hasithaa.diagram.integration.templates.Expression;
@@ -66,24 +63,19 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class CodeVisitor extends NodeVisitor {
 
-    final List<FlowChart> flowCharts = new ArrayList<>();
-    final CompilationAnalysisContext ctx;
-    final ModuleId moduleId;
-    final SemanticModel semanticModel;
+    private final List<FlowChart> flowCharts = new ArrayList<>();
+    private final SemanticModel semanticModel;
 
     // Data
     Sequence base;
     Stack<Sequence> sequences;
-    Stack<Operation> composite;
     int count = 0;
-    IOperation current = null;
+    IOperation current = null; // TODO : Remove this
 
 
-    public CodeVisitor(CompilationAnalysisContext ctx, ModuleId moduleId, SemanticModel semanticModel) {
-        this.ctx = ctx;
-        this.moduleId = moduleId;
+    public CodeVisitor(SemanticModel semanticModel) {
         this.semanticModel = semanticModel;
-        base = new Sequence();
+        base = new Sequence(null, null);
     }
 
     private void genFlowChart(Sequence sb, FlowChart flowChart) {
@@ -99,12 +91,13 @@ public class CodeVisitor extends NodeVisitor {
     }
 
     private FlowChart newFlowchart(String name) {
-        base = new Sequence();
+        base = new Sequence(null, null);
         sequences = new Stack<>();
         sequences.push(base);
-        composite = new Stack<>();
         count = 0;
-        return new FlowChart(name);
+        FlowChart currentFlowChart = new FlowChart(name);
+        flowCharts.add(currentFlowChart);
+        return currentFlowChart;
     }
 
     public List<FlowChart> getFlowCharts() {
@@ -115,7 +108,6 @@ public class CodeVisitor extends NodeVisitor {
     @Override
     public void visit(FunctionDefinitionNode node) {
         FlowChart flowChart = newFlowchart(node.functionName().toString());
-        flowCharts.add(flowChart);
         super.visit(node);
         genFlowChart(base, flowChart);
     }
@@ -135,8 +127,6 @@ public class CodeVisitor extends NodeVisitor {
 
     @Override
     public void visit(NamedWorkerDeclarationNode node) {
-        Sequence sequence = new Sequence();
-        sequences.push(sequence);
         super.visit(node);
     }
 
@@ -144,32 +134,33 @@ public class CodeVisitor extends NodeVisitor {
 
     @Override
     public void visit(IfElseStatementNode node) {
-        Switch aSwitch = new Switch(count++);
-        composite.push(aSwitch);
-        sequences.peek().addOperation(aSwitch);
-        super.visit(node);
-        SwitchMerge switchMerge = new SwitchMerge(count++);
-        composite.pop();
-        aSwitch.outgoingSequence().forEach(switchMerge::addIncomingSequence);
-        if (aSwitch.outgoingSequence().size() == 1) {
-            // This will be a simple if case
-            sequences.peek().addOperation(switchMerge);
-        } else {
-            sequences.peek().addCompositeOperationEnd(switchMerge);
-        }
-    }
 
-    @Override
-    public void visit(BlockStatementNode node) {
-        if (!(composite.peek() instanceof AbstractCompositeOutOperation)) {
-            throw new IllegalStateException("BlockStatementNode can only be a child of AbstractCompositeOutOperation");
-        }
-        AbstractCompositeOutOperation outOperation = (AbstractCompositeOutOperation) composite.peek();
-        Sequence sequence = new Sequence();
-        outOperation.addOutgoingSequence(sequence);
-        sequences.push(sequence);
-        super.visit(node);
+        Switch aSwitch = new Switch(count++);
+        SwitchMerge switchMerge = new SwitchMerge(count++, aSwitch);
+        sequences.peek().addOperation(aSwitch);
+        sequences.peek().addOperation(switchMerge);
+
+        aSwitch.setHeading("If");
+        aSwitch.addFormData("Condition", sanitizeExpression(node.condition().toSourceCode()));
+        node.condition().accept(this);
+
+        Sequence thenSequence = new Sequence(aSwitch, switchMerge);
+        thenSequence.setLabel("Then");
+        aSwitch.addOutgoingSequence(thenSequence);
+        sequences.push(thenSequence);
+        node.ifBody().accept(this);
         sequences.pop();
+
+        Sequence elseSequence = new Sequence(aSwitch, switchMerge);
+        elseSequence.setLabel("Else");
+        aSwitch.addOutgoingSequence(elseSequence);
+        sequences.push(elseSequence);
+        if (node.elseBody().isPresent()) {
+            node.elseBody().get().accept(this);
+        }
+        sequences.pop();
+
+        aSwitch.outgoingSequence().forEach(switchMerge::addIncomingSequence);
     }
 
     @Override

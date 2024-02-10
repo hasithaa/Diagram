@@ -21,26 +21,46 @@ import java.util.Objects;
 
 public class Edge implements FlowchartComponent {
 
-    protected final FlowchartComponent source;
-    protected final FlowchartComponent target;
+    private final FlowchartComponent source;
+    private final FlowchartComponent target;
+    private final String label;
 
     public Edge(FlowchartComponent source, FlowchartComponent target) {
         this.source = source;
         this.target = target;
+        this.label = null;
+        if (source == target) {
+            throw new IllegalArgumentException("Source and target cannot be the same");
+        }
+    }
+
+    public Edge(FlowchartComponent source, FlowchartComponent target, String label) {
+        this.source = source;
+        this.target = target;
+        this.label = label;
+        if (source == target) {
+            throw new IllegalArgumentException("Source and target cannot be the same");
+        }
     }
 
     @Override
     public String generateMermaidSyntax(int index) {
         final String ws = "  ".repeat(index);
         if (source instanceof IdentifiableComponent && target instanceof IdentifiableComponent) {
-            return ws + ((IdentifiableComponent) source).getIdentifier() + " --> " +
-                    ((IdentifiableComponent) target).getIdentifier() + "\n";
+            StringBuilder sb = new StringBuilder();
+            sb.append(ws).append(((IdentifiableComponent) source).getIdentifier()).append(" --> ");
+            if (label != null) {
+                sb.append("|").append(label).append("| ");
+            }
+            sb.append(((IdentifiableComponent) target).getIdentifier()).append("\n");
+            return sb.toString();
         }
         return "";
     }
 
     @Override
     public boolean equals(Object o) {
+        // Let's ignore the label when comparing edges for now.
         if (this == o) {
             return true;
         }

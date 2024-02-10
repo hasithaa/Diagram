@@ -27,23 +27,46 @@ import java.util.List;
 public class Sequence implements Scope {
 
     private final List<Operation> operations = new ArrayList<>();
+    private final Operation source, target;
+    String label = null;
+
+    public Sequence(Operation source, Operation target) {
+        this.source = source;
+        this.target = target;
+    }
 
     public void addOperation(Operation operation) {
         if (operations.isEmpty()) {
+            operation.setPreviousOperation(source);
             this.operations.add(operation);
         } else {
             Operation lastOperation = operations.get(operations.size() - 1);
-            lastOperation.setNextOperation(operation);
-            operation.setPreviousOperation(lastOperation);
+            if (lastOperation == operation.getParent()) {
+                lastOperation.setNextOperation(null);
+                operation.setPreviousOperation(null);
+            } else {
+                lastOperation.setNextOperation(operation);
+                operation.setPreviousOperation(lastOperation);
+            }
+            operation.setNextOperation(target);
             this.operations.add(operation);
         }
     }
 
-    public void addCompositeOperationEnd(Operation operation) {
-        if (operations.isEmpty()) {
-            throw new IllegalStateException("No operations found before composite operation end");
-        }
-        this.operations.add(operation);
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public Operation getSource() {
+        return source;
+    }
+
+    public Operation getTarget() {
+        return target;
     }
 
     public List<Operation> getOperations() {
