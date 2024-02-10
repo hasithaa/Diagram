@@ -17,29 +17,33 @@
  */
 package io.github.hasithaa.diagram.integration.templates;
 
-import io.github.hasithaa.diagram.integration.AbstractCompositeInOperation;
 import io.github.hasithaa.diagram.integration.AbstractOperation;
 import io.github.hasithaa.diagram.integration.TemplateKind;
-import io.github.hasithaa.diagram.integration.UnEditable;
 
-public class SwitchMerge extends AbstractCompositeInOperation implements UnEditable {
+public class Hidden extends AbstractOperation {
 
-    public SwitchMerge(int id, AbstractOperation parent) {
-        super(id, parent);
+    private final String icon;
+
+    public Hidden(int id, String icon) {
+        super(id);
+        this.icon = icon;
     }
 
     @Override
     public TemplateKind getKind() {
-        return TemplateKind.SWITCH_MERGE;
+        return TemplateKind.HIDDEN;
     }
 
     @Override
     public String icon() {
-        return "⚪";
+        if (icon != null) {
+            return icon;
+        }
+        return super.icon();
     }
 
     @Override
     public String getFlowChartDisplayContent() {
-        return icon();
+        return icon() + " " + getHeading();
     }
 }

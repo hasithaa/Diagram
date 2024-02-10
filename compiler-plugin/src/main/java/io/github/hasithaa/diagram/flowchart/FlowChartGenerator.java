@@ -45,8 +45,15 @@ public interface FlowChartGenerator {
             return;
         }
         for (Operation operation : sequence.getOperations()) {
-            BasicNode basicNode = new BasicNode(operation.getNodeId(), operation.getFlowChartDisplayContent(),
-                                                NodeKind.PROCESS);
+
+            NodeKind process;
+            switch (operation.getKind()) {
+                case SWITCH_MERGE, HIDDEN -> process = NodeKind.CONNECTOR;
+                case START -> process = NodeKind.START;
+                case END -> process = NodeKind.TERMINAL;
+                default -> process = NodeKind.PROCESS;
+            }
+            BasicNode basicNode = new BasicNode(operation.getNodeId(), operation.getFlowChartDisplayContent(), process);
             nodeMap.put(operation, basicNode);
             flowChart.add(basicNode);
             if (operation instanceof AbstractCompositeOutOperation outOperation) {

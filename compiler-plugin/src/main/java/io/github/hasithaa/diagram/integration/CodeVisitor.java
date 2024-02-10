@@ -23,11 +23,13 @@ import io.ballerina.compiler.api.symbols.ModuleSymbol;
 import io.ballerina.compiler.api.symbols.ParameterSymbol;
 import io.ballerina.compiler.api.symbols.Symbol;
 import io.ballerina.compiler.api.symbols.SymbolKind;
+import io.ballerina.compiler.api.symbols.VariableSymbol;
 import io.ballerina.compiler.syntax.tree.AssignmentStatementNode;
 import io.ballerina.compiler.syntax.tree.CheckExpressionNode;
 import io.ballerina.compiler.syntax.tree.ChildNodeEntry;
 import io.ballerina.compiler.syntax.tree.ClientResourceAccessActionNode;
 import io.ballerina.compiler.syntax.tree.ExpressionFunctionBodyNode;
+import io.ballerina.compiler.syntax.tree.ExpressionNode;
 import io.ballerina.compiler.syntax.tree.ExpressionStatementNode;
 import io.ballerina.compiler.syntax.tree.FunctionBodyBlockNode;
 import io.ballerina.compiler.syntax.tree.FunctionCallExpressionNode;
@@ -44,6 +46,7 @@ import io.ballerina.compiler.syntax.tree.SyntaxKind;
 import io.ballerina.compiler.syntax.tree.VariableDeclarationNode;
 import io.github.hasithaa.diagram.integration.templates.End;
 import io.github.hasithaa.diagram.integration.templates.Expression;
+import io.github.hasithaa.diagram.integration.templates.Hidden;
 import io.github.hasithaa.diagram.integration.templates.LibraryCall;
 import io.github.hasithaa.diagram.integration.templates.NetworkCall;
 import io.github.hasithaa.diagram.integration.templates.Start;
@@ -68,7 +71,7 @@ public class CodeVisitor extends NodeVisitor {
     Sequence base;
     Stack<Sequence> sequences;
     int count = 0;
-    IOperation current = null; // TODO : Remove this
+    Stack<IOperation> iOperations; // TODO : Remove this
 
     public CodeVisitor(SemanticModel semanticModel) {
         this.semanticModel = semanticModel;
@@ -91,6 +94,7 @@ public class CodeVisitor extends NodeVisitor {
     private Diagram newDiagram(String name) {
         base = new Sequence(null, null);
         sequences = new Stack<>();
+        iOperations = new Stack<>();
         sequences.push(base);
         count = 0;
         Diagram diagram = new Diagram(name, base);
@@ -119,7 +123,7 @@ public class CodeVisitor extends NodeVisitor {
 
     @Override
     public void visit(IfElseStatementNode node) {
-
+        iOperations.push(new IOperation(node));
         Switch aSwitch = new Switch(count++);
         SwitchMerge switchMerge = new SwitchMerge(count++, aSwitch);
         sequences.peek().addOperation(aSwitch);
@@ -146,43 +150,64 @@ public class CodeVisitor extends NodeVisitor {
         sequences.pop();
 
         aSwitch.outgoingSequence().forEach(switchMerge::addIncomingSequence);
+        iOperations.pop();
     }
 
     @Override
     public void visit(ExpressionStatementNode node) {
-        current = new IOperation(node);
+        iOperations.push(new IOperation(node));
         super.visit(node);
-        handleExpressionCase();
+        handleDefaultExpression(node.expression());
+        iOperations.pop();
     }
 
     @Override
     public void visit(AssignmentStatementNode node) {
-        current = new IOperation(node);
+        iOperations.push(new IOperation(node));
         super.visit(node);
-        // TODO: Capture Variable
-        handleExpressionCase();
+        handleDefaultExpression(node.expression());
+        semanticModel.symbol(node.varRef()).ifPresent(symbol -> {
+            if (symbol.kind() == SymbolKind.VARIABLE) {
+                VariableSymbol variableSymbol = (VariableSymbol) symbol;
+                Variable variable = new Variable(
+                        sanitizeExpression(variableSymbol.getName().orElse("Unknown Variable")), false,
+                        sanitizeExpression(variableSymbol.typeDescriptor().signature()));
+                iOperations.peek().operation.addVariable(variable);
+            }
+        });
+        iOperations.pop();
     }
 
     @Override
     public void visit(VariableDeclarationNode node) {
-        current = new IOperation(node);
+        iOperations.push(new IOperation(node));
         super.visit(node);
-        // TODO: Capture Variable
-        handleExpressionCase();
+        handleDefaultExpression(node.initializer().orElse(null));
+        semanticModel.symbol(node.typedBindingPattern().bindingPattern()).ifPresent(symbol -> {
+            if (symbol.kind() == SymbolKind.VARIABLE) {
+                VariableSymbol variableSymbol = (VariableSymbol) symbol;
+                Variable variable = new Variable(
+                        sanitizeExpression(variableSymbol.getName().orElse("Unknown Variable")), true,
+                        sanitizeExpression(variableSymbol.typeDescriptor().signature()));
+                iOperations.peek().operation.addVariable(variable);
+            }
+        });
+        iOperations.pop();
     }
 
     // Expressions
 
     @Override
     public void visit(CheckExpressionNode node) {
-        current.checked = true;
+        if (!iOperations.empty()) {
+            iOperations.peek().checked = true;
+        }
         super.visit(node);
     }
 
     @Override
     public void visit(MethodCallExpressionNode node) {
         if (handleExternalLibraryCall(node)) {
-            current.done = true;
         }
         // Don't do anything further
     }
@@ -190,9 +215,9 @@ public class CodeVisitor extends NodeVisitor {
     @Override
     public void visit(FunctionCallExpressionNode node) {
         if (handleExternalLibraryCall(node)) {
-            current.done = true;
         }
-        // Don't do anything further
+        // Local function call. So CodeBlock.
+
     }
 
     @Override
@@ -209,6 +234,7 @@ public class CodeVisitor extends NodeVisitor {
 
     private boolean handleExternalLibraryCall(Node node) {
         Optional<Symbol> symbol = semanticModel.symbol(node);
+        // TODO: Following logic is demonstration purpose only. This should be improved and completed.
         if (symbol.isPresent()) {
             Symbol funcSymbol = symbol.get();
             if (funcSymbol.getModule().isPresent()) {
@@ -219,7 +245,6 @@ public class CodeVisitor extends NodeVisitor {
                 libraryCall.setHeading(moduleName + ":" + functionName);
                 libraryCall.setComment(node.lineRange().fileName() + ":" + node.lineRange().startLine());
                 if (funcSymbol.kind() == SymbolKind.FUNCTION) {
-                    // Following logic is demonstration purpose only. This should be improved and completed.
                     FunctionSymbol functionSymbol = (FunctionSymbol) funcSymbol;
                     final List<String> params = new ArrayList<>();
                     functionSymbol.typeDescriptor().params().ifPresent(parameterSymbols -> {
@@ -248,10 +273,18 @@ public class CodeVisitor extends NodeVisitor {
                             });
                         }
                     }
+                    if (iOperations.peek().checked) {
+                        libraryCall.setFailOnError();
+                    }
+                    functionSymbol.typeDescriptor().returnTypeDescriptor().ifPresent(returnType -> {
+                        libraryCall.addFormData("Return", sanitizeExpression(returnType.signature()));
+                    });
                 }
                 sequences.peek().addOperation(libraryCall);
+                iOperations.peek().done(libraryCall);
                 return true;
             }
+            // TODO: What if local method call ?
         }
         return false;
     }
@@ -273,30 +306,51 @@ public class CodeVisitor extends NodeVisitor {
             NetworkCall networkCall = new NetworkCall(count++);
             networkCall.setHeading(moduleName + " " + symbol.get().getName().get());
             sequences.peek().addOperation(networkCall);
-            current.done = true;
+            iOperations.peek().done(networkCall);
         }
     }
 
-    private void handleExpressionCase() {
-        if (current == null || current.done) {
+    private void handleDefaultExpression(ExpressionNode rhs) {
+        if (iOperations.empty() || iOperations.peek().isDone()) {
             return;
         }
 
+        if (rhs == null) {
+            Hidden hidden = new Hidden(count++, "🆕");
+            sequences.peek().addOperation(hidden);
+            hidden.setHeading("Var");
+            iOperations.peek().done(hidden);
+            return;
+        }
         Expression expression = new Expression(count++);
-        if (current.checked) {
+        expression.setHeading("Expression");
+        expression.addFormData("Expression", sanitizeExpression(rhs.toSourceCode()));
+        if (iOperations.peek().checked) {
             expression.setFailOnError();
         }
         sequences.peek().addOperation(expression);
+        iOperations.peek().done(expression);
     }
 
     static final class IOperation {
 
         final Stack<Node> units = new Stack<>();
         boolean checked = false;
-        boolean done = false;
+        Operation operation;
+        private boolean isDone = false;
 
         IOperation(Node node) {
             units.push(node);
         }
+
+        void done(Operation operation) {
+            this.operation = operation;
+            isDone = true;
+        }
+
+        boolean isDone() {
+            return isDone;
+        }
+
     }
 }

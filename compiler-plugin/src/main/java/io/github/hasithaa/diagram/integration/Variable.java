@@ -17,29 +17,5 @@
  */
 package io.github.hasithaa.diagram.integration;
 
-public interface Operation extends FlowChartNode {
-
-    Operation nextOperation();
-
-    void setNextOperation(Operation nextOperation);
-
-    Operation previousOperation();
-
-    void setPreviousOperation(Operation previousOperation);
-
-    TemplateKind getKind();
-
-    String icon();
-
-    String getNodeId();
-
-    String getComment();
-
-    void setComment(String comment);
-
-    void setFailOnError();
-
-    AbstractOperation getParent();
-
-    void addVariable(Variable variable);
+public record Variable(String name, boolean newVar, String type) {
 }

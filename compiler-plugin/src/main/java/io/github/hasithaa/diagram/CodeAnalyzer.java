@@ -19,19 +19,23 @@ public class CodeAnalyzer<T> implements AnalysisTask<CompilationAnalysisContext>
         if (ctx.compilation().diagnosticResult().hasErrors()) {
             return;
         }
-        ModuleId currentModuleId = ctx.currentPackage().getDefaultModule().moduleId();
-        SemanticModel semanticModel = ctx.compilation().getSemanticModel(currentModuleId);
-        CodeVisitor codeVisitor = new CodeVisitor(semanticModel);
-        ctx.currentPackage().getDefaultModule().documentIds().forEach(documentId -> {
-            ctx.currentPackage().getDefaultModule().document(documentId).syntaxTree().rootNode().accept(codeVisitor);
-        });
-
-
         try {
-            List<FlowChart> list = codeVisitor.getDiagrams().stream().map(FlowChartGenerator::generateFlowChart)
-                                              .toList();
-            DiagramSerializer.serialize(list, ctx.currentPackage().project());
-        } catch (IOException e) {
+            ModuleId currentModuleId = ctx.currentPackage().getDefaultModule().moduleId();
+            SemanticModel semanticModel = ctx.compilation().getSemanticModel(currentModuleId);
+            CodeVisitor codeVisitor = new CodeVisitor(semanticModel);
+            ctx.currentPackage().getDefaultModule().documentIds().forEach(documentId -> {
+                ctx.currentPackage().getDefaultModule().document(documentId).syntaxTree().rootNode().accept(
+                        codeVisitor);
+            });
+
+            try {
+                List<FlowChart> list = codeVisitor.getDiagrams().stream().map(FlowChartGenerator::generateFlowChart)
+                                                  .toList();
+                DiagramSerializer.serialize(list, ctx.currentPackage().project());
+            } catch (IOException e) {
+                throw new RuntimeException("Error occurred while generating the diagram for the function:", e);
+            }
+        } catch (Exception e) {
             throw new RuntimeException("Error occurred while generating the diagram for the function:", e);
         }
 

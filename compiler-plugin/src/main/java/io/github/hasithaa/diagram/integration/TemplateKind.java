@@ -33,11 +33,13 @@ public enum TemplateKind {
     TRANSFORM("Transform"),
     START("Start"),
     NETWORK_EVENT("Network\nEvent"),
+    SWITCH_MERGE("Switch Merge"),
+    HIDDEN("Hidden"),
     ;
 
-    final String name;
+    final String longName;
 
-    TemplateKind(String name) {
-        this.name = name;
+    TemplateKind(String longName) {
+        this.longName = longName;
     }
 }

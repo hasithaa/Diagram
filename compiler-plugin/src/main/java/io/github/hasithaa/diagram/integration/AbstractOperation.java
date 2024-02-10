@@ -32,8 +32,7 @@ public abstract class AbstractOperation implements Operation {
     private String comment;
     private AbstractOperation next, previous;
     private boolean failOnError = false;
-    private String nextNodeLabel;
-
+    private List<Variable> variables = null;
 
     public AbstractOperation(int id) {
         this.id = id;
@@ -84,7 +83,7 @@ public abstract class AbstractOperation implements Operation {
 
     @Override
     public String getNodeId() {
-        return "Node" + id;
+        return getKind().name() + id;
     }
 
     @Override
@@ -105,7 +104,18 @@ public abstract class AbstractOperation implements Operation {
             displayDescription.append("</table>");
         }
         if (failOnError) {
-            displayDescription.append("⚠");
+            displayDescription.append("⚠\uFE0F Fail on Error\n");
+        }
+        if (variables != null) {
+            displayDescription.append("<strong>Variables:</strong>\n");
+            displayDescription.append("<table>");
+            for (Variable variable : variables) {
+                displayDescription.append("<tr><td>");
+                displayDescription.append(variable.type()).append("</td><td>");
+                displayDescription.append(variable.name()).append("</td><td>");
+                displayDescription.append(variable.newVar() ? "🆕" : "🔄").append("</td></tr>");
+            }
+            displayDescription.append("</table>");
         }
         return displayDescription.toString();
     }
@@ -140,4 +150,11 @@ public abstract class AbstractOperation implements Operation {
         return parent;
     }
 
+    @Override
+    public void addVariable(Variable variable) {
+        if (variables == null) {
+            variables = new ArrayList<>();
+        }
+        variables.add(variable);
+    }
 }
