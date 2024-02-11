@@ -32,4 +32,5 @@ public interface FlowChartNode {
 
     String getFlowChartDisplayContent();
 
+    String getSimpleFlowChartDisplayContent();
 }

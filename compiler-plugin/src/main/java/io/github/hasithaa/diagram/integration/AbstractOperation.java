@@ -87,6 +87,20 @@ public abstract class AbstractOperation implements Operation {
     }
 
     @Override
+    public String getSimpleFlowChartDisplayContent() {
+        StringBuilder displayDescription = new StringBuilder();
+        if (heading == null) {
+            displayDescription.append(icon());
+        } else {
+            displayDescription.append(icon()).append(" ").append(heading.replace("\"", "&quot;"));
+        }
+        if (failOnError) {
+            displayDescription.append("<p>⚠\uFE0F Fail on Error</p>");
+        }
+        return displayDescription.toString();
+    }
+
+    @Override
     public String getFlowChartDisplayContent() {
         StringBuilder displayDescription = new StringBuilder();
         if (heading == null) {

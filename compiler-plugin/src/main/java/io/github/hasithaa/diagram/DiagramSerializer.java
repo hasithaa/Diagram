@@ -19,6 +19,7 @@ package io.github.hasithaa.diagram;
 
 import io.ballerina.projects.Project;
 import io.ballerina.projects.util.ProjectPaths;
+import io.github.hasithaa.diagram.CodeAnalyzer.DiagramFile;
 import io.github.hasithaa.diagram.flowchart.FlowChart;
 
 import java.io.IOException;
@@ -29,26 +30,29 @@ import java.util.List;
 
 public interface DiagramSerializer {
 
-    static void serialize(List<FlowChart> flowCharts, Project project) throws IOException {
+    static void serialize(List<DiagramFile> diagrams, Project project) throws IOException {
         Path packageRootPath = ProjectPaths.packageRoot(project.sourceRoot());
         Path diagramDirectory = packageRootPath.resolve("diagrams");
         if (!Files.exists(diagramDirectory)) {
             Files.createDirectory(diagramDirectory);
         }
-        for (FlowChart flowChart : flowCharts) {
-            Path diagramPath = diagramDirectory.resolve(flowChart.getName() + ".md");
+        for (DiagramFile diagram : diagrams) {
+            Path diagramPath = diagramDirectory.resolve(diagram.name() + ".md");
             if (!Files.exists(diagramPath)) {
                 Files.createFile(diagramPath);
             }
-            Files.writeString(diagramPath, getFlowChartDoc(flowChart), StandardOpenOption.TRUNCATE_EXISTING);
+            StringBuilder sb = new StringBuilder();
+            sb.append("# ").append(diagram.name()).append("\n\n");
+            diagram.list().forEach(fc -> sb.append(getFlowChartDoc(fc)));
+            Files.writeString(diagramPath, sb.toString(), StandardOpenOption.TRUNCATE_EXISTING);
         }
+
     }
 
     static String getFlowChartDoc(FlowChart flowChart) {
-        String sb = "# " + flowChart.getName() + "\n\n" +
-                "```mermaid\n" +
+        String sb = "\n## Diagram\n\n```mermaid\n" +
                 flowChart.generateMermaidSyntax() +
-                "```\n";
+                "```\n---\n";
         return sb;
     }
 }

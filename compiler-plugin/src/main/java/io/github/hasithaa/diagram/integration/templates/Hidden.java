@@ -46,4 +46,8 @@ public class Hidden extends AbstractOperation {
     public String getFlowChartDisplayContent() {
         return icon() + " " + getHeading();
     }
+
+    public String getSimpleFlowChartDisplayContent() {
+        return icon() + " " + getHeading();
+    }
 }

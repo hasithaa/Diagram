@@ -42,4 +42,8 @@ public class SwitchMerge extends AbstractCompositeInOperation implements UnEdita
     public String getFlowChartDisplayContent() {
         return icon();
     }
+
+    public String getSimpleFlowChartDisplayContent() {
+        return icon();
+    }
 }

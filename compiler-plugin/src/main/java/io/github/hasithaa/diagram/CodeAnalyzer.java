@@ -33,18 +33,22 @@ public class CodeAnalyzer<T> implements AnalysisTask<CompilationAnalysisContext>
 
             try {
                 List<Sequence> epSequences = codeVisitor.getEp();
-                List<FlowChart> list = new ArrayList<>();
+                List<DiagramFile> diagramFiles = new ArrayList<>();
                 for (Diagram diagram : codeVisitor.getDiagrams()) {
-                    FlowChart flowChart = FlowChartGenerator.generateFlowChart(diagram, epSequences);
-                    list.add(flowChart);
+
+                    DiagramFile diagramFile = new DiagramFile(diagram.getName(), List.of(
+                            FlowChartGenerator.generateFlowChart(diagram, epSequences, true),
+                            FlowChartGenerator.generateFlowChart(diagram, epSequences, false)));
+                    diagramFiles.add(diagramFile);
                 }
-                DiagramSerializer.serialize(list, ctx.currentPackage().project());
+                DiagramSerializer.serialize(diagramFiles, ctx.currentPackage().project());
             } catch (IOException e) {
                 throw new RuntimeException("Error occurred while generating the diagram for the function:", e);
             }
         } catch (Exception e) {
             throw new RuntimeException("Error occurred while generating the diagram for the function:", e);
         }
-
     }
+
+    record DiagramFile(String name, List<FlowChart> list) {}
 }
