@@ -103,11 +103,8 @@ public abstract class AbstractOperation implements Operation {
             }
             displayDescription.append("</table>");
         }
-        if (failOnError) {
-            displayDescription.append("⚠\uFE0F Fail on Error\n");
-        }
         if (variables != null) {
-            displayDescription.append("<strong>Variables:</strong>\n");
+            displayDescription.append("<strong>Variables:</strong>");
             displayDescription.append("<table>");
             for (Variable variable : variables) {
                 displayDescription.append("<tr><td>");
@@ -116,6 +113,9 @@ public abstract class AbstractOperation implements Operation {
                 displayDescription.append(variable.newVar() ? "🆕" : "🔄").append("</td></tr>");
             }
             displayDescription.append("</table>");
+        }
+        if (failOnError) {
+            displayDescription.append("<p>⚠\uFE0F Fail on Error</p>");
         }
         return displayDescription.toString();
     }

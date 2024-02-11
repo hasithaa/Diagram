@@ -21,7 +21,8 @@ public class DPath {
 
     public Operation source, target;
     public String label = null;
-    public boolean hidden = false;
+    public PathType pathType = PathType.SOLID;
+    public boolean arrowHead = true;
 
     public DPath(Operation source, Operation target) {
         this.source = source;
@@ -33,4 +34,24 @@ public class DPath {
         this.target = target;
         this.label = label;
     }
+
+    public DPath(Operation source, Operation target, String label, PathType pathType) {
+        this.source = source;
+        this.target = target;
+        this.label = label;
+        this.pathType = pathType;
+    }
+
+    public DPath(Operation source, Operation target, String label, PathType pathType, boolean arrowHead) {
+        this.source = source;
+        this.target = target;
+        this.label = label;
+        this.pathType = pathType;
+        this.arrowHead = arrowHead;
+    }
+
+    public enum PathType {
+        SOLID, DOTTED, STRONG, HIDDEN
+    }
+
 }

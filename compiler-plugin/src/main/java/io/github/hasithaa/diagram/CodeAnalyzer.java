@@ -7,8 +7,11 @@ import io.ballerina.projects.plugins.CompilationAnalysisContext;
 import io.github.hasithaa.diagram.flowchart.FlowChart;
 import io.github.hasithaa.diagram.flowchart.FlowChartGenerator;
 import io.github.hasithaa.diagram.integration.CodeVisitor;
+import io.github.hasithaa.diagram.integration.Diagram;
+import io.github.hasithaa.diagram.integration.Sequence;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CodeAnalyzer<T> implements AnalysisTask<CompilationAnalysisContext> {
@@ -29,8 +32,12 @@ public class CodeAnalyzer<T> implements AnalysisTask<CompilationAnalysisContext>
             });
 
             try {
-                List<FlowChart> list = codeVisitor.getDiagrams().stream().map(FlowChartGenerator::generateFlowChart)
-                                                  .toList();
+                List<Sequence> epSequences = codeVisitor.getEp();
+                List<FlowChart> list = new ArrayList<>();
+                for (Diagram diagram : codeVisitor.getDiagrams()) {
+                    FlowChart flowChart = FlowChartGenerator.generateFlowChart(diagram, epSequences);
+                    list.add(flowChart);
+                }
                 DiagramSerializer.serialize(list, ctx.currentPackage().project());
             } catch (IOException e) {
                 throw new RuntimeException("Error occurred while generating the diagram for the function:", e);

@@ -22,6 +22,8 @@ public class Edge implements FlowchartComponent {
     private final FlowchartComponent source;
     private final FlowchartComponent target;
     private final String label;
+    private String style = "SOLID";
+    private boolean arrowHead = true;
 
     public Edge(FlowchartComponent source, FlowchartComponent target) {
         this.source = source;
@@ -41,12 +43,17 @@ public class Edge implements FlowchartComponent {
         }
     }
 
+    public void setStyle(String style) {
+        this.style = style;
+    }
+
     @Override
     public String generateMermaidSyntax(int index) {
         final String ws = "  ".repeat(index);
         if (source instanceof IdentifiableComponent && target instanceof IdentifiableComponent) {
             StringBuilder sb = new StringBuilder();
-            sb.append(ws).append(((IdentifiableComponent) source).getIdentifier()).append(" --> ");
+            sb.append(ws).append(((IdentifiableComponent) source).getIdentifier()).append(" ").append(
+                    getConnectionStyle()).append(" ");
             if (label != null) {
                 sb.append("|").append(label).append("| ");
             }
@@ -54,5 +61,27 @@ public class Edge implements FlowchartComponent {
             return sb.toString();
         }
         return "";
+    }
+
+    private String getConnectionStyle() {
+        if (arrowHead) {
+            return switch (style) {
+                case "DOTTED" -> "-.->";
+                case "STRONG" -> "==>";
+                case "HIDDEN" -> "~~~";
+                default -> "-->";
+            };
+        } else {
+            return switch (style) {
+                case "DOTTED" -> "-.-";
+                case "STRONG" -> "===";
+                case "HIDDEN" -> "~~~";
+                default -> "---";
+            };
+        }
+    }
+
+    public void setArrowHead(boolean arrowHead) {
+        this.arrowHead = arrowHead;
     }
 }

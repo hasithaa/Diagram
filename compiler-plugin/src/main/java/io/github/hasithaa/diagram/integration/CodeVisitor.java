@@ -18,11 +18,15 @@
 package io.github.hasithaa.diagram.integration;
 
 import io.ballerina.compiler.api.SemanticModel;
+import io.ballerina.compiler.api.symbols.ClassSymbol;
 import io.ballerina.compiler.api.symbols.FunctionSymbol;
+import io.ballerina.compiler.api.symbols.MethodSymbol;
 import io.ballerina.compiler.api.symbols.ModuleSymbol;
 import io.ballerina.compiler.api.symbols.ParameterSymbol;
+import io.ballerina.compiler.api.symbols.Qualifier;
 import io.ballerina.compiler.api.symbols.Symbol;
 import io.ballerina.compiler.api.symbols.SymbolKind;
+import io.ballerina.compiler.api.symbols.TypeDescKind;
 import io.ballerina.compiler.api.symbols.VariableSymbol;
 import io.ballerina.compiler.syntax.tree.AssignmentStatementNode;
 import io.ballerina.compiler.syntax.tree.CheckExpressionNode;
@@ -36,6 +40,7 @@ import io.ballerina.compiler.syntax.tree.FunctionCallExpressionNode;
 import io.ballerina.compiler.syntax.tree.FunctionDefinitionNode;
 import io.ballerina.compiler.syntax.tree.IfElseStatementNode;
 import io.ballerina.compiler.syntax.tree.MethodCallExpressionNode;
+import io.ballerina.compiler.syntax.tree.ModuleVariableDeclarationNode;
 import io.ballerina.compiler.syntax.tree.NamedWorkerDeclarationNode;
 import io.ballerina.compiler.syntax.tree.Node;
 import io.ballerina.compiler.syntax.tree.NodeList;
@@ -46,6 +51,7 @@ import io.ballerina.compiler.syntax.tree.SyntaxKind;
 import io.ballerina.compiler.syntax.tree.VariableDeclarationNode;
 import io.github.hasithaa.diagram.integration.templates.End;
 import io.github.hasithaa.diagram.integration.templates.Expression;
+import io.github.hasithaa.diagram.integration.templates.External;
 import io.github.hasithaa.diagram.integration.templates.Hidden;
 import io.github.hasithaa.diagram.integration.templates.LibraryCall;
 import io.github.hasithaa.diagram.integration.templates.NetworkCall;
@@ -55,7 +61,9 @@ import io.github.hasithaa.diagram.integration.templates.SwitchMerge;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Stack;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -71,7 +79,8 @@ public class CodeVisitor extends NodeVisitor {
     Sequence base;
     Stack<Sequence> sequences;
     int count = 0;
-    Stack<IOperation> iOperations; // TODO : Remove this
+    Stack<IOperation> iOperations;
+    Map<VariableSymbol, Sequence> globalEp = new HashMap();
 
     public CodeVisitor(SemanticModel semanticModel) {
         this.semanticModel = semanticModel;
@@ -83,6 +92,9 @@ public class CodeVisitor extends NodeVisitor {
         return Collections.unmodifiableList(diagrams);
     }
 
+    public List<Sequence> getEp() {
+        return new ArrayList<>(globalEp.values());
+    }
 
     @Override
     public void visit(FunctionDefinitionNode node) {
@@ -117,6 +129,39 @@ public class CodeVisitor extends NodeVisitor {
     @Override
     public void visit(NamedWorkerDeclarationNode node) {
         super.visit(node);
+    }
+
+    @Override
+    public void visit(ModuleVariableDeclarationNode node) {
+
+        semanticModel.symbol(node.typedBindingPattern().bindingPattern()).ifPresent(symbol -> {
+            if (symbol.kind() == SymbolKind.VARIABLE) {
+                VariableSymbol variableSymbol = (VariableSymbol) symbol;
+                if (variableSymbol.typeDescriptor().typeKind() == TypeDescKind.TYPE_REFERENCE) {
+                    ModuleSymbol moduleSymbol = variableSymbol.typeDescriptor().getModule().get();
+
+                    Optional<Symbol> typeByName = semanticModel.types().getTypeByName(moduleSymbol.id().orgName(),
+                                                                                      moduleSymbol.id().moduleName(),
+                                                                                      moduleSymbol.id().version(),
+                                                                                      variableSymbol.typeDescriptor()
+                                                                                                    .getName().get());
+                    if (typeByName.isPresent()) {
+                        Symbol typeSymbol = typeByName.get();
+                        if (typeSymbol.kind() == SymbolKind.CLASS && ((ClassSymbol) typeSymbol).qualifiers().contains(
+                                Qualifier.CLIENT)) {
+                            External newEx = new External(count++);
+                            newEx.setHeading(
+                                    moduleSymbol.id().moduleName() + ":" + typeSymbol.getName().orElse("Unknown"));
+                            Sequence connector = new Sequence(null, null);
+                            connector.setLabel("📡 Connector");
+                            newEx.addFormData("Name", variableSymbol.getName().orElse("Unknown Variable"));
+                            globalEp.put(variableSymbol, connector);
+                            connector.addOperation(newEx);
+                        }
+                    }
+                }
+            }
+        });
     }
 
     // Statements
@@ -222,12 +267,12 @@ public class CodeVisitor extends NodeVisitor {
 
     @Override
     public void visit(RemoteMethodCallActionNode node) {
-        handleNetworkCall(node, node.methodName().toString());
+        handleNetworkCall(node, node.expression(), node.methodName().toString());
     }
 
     @Override
     public void visit(ClientResourceAccessActionNode node) {
-        handleNetworkCall(node, node.methodName().toString());
+        handleNetworkCall(node, node.expression(), node.methodName().toString());
     }
 
     // Utils
@@ -244,42 +289,14 @@ public class CodeVisitor extends NodeVisitor {
                 LibraryCall libraryCall = new LibraryCall(count++);
                 libraryCall.setHeading(moduleName + ":" + functionName);
                 libraryCall.setComment(node.lineRange().fileName() + ":" + node.lineRange().startLine());
-                if (funcSymbol.kind() == SymbolKind.FUNCTION) {
-                    FunctionSymbol functionSymbol = (FunctionSymbol) funcSymbol;
-                    final List<String> params = new ArrayList<>();
-                    functionSymbol.typeDescriptor().params().ifPresent(parameterSymbols -> {
-                        for (ParameterSymbol parameterSymbol : parameterSymbols) {
-                            params.add(parameterSymbol.getName().orElse("Param" + params.size()) + "(" +
-                                               sanitizeExpression(parameterSymbol.typeDescriptor().signature()) + ")");
-                        }
-                    });
-                    AtomicBoolean hasRestParam = new AtomicBoolean(false);
-                    functionSymbol.typeDescriptor().restParam().ifPresent(parameterSymbol -> {
-                        hasRestParam.set(true);
-                        params.add(parameterSymbol.getName().orElse("Rest") + "(" +
-                                           sanitizeExpression(parameterSymbol.typeDescriptor().signature()) + ")");
-                    });
-                    AtomicInteger paramCount = new AtomicInteger();
-                    for (ChildNodeEntry nodeEntry : ((NonTerminalNode) node).childEntries()) {
-                        if (nodeEntry.name().equals("arguments") && nodeEntry.node().isPresent()) {
-                            NodeList<Node> nodes = nodeEntry.nodeList();
-                            nodes.stream().filter(n -> n.kind() == SyntaxKind.POSITIONAL_ARG).forEach(n -> {
-                                libraryCall.addFormData(params.get(paramCount.get()),
-                                                        sanitizeExpression(n.toSourceCode()));
-                                // Hack to support rest params
-                                if (hasRestParam.get() && paramCount.get() < params.size() - 1) {
-                                    paramCount.getAndIncrement();
-                                }
-                            });
-                        }
-                    }
-                    if (iOperations.peek().checked) {
-                        libraryCall.setFailOnError();
-                    }
-                    functionSymbol.typeDescriptor().returnTypeDescriptor().ifPresent(returnType -> {
-                        libraryCall.addFormData("Return", sanitizeExpression(returnType.signature()));
-                    });
+
+                if (funcSymbol instanceof FunctionSymbol functionSymbol) {
+                    extractFunctionCallFormData((NonTerminalNode) node, libraryCall, functionSymbol);
                 }
+                if (iOperations.peek().checked) {
+                    libraryCall.setFailOnError();
+                }
+
                 sequences.peek().addOperation(libraryCall);
                 iOperations.peek().done(libraryCall);
                 return true;
@@ -298,16 +315,76 @@ public class CodeVisitor extends NodeVisitor {
         return newStr;
     }
 
-    private void handleNetworkCall(Node node, String methodName) {
+    private void handleNetworkCall(Node node, Node expr, String methodName) {
         Optional<Symbol> symbol = semanticModel.symbol(node);
         if (symbol.isPresent() && symbol.get().getModule().isPresent()) {
-            ModuleSymbol moduleSymbol = symbol.get().getModule().get();
-            String moduleName = moduleSymbol.id().moduleName();
-            NetworkCall networkCall = new NetworkCall(count++);
-            networkCall.setHeading(moduleName + " " + symbol.get().getName().get());
-            sequences.peek().addOperation(networkCall);
-            iOperations.peek().done(networkCall);
+            if (symbol.get() instanceof MethodSymbol methodSymbol) {
+                ModuleSymbol moduleSymbol = methodSymbol.getModule().get();
+                String moduleName = moduleSymbol.id().moduleName();
+                NetworkCall networkCall = new NetworkCall(count++);
+                sequences.peek().addOperation(networkCall);
+                iOperations.peek().done(networkCall);
+
+                networkCall.addFormData("Method", methodName);
+
+                extractFunctionCallFormData((NonTerminalNode) node, networkCall, methodSymbol);
+                if (iOperations.peek().checked) {
+                    networkCall.setFailOnError();
+                }
+                Diagram diagram = this.diagrams.get(diagrams.size() - 1);
+
+
+                semanticModel.symbol(expr).ifPresent(varSym -> {
+                    if (varSym instanceof VariableSymbol variableSymbol) {
+                        networkCall.setHeading(moduleName + " " + variableSymbol.typeDescriptor().getName()
+                                                                                .orElse("Unknown Variable"));
+                        if (globalEp.containsKey(variableSymbol)) {
+                            // What if no operations ? (ep visited later)
+                            Operation ep = globalEp.get(variableSymbol).getOperations().get(0);
+                            diagram.addPath(new DPath(networkCall, ep, "🔗", DPath.PathType.STRONG));
+                            diagram.addPath(new DPath(ep, networkCall, null, DPath.PathType.DOTTED, false));
+                        }
+                    }
+                });
+            }
         }
+    }
+
+    private void extractFunctionCallFormData(NonTerminalNode node, Operation operation, FunctionSymbol functionSymbol) {
+        final List<String> params = new ArrayList<>();
+        functionSymbol.typeDescriptor().params().ifPresent(parameterSymbols -> {
+            for (ParameterSymbol parameterSymbol : parameterSymbols) {
+                params.add(parameterSymbol.getName().orElse("Param" + params.size()) + "(" +
+                                   sanitizeExpression(parameterSymbol.typeDescriptor().signature()) + ")");
+            }
+        });
+        AtomicBoolean hasRestParam = new AtomicBoolean(false);
+        functionSymbol.typeDescriptor().restParam().ifPresent(parameterSymbol -> {
+            hasRestParam.set(true);
+            params.add(parameterSymbol.getName().orElse("Rest") + "(" +
+                               sanitizeExpression(parameterSymbol.typeDescriptor().signature()) + ")");
+        });
+        AtomicInteger paramCount = new AtomicInteger();
+        for (ChildNodeEntry nodeEntry : node.childEntries()) {
+            if (nodeEntry.name().equals("arguments") && nodeEntry.node().isPresent()) {
+                if (nodeEntry.isList()) {
+                    NodeList<Node> nodes = nodeEntry.nodeList();
+                    nodes.stream().filter(n -> n.kind() == SyntaxKind.POSITIONAL_ARG).forEach(n -> {
+                        operation.addFormData(params.get(paramCount.get()), sanitizeExpression(n.toSourceCode()));
+                        // Hack to support rest params
+                        if (hasRestParam.get() && paramCount.get() < params.size() - 1) {
+                            paramCount.getAndIncrement();
+                        }
+                    });
+                } else {
+                    Node param = nodeEntry.node().get();
+                    operation.addFormData(params.get(paramCount.get()), sanitizeExpression(param.toSourceCode()));
+                }
+            }
+        }
+        functionSymbol.typeDescriptor().returnTypeDescriptor().ifPresent(returnType -> {
+            operation.addFormData("Return", sanitizeExpression(returnType.signature()));
+        });
     }
 
     private void handleDefaultExpression(ExpressionNode rhs) {

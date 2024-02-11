@@ -18,6 +18,7 @@
 package io.github.hasithaa.diagram.integration;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Diagram {
@@ -70,8 +71,12 @@ public class Diagram {
         }
     }
 
+    public void addPath(DPath path) {
+        paths.add(path);
+    }
+
     public List<DPath> getPaths() {
-        return paths;
+        return Collections.unmodifiableList(paths);
     }
 
     public String getName() {

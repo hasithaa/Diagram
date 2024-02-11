@@ -25,19 +25,39 @@ import io.github.hasithaa.diagram.integration.Operation;
 import io.github.hasithaa.diagram.integration.Sequence;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public interface FlowChartGenerator {
 
-    static FlowChart generateFlowChart(Diagram diagram) {
+    static FlowChart generateFlowChart(Diagram diagram, List<Sequence> eps) {
 
         Map<Operation, BasicNode> nodeMap = new HashMap<>();
         FlowChart flowChart = new FlowChart(diagram.getName());
         generateNodes(diagram.getBaseSequence(), flowChart, nodeMap);
+        generateEPs(eps, flowChart, nodeMap);
         for (DPath dPath : diagram.getPaths()) {
-            flowChart.add(new Edge(nodeMap.get(dPath.source), nodeMap.get(dPath.target), dPath.label));
+            Edge component = new Edge(nodeMap.get(dPath.source), nodeMap.get(dPath.target), dPath.label);
+            component.setStyle(dPath.pathType.name());
+            component.setArrowHead(dPath.arrowHead);
+            flowChart.add(component);
         }
         return flowChart;
+    }
+
+    static void generateEPs(List<Sequence> eps, FlowChart flowChart, Map<Operation, BasicNode> nodeMap) {
+        int count = 0;
+        for (Sequence ep : eps) {
+            SubGraph subGraph = new SubGraph("Connector" + count, ep.getLabel());
+            for (Operation operation : ep.getOperations()) {
+                BasicNode component = new BasicNode(operation.getNodeId(), operation.getFlowChartDisplayContent(),
+                                                    NodeKind.PROCESS);
+                nodeMap.put(operation, component);
+                subGraph.add(component);
+            }
+            flowChart.add(subGraph);
+            count++;
+        }
     }
 
     static void generateNodes(Sequence sequence, FlowChart flowChart, Map<Operation, BasicNode> nodeMap) {

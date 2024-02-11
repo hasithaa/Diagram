@@ -15,32 +15,18 @@
  *  specific language governing permissions and limitations
  *  under the License.
  */
-package io.github.hasithaa.diagram.integration;
+package io.github.hasithaa.diagram.integration.templates;
 
-public enum TemplateKind {
+import io.github.hasithaa.diagram.integration.AbstractOperation;
+import io.github.hasithaa.diagram.integration.TemplateKind;
 
-    AGGREGATE("Aggregate"),
-    CLONE("Clone"),
-    CODE_BLOCK("CodeBlock"),
-    CONVERSION("Data Conversion"),
-    END("End"),
-    EXPRESSION("Expression"),
-    FOREACH("ForEach"),
-    LIBRARY_CALL("Library Call"),
-    NETWORK_CALL("Network Call"),
-    NEW_PAYLOAD("New Payload"),
-    SWITCH("Switch"),
-    TRANSFORM("Transform"),
-    START("Start"),
-    NETWORK_EVENT("Network\nEvent"),
-    SWITCH_MERGE("Switch Merge"),
-    HIDDEN("Hidden"),
-    EXTERNAL("External"),
-    ;
+public class External extends AbstractOperation {
+    public External(int id) {
+        super(id);
+    }
 
-    final String longName;
-
-    TemplateKind(String longName) {
-        this.longName = longName;
+    @Override
+    public TemplateKind getKind() {
+        return TemplateKind.EXTERNAL;
     }
 }

@@ -44,7 +44,7 @@ public class SubGraph implements FlowchartComponent, IdentifiableComponent {
     public String generateMermaidSyntax(int index) {
         final String ws = "  ".repeat(index);
         StringBuilder builder = new StringBuilder();
-        builder.append(ws).append("subgraph ").append(identifier).append(" [").append(description).append("]\n");
+        builder.append(ws).append("subgraph ").append(identifier).append(" [\"").append(description).append("\"]\n");
         builder.append(ws).append("direction ").append("TB").append("\n");
         for (FlowchartComponent component : components) {
             builder.append(component.generateMermaidSyntax(index + 1));
