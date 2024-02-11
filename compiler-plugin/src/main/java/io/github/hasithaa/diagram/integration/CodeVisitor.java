@@ -28,6 +28,7 @@ import io.ballerina.compiler.api.symbols.Symbol;
 import io.ballerina.compiler.api.symbols.SymbolKind;
 import io.ballerina.compiler.api.symbols.TypeDescKind;
 import io.ballerina.compiler.api.symbols.VariableSymbol;
+import io.ballerina.compiler.api.symbols.WorkerSymbol;
 import io.ballerina.compiler.syntax.tree.AssignmentStatementNode;
 import io.ballerina.compiler.syntax.tree.CheckExpressionNode;
 import io.ballerina.compiler.syntax.tree.ChildNodeEntry;
@@ -35,6 +36,7 @@ import io.ballerina.compiler.syntax.tree.ClientResourceAccessActionNode;
 import io.ballerina.compiler.syntax.tree.ExpressionFunctionBodyNode;
 import io.ballerina.compiler.syntax.tree.ExpressionNode;
 import io.ballerina.compiler.syntax.tree.ExpressionStatementNode;
+import io.ballerina.compiler.syntax.tree.ForkStatementNode;
 import io.ballerina.compiler.syntax.tree.FunctionBodyBlockNode;
 import io.ballerina.compiler.syntax.tree.FunctionCallExpressionNode;
 import io.ballerina.compiler.syntax.tree.FunctionDefinitionNode;
@@ -47,14 +49,21 @@ import io.ballerina.compiler.syntax.tree.NodeList;
 import io.ballerina.compiler.syntax.tree.NodeVisitor;
 import io.ballerina.compiler.syntax.tree.NonTerminalNode;
 import io.ballerina.compiler.syntax.tree.RemoteMethodCallActionNode;
+import io.ballerina.compiler.syntax.tree.ReturnStatementNode;
 import io.ballerina.compiler.syntax.tree.SyntaxKind;
 import io.ballerina.compiler.syntax.tree.VariableDeclarationNode;
+import io.ballerina.compiler.syntax.tree.WaitActionNode;
+import io.ballerina.compiler.syntax.tree.WaitFieldNode;
+import io.ballerina.compiler.syntax.tree.WaitFieldsListNode;
+import io.github.hasithaa.diagram.integration.templates.Aggregate;
+import io.github.hasithaa.diagram.integration.templates.Clone;
 import io.github.hasithaa.diagram.integration.templates.End;
 import io.github.hasithaa.diagram.integration.templates.Expression;
 import io.github.hasithaa.diagram.integration.templates.External;
 import io.github.hasithaa.diagram.integration.templates.Hidden;
 import io.github.hasithaa.diagram.integration.templates.LibraryCall;
 import io.github.hasithaa.diagram.integration.templates.NetworkCall;
+import io.github.hasithaa.diagram.integration.templates.Return;
 import io.github.hasithaa.diagram.integration.templates.Start;
 import io.github.hasithaa.diagram.integration.templates.Switch;
 import io.github.hasithaa.diagram.integration.templates.SwitchMerge;
@@ -81,6 +90,7 @@ public class CodeVisitor extends NodeVisitor {
     int count = 0;
     Stack<IOperation> iOperations;
     Map<VariableSymbol, Sequence> globalEp = new HashMap();
+    Map<WorkerSymbol, Sequence> workers = new HashMap();
 
     public CodeVisitor(SemanticModel semanticModel) {
         this.semanticModel = semanticModel;
@@ -128,7 +138,28 @@ public class CodeVisitor extends NodeVisitor {
 
     @Override
     public void visit(NamedWorkerDeclarationNode node) {
+        Sequence sequence;
+        if (!iOperations.empty()) {
+            // Forked Name Worker
+            Clone clone = (Clone) iOperations.peek().operation;
+            sequence = new Sequence(clone, null);
+            clone.addOutgoingSequence(sequence);
+        } else {
+            sequence = new Sequence(null, null);
+        }
+        sequence.setSpecial(true);
+        semanticModel.symbol(node).ifPresent(symbol -> {
+            if (symbol.kind() == SymbolKind.WORKER) {
+                WorkerSymbol workerSymbol = (WorkerSymbol) symbol;
+                workers.put(workerSymbol, sequence);
+            }
+        });
+        sequences.push(sequence);
+        sequence.setLabel(node.workerName().toSourceCode());
+        sequence.addOperation(new Start(count++));
         super.visit(node);
+        sequence.addOperation(new End(count++));
+        sequences.pop();
     }
 
     @Override
@@ -165,6 +196,56 @@ public class CodeVisitor extends NodeVisitor {
     }
 
     // Statements
+
+    @Override
+    public void visit(ForkStatementNode node) {
+        iOperations.push(new IOperation(node));
+        Clone clone = new Clone(count++);
+        clone.setHeading("Fork");
+        iOperations.peek().done(clone);
+        sequences.peek().addOperation(clone);
+        for (NamedWorkerDeclarationNode workerDeclaration : node.namedWorkerDeclarations()) {
+            workerDeclaration.accept(this);
+        }
+        iOperations.pop();
+    }
+
+    @Override
+    public void visit(WaitActionNode waitActionNode) {
+        Aggregate aggregate = new Aggregate(count++);
+        aggregate.setHeading("Wait");
+        sequences.peek().addOperation(aggregate);
+        iOperations.peek().done(aggregate);
+        waitActionNode.waitFutureExpr().accept(this);
+    }
+
+    @Override
+    public void visit(WaitFieldsListNode waitFieldsListNode) {
+        Aggregate operation = (Aggregate) iOperations.peek().operation;
+        operation.addFormData("Wait", "Wait for All");
+        for (Node waitFieldNode : waitFieldsListNode.waitFields()) {
+            Optional<Symbol> symbol = semanticModel.symbol(waitFieldNode);
+            if (symbol.isPresent() && symbol.get() instanceof WorkerSymbol workerSymbol) {
+                Sequence sequence = workers.get(workerSymbol);
+                if (sequence != null) {
+                    operation.addIncomingSequence(sequence);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void visit(WaitFieldNode waitFieldNode) {
+        Aggregate operation = (Aggregate) iOperations.peek().operation;
+        operation.addFormData("Wait", "Wait for One");
+        Optional<Symbol> symbol = semanticModel.symbol(waitFieldNode);
+        if (symbol.isPresent() && symbol.get() instanceof WorkerSymbol workerSymbol) {
+            Sequence sequence = workers.get(workerSymbol);
+            if (sequence != null) {
+                operation.addIncomingSequence(sequence);
+            }
+        }
+    }
 
     @Override
     public void visit(IfElseStatementNode node) {
@@ -237,6 +318,25 @@ public class CodeVisitor extends NodeVisitor {
                 iOperations.peek().operation.addVariable(variable);
             }
         });
+        iOperations.pop();
+    }
+
+    @Override
+    public void visit(ReturnStatementNode node) {
+        iOperations.push(new IOperation(node));
+        Return aReturn = new Return(count++);
+        aReturn.setHeading("Return");
+        iOperations.peek().done(aReturn);
+        sequences.peek().addOperation(aReturn);
+        if (node.expression().isPresent()) {
+            node.expression().ifPresent(expression -> expression.accept(this));
+            semanticModel.typeOf(node.expression().get()).ifPresent(type -> {
+                if (type.typeKind() != TypeDescKind.NIL) {
+                    aReturn.addFormData("Expression", sanitizeExpression(node.expression().get().toSourceCode()));
+                    aReturn.addFormData("Type", sanitizeExpression(type.signature()));
+                }
+            });
+        }
         iOperations.pop();
     }
 

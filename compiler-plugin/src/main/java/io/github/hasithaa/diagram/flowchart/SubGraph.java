@@ -49,7 +49,7 @@ public class SubGraph implements FlowchartComponent, IdentifiableComponent {
         for (FlowchartComponent component : components) {
             builder.append(component.generateMermaidSyntax(index + 1));
         }
-        builder.append("end\n");
+        builder.append(ws).append("end\n");
         return builder.toString();
     }
 }

@@ -36,6 +36,7 @@ public enum TemplateKind {
     SWITCH_MERGE("Switch Merge"),
     HIDDEN("Hidden"),
     EXTERNAL("External"),
+    RETURN("Return"),
     ;
 
     final String longName;

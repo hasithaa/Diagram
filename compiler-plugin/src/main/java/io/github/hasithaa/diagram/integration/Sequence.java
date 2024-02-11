@@ -27,6 +27,7 @@ public class Sequence implements Scope {
     private final Operation source, target;
     boolean generated = false;
     private String label = null;
+    private boolean special = false;
 
     public Sequence(Operation source, Operation target) {
         this.source = source;
@@ -49,6 +50,14 @@ public class Sequence implements Scope {
             operation.setNextOperation(target);
             this.operations.add(operation);
         }
+    }
+
+    public boolean isSpecial() {
+        return special;
+    }
+
+    public void setSpecial(boolean special) {
+        this.special = special;
     }
 
     public String getLabel() {

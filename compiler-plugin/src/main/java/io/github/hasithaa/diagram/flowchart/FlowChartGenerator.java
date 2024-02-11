@@ -34,8 +34,10 @@ public interface FlowChartGenerator {
 
         Map<Operation, BasicNode> nodeMap = new HashMap<>();
         FlowChart flowChart = new FlowChart(diagram.getName());
-        generateNodes(diagram.getBaseSequence(), flowChart, nodeMap, simple);
-        generateEPs(eps, flowChart, nodeMap, simple);
+        generateNodes(diagram.getBaseSequence(), flowChart, nodeMap, simple, null);
+        if (!simple) {
+            generateEPs(eps, flowChart, nodeMap, simple);
+        }
         for (DPath dPath : diagram.getPaths()) {
             Edge component = new Edge(nodeMap.get(dPath.source), nodeMap.get(dPath.target), dPath.label);
             component.setStyle(dPath.pathType.name());
@@ -49,7 +51,10 @@ public interface FlowChartGenerator {
                             boolean simple) {
         int count = 0;
         for (Sequence ep : eps) {
-            SubGraph subGraph = new SubGraph("Connector" + count, ep.getLabel());
+            // A hack to get the label of the EP
+            Operation firstOperation = ep.getOperations().get(0);
+            String name = firstOperation.getFormData().get(0).getValue();
+            SubGraph subGraph = new SubGraph("Connector" + count++, name);
             for (Operation operation : ep.getOperations()) {
                 BasicNode component = new BasicNode(operation.getNodeId(),
                                                     simple ? operation.getSimpleFlowChartDisplayContent() :
@@ -58,38 +63,53 @@ public interface FlowChartGenerator {
                 subGraph.add(component);
             }
             flowChart.add(subGraph);
-            count++;
         }
     }
 
     static void generateNodes(Sequence sequence, FlowChart flowChart, Map<Operation, BasicNode> nodeMap,
-                              boolean simple) {
+                              boolean simple, SubGraph subGraph) {
         if (sequence == null) {
             return;
         }
+        SubGraph currentSubGraph;
+        if (sequence.isSpecial()) {
+            currentSubGraph = new SubGraph(sequence.getLabel(), sequence.getLabel());
+            flowChart.add(currentSubGraph);
+        } else {
+            currentSubGraph = subGraph;
+        }
         for (Operation operation : sequence.getOperations()) {
-
-            NodeKind process;
-            switch (operation.getKind()) {
-                case SWITCH_MERGE, HIDDEN -> process = NodeKind.CONNECTOR;
-                case START -> process = NodeKind.START;
-                case END -> process = NodeKind.TERMINAL;
-                default -> process = NodeKind.PROCESS;
-            }
-            BasicNode basicNode = new BasicNode(operation.getNodeId(),
-                                                simple ? operation.getSimpleFlowChartDisplayContent() :
-                                                operation.getFlowChartDisplayContent(), process);
+            BasicNode basicNode = getBasicNode(simple, operation);
             nodeMap.put(operation, basicNode);
-            flowChart.add(basicNode);
+            if (currentSubGraph != null) {
+                currentSubGraph.add(basicNode);
+            } else {
+                flowChart.add(basicNode);
+            }
             if (operation instanceof AbstractCompositeOutOperation outOperation) {
                 for (Sequence outSeq : outOperation.outgoingSequence()) {
-                    generateNodes(outSeq, flowChart, nodeMap, simple);
+                    generateNodes(outSeq, flowChart, nodeMap, simple, currentSubGraph);
                 }
             } else if (operation instanceof AbstractCompositeInOperation inOperation) {
                 for (Sequence inSeq : inOperation.incomingSequence()) {
-                    generateNodes(inSeq, flowChart, nodeMap, simple);
+                    generateNodes(inSeq, flowChart, nodeMap, simple, currentSubGraph);
                 }
             }
         }
+    }
+
+    private static BasicNode getBasicNode(boolean simple, Operation operation) {
+        NodeKind process;
+        switch (operation.getKind()) {
+            case SWITCH_MERGE, HIDDEN -> process = NodeKind.CONNECTOR;
+            case SWITCH -> process = simple ? NodeKind.DECISION : NodeKind.PROCESS;
+            case START -> process = NodeKind.START;
+            case END -> process = simple ? NodeKind.TERMINAL : NodeKind.PROCESS;
+            default -> process = NodeKind.PROCESS;
+        }
+        BasicNode basicNode = new BasicNode(operation.getNodeId(),
+                                            simple ? operation.getSimpleFlowChartDisplayContent() :
+                                            operation.getFlowChartDisplayContent(), process);
+        return basicNode;
     }
 }
