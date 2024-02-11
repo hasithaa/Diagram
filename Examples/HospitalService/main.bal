@@ -43,13 +43,13 @@ service / on new http:Listener(9090) {
                 }
             }
             Result result = [];
-            record {Result|error pineValley; Result|error grandOak;} aggregate = wait {pineValley, grandOak};
+            record {Result|error pineValley; Result|error grandOak;} res = wait {pineValley, grandOak};
 
-            Result pineValleyRes = check aggregate.pineValley;
-            Result grandOakRes = check aggregate.grandOak;
+            Result pineValleyRes = check res.pineValley;
+            Result grandOakRes = check res.grandOak;
             result.push(...pineValleyRes);
             result.push(...grandOakRes);
-            return result;
+            return result; 
         }
     }
 

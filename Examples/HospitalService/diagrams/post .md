@@ -9,32 +9,37 @@ flowchart TB
   NETWORK_CALL2["📡 http Client<p>⚠️ Fail on Error</p>"]
   SWITCH3{"❓ If"}
   RETURN5["↩️ Return"]
+  NEW_PAYLOAD6["✉️ New Message"]
   SWITCH_MERGE4(("⚪"))
   RETURN5["↩️ Return"]
-  SWITCH6{"❓ If"}
-  SWITCH8{"❓ If"}
-  SWITCH_MERGE9(("⚪"))
-  SWITCH_MERGE7(("⚪"))
-  SWITCH8{"❓ If"}
-  SWITCH_MERGE9(("⚪"))
-  LIBRARY_CALL10["🧩 io:println"]
-  RETURN11["↩️ Return"]
-  END12((("🔴")))
+  NEW_PAYLOAD6["✉️ New Message"]
+  SWITCH7{"❓ If"}
+  SWITCH9{"❓ If"}
+  SWITCH_MERGE10(("⚪"))
+  SWITCH_MERGE8(("⚪"))
+  SWITCH9{"❓ If"}
+  SWITCH_MERGE10(("⚪"))
+  LIBRARY_CALL11["🧩 io:println"]
+  RETURN12["↩️ Return"]
+  NEW_PAYLOAD13["✉️ New Message"]
+  END14((("🔴")))
   START0 --> NETWORK_CALL1
   NETWORK_CALL1 --> NETWORK_CALL2
   NETWORK_CALL2 --> SWITCH3
   SWITCH3 --> |Then| RETURN5
+  RETURN5 --> NEW_PAYLOAD6
   SWITCH3 --> |Else| SWITCH_MERGE4
-  RETURN5 --> SWITCH_MERGE4
-  SWITCH_MERGE4 --> SWITCH6
-  SWITCH6 --> |Then| SWITCH_MERGE7
-  SWITCH6 --> |Else| SWITCH8
-  SWITCH8 --> |Then| SWITCH_MERGE9
-  SWITCH8 --> |Else| SWITCH_MERGE9
-  SWITCH_MERGE9 --> SWITCH_MERGE7
-  SWITCH_MERGE7 --> LIBRARY_CALL10
-  LIBRARY_CALL10 --> RETURN11
-  RETURN11 --> END12
+  NEW_PAYLOAD6 --> SWITCH_MERGE4
+  SWITCH_MERGE4 --> SWITCH7
+  SWITCH7 --> |Then| SWITCH_MERGE8
+  SWITCH7 --> |Else| SWITCH9
+  SWITCH9 --> |Then| SWITCH_MERGE10
+  SWITCH9 --> |Else| SWITCH_MERGE10
+  SWITCH_MERGE10 --> SWITCH_MERGE8
+  SWITCH_MERGE8 --> LIBRARY_CALL11
+  LIBRARY_CALL11 --> RETURN12
+  RETURN12 --> NEW_PAYLOAD13
+  NEW_PAYLOAD13 --> END14
 ```
 ---
 
@@ -44,30 +49,36 @@ flowchart TB
 flowchart TB
   START0(("🟢"))
   NETWORK_CALL1["📡 http Client
-<table><tr><td>Method</td><td>get</td></tr><tr><td>path(string)</td><td>/doctor/ + do...</td></tr><tr><td>Return</td><td>targetType|ball...</td></tr></table><strong>Variables:</strong><table><tr><td>hasitha/Hospita...</td><td>res</td><td>🆕</td></tr></table><p>⚠️ Fail on Error</p>"]
+<table><tr><td>Method</td><td>get</td></tr><tr><td>path(string)</td><td>/doctor/ + doctorT...</td></tr><tr><td>Return</td><td>targetType|ballerina...</td></tr></table><strong>Variables:</strong><table><tr><td>hasitha/HospitalServ...</td><td>res</td><td>🆕</td></tr></table><p>⚠️ Fail on Error</p>"]
   NETWORK_CALL2["📡 http Client
-<table><tr><td>Method</td><td>post</td></tr><tr><td>path(string)</td><td>/doctor/</td></tr><tr><td>path(string)</td><td>{doctor: doct...</td></tr><tr><td>Return</td><td>targetType|ball...</td></tr></table><strong>Variables:</strong><table><tr><td>json</td><td>j</td><td>🆕</td></tr></table><p>⚠️ Fail on Error</p>"]
+<table><tr><td>Method</td><td>post</td></tr><tr><td>path(string)</td><td>/doctor/</td></tr><tr><td>path(string)</td><td>{doctor: doctor.do...</td></tr><tr><td>Return</td><td>targetType|ballerina...</td></tr></table><strong>Variables:</strong><table><tr><td>json</td><td>j</td><td>🆕</td></tr></table><p>⚠️ Fail on Error</p>"]
   SWITCH3["❓ If
-<table><tr><td>Condition</td><td>j.status != er...</td></tr></table>"]
+<table><tr><td>Condition</td><td>j.status != error </td></tr></table>"]
   RETURN5["↩️ Return
-<table><tr><td>Expression</td><td>{status: err...</td></tr><tr><td>Type</td><td>map<json></td></tr></table>"]
+<table><tr><td>Expression</td><td>{status: error}</td></tr><tr><td>Type</td><td>map<json></td></tr></table>"]
+  NEW_PAYLOAD6["✉️ New Message
+<table><tr><td>Payload</td><td>{status: error}</td></tr></table>"]
   SWITCH_MERGE4(("⚪"))
   RETURN5["↩️ Return
-<table><tr><td>Expression</td><td>{status: err...</td></tr><tr><td>Type</td><td>map<json></td></tr></table>"]
-  SWITCH6["❓ If
-<table><tr><td>Condition</td><td>j.status == Un...</td></tr></table>"]
-  SWITCH8["❓ If
-<table><tr><td>Condition</td><td>j.status == Ne...</td></tr></table>"]
-  SWITCH_MERGE9(("⚪"))
-  SWITCH_MERGE7(("⚪"))
-  SWITCH8["❓ If
-<table><tr><td>Condition</td><td>j.status == Ne...</td></tr></table>"]
-  SWITCH_MERGE9(("⚪"))
-  LIBRARY_CALL10["🧩 io:println
-<table><tr><td>values(ballerina/io:1....)</td><td>Data Submit</td></tr><tr><td>Return</td><td>()</td></tr></table>"]
-  RETURN11["↩️ Return
-<table><tr><td>Expression</td><td>{status: suc...</td></tr><tr><td>Type</td><td>map<json></td></tr></table>"]
-  END12["🔴"]
+<table><tr><td>Expression</td><td>{status: error}</td></tr><tr><td>Type</td><td>map<json></td></tr></table>"]
+  NEW_PAYLOAD6["✉️ New Message
+<table><tr><td>Payload</td><td>{status: error}</td></tr></table>"]
+  SWITCH7["❓ If
+<table><tr><td>Condition</td><td>j.status == Unknown...</td></tr></table>"]
+  SWITCH9["❓ If
+<table><tr><td>Condition</td><td>j.status == New </td></tr></table>"]
+  SWITCH_MERGE10(("⚪"))
+  SWITCH_MERGE8(("⚪"))
+  SWITCH9["❓ If
+<table><tr><td>Condition</td><td>j.status == New </td></tr></table>"]
+  SWITCH_MERGE10(("⚪"))
+  LIBRARY_CALL11["🧩 io:println
+<table><tr><td>values(ballerina/io:1.6.0:P...)</td><td>Data Submit</td></tr><tr><td>Return</td><td>()</td></tr></table>"]
+  RETURN12["↩️ Return
+<table><tr><td>Expression</td><td>{status: success...</td></tr><tr><td>Type</td><td>map<json></td></tr></table>"]
+  NEW_PAYLOAD13["✉️ New Message
+<table><tr><td>Payload</td><td>{status: success...</td></tr></table>"]
+  END14["🔴"]
   subgraph Connector0 ["grandOakEp"]
   direction TB
     EXTERNAL1["⚙️ http:Client
@@ -96,16 +107,18 @@ flowchart TB
   NETWORK_CALL1 --> NETWORK_CALL2
   NETWORK_CALL2 --> SWITCH3
   SWITCH3 --> |Then| RETURN5
+  RETURN5 --> NEW_PAYLOAD6
   SWITCH3 --> |Else| SWITCH_MERGE4
-  RETURN5 --> SWITCH_MERGE4
-  SWITCH_MERGE4 --> SWITCH6
-  SWITCH6 --> |Then| SWITCH_MERGE7
-  SWITCH6 --> |Else| SWITCH8
-  SWITCH8 --> |Then| SWITCH_MERGE9
-  SWITCH8 --> |Else| SWITCH_MERGE9
-  SWITCH_MERGE9 --> SWITCH_MERGE7
-  SWITCH_MERGE7 --> LIBRARY_CALL10
-  LIBRARY_CALL10 --> RETURN11
-  RETURN11 --> END12
+  NEW_PAYLOAD6 --> SWITCH_MERGE4
+  SWITCH_MERGE4 --> SWITCH7
+  SWITCH7 --> |Then| SWITCH_MERGE8
+  SWITCH7 --> |Else| SWITCH9
+  SWITCH9 --> |Then| SWITCH_MERGE10
+  SWITCH9 --> |Else| SWITCH_MERGE10
+  SWITCH_MERGE10 --> SWITCH_MERGE8
+  SWITCH_MERGE8 --> LIBRARY_CALL11
+  LIBRARY_CALL11 --> RETURN12
+  RETURN12 --> NEW_PAYLOAD13
+  NEW_PAYLOAD13 --> END14
 ```
 ---

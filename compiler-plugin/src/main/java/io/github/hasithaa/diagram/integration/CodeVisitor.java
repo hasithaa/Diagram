@@ -41,6 +41,8 @@ import io.ballerina.compiler.syntax.tree.FunctionBodyBlockNode;
 import io.ballerina.compiler.syntax.tree.FunctionCallExpressionNode;
 import io.ballerina.compiler.syntax.tree.FunctionDefinitionNode;
 import io.ballerina.compiler.syntax.tree.IfElseStatementNode;
+import io.ballerina.compiler.syntax.tree.ListConstructorExpressionNode;
+import io.ballerina.compiler.syntax.tree.MappingConstructorExpressionNode;
 import io.ballerina.compiler.syntax.tree.MethodCallExpressionNode;
 import io.ballerina.compiler.syntax.tree.ModuleVariableDeclarationNode;
 import io.ballerina.compiler.syntax.tree.NamedWorkerDeclarationNode;
@@ -62,6 +64,7 @@ import io.github.hasithaa.diagram.integration.templates.Fork;
 import io.github.hasithaa.diagram.integration.templates.Hidden;
 import io.github.hasithaa.diagram.integration.templates.LibraryCall;
 import io.github.hasithaa.diagram.integration.templates.NetworkCall;
+import io.github.hasithaa.diagram.integration.templates.NewPayload;
 import io.github.hasithaa.diagram.integration.templates.Return;
 import io.github.hasithaa.diagram.integration.templates.Start;
 import io.github.hasithaa.diagram.integration.templates.Switch;
@@ -352,17 +355,14 @@ public class CodeVisitor extends NodeVisitor {
 
     @Override
     public void visit(MethodCallExpressionNode node) {
-        if (handleExternalLibraryCall(node)) {
-        }
+        handleExternalLibraryCall(node);
         // Don't do anything further
     }
 
     @Override
     public void visit(FunctionCallExpressionNode node) {
-        if (handleExternalLibraryCall(node)) {
-        }
+        handleExternalLibraryCall(node);
         // Local function call. So CodeBlock.
-
     }
 
     @Override
@@ -375,9 +375,27 @@ public class CodeVisitor extends NodeVisitor {
         handleNetworkCall(node, node.expression(), node.methodName().toString());
     }
 
+    @Override
+    public void visit(MappingConstructorExpressionNode node) {
+        handleNewPayload(node);
+    }
+
+    @Override
+    public void visit(ListConstructorExpressionNode node) {
+        handleNewPayload(node);
+    }
+
     // Utils
 
-    private boolean handleExternalLibraryCall(Node node) {
+    private void handleNewPayload(Node node) {
+        NewPayload newPayload = new NewPayload(count++);
+        newPayload.setHeading("New Message");
+        newPayload.addFormData("Payload", sanitizeExpression(node.toSourceCode()));
+        iOperations.peek().done(newPayload);
+        sequences.peek().addOperation(newPayload);
+    }
+
+    private void handleExternalLibraryCall(Node node) {
         Optional<Symbol> symbol = semanticModel.symbol(node);
         // TODO: Following logic is demonstration purpose only. This should be improved and completed.
         if (symbol.isPresent()) {
@@ -399,17 +417,15 @@ public class CodeVisitor extends NodeVisitor {
 
                 sequences.peek().addOperation(libraryCall);
                 iOperations.peek().done(libraryCall);
-                return true;
             }
             // TODO: What if local method call ?
         }
-        return false;
     }
 
     private String sanitizeExpression(String str) {
         String newStr = str;
-        if (str.length() > 15) {
-            newStr = newStr.substring(0, 15) + "...";
+        if (str.length() > 20) {
+            newStr = newStr.substring(0, 20) + "...";
         }
         newStr = newStr.replace("\n", "").replace("\r", "").replace("\"", "").replace("'", "&apos;");
         return newStr;
