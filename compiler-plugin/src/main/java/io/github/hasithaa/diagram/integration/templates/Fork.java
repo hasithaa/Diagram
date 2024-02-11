@@ -24,17 +24,17 @@ import io.github.hasithaa.diagram.integration.TemplateKind;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Clone extends AbstractCompositeOutOperation {
+public class Fork extends AbstractCompositeOutOperation {
 
     final List<Sequence> sequences = new ArrayList<Sequence>();
 
-    public Clone(int id) {
+    public Fork(int id) {
         super(id);
     }
 
     @Override
     public TemplateKind getKind() {
-        return TemplateKind.CLONE;
+        return TemplateKind.FORK;
     }
 
     @Override

@@ -19,8 +19,8 @@ package io.github.hasithaa.diagram.integration;
 
 public enum TemplateKind {
 
-    AGGREGATE("Aggregate"),
-    CLONE("Clone"),
+    WAIT("Aggregate"),
+    FORK("Clone"),
     CODE_BLOCK("CodeBlock"),
     CONVERSION("Data Conversion"),
     END("End"),

@@ -55,11 +55,10 @@ import io.ballerina.compiler.syntax.tree.VariableDeclarationNode;
 import io.ballerina.compiler.syntax.tree.WaitActionNode;
 import io.ballerina.compiler.syntax.tree.WaitFieldNode;
 import io.ballerina.compiler.syntax.tree.WaitFieldsListNode;
-import io.github.hasithaa.diagram.integration.templates.Aggregate;
-import io.github.hasithaa.diagram.integration.templates.Clone;
 import io.github.hasithaa.diagram.integration.templates.End;
 import io.github.hasithaa.diagram.integration.templates.Expression;
 import io.github.hasithaa.diagram.integration.templates.External;
+import io.github.hasithaa.diagram.integration.templates.Fork;
 import io.github.hasithaa.diagram.integration.templates.Hidden;
 import io.github.hasithaa.diagram.integration.templates.LibraryCall;
 import io.github.hasithaa.diagram.integration.templates.NetworkCall;
@@ -67,6 +66,7 @@ import io.github.hasithaa.diagram.integration.templates.Return;
 import io.github.hasithaa.diagram.integration.templates.Start;
 import io.github.hasithaa.diagram.integration.templates.Switch;
 import io.github.hasithaa.diagram.integration.templates.SwitchMerge;
+import io.github.hasithaa.diagram.integration.templates.Wait;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -141,9 +141,9 @@ public class CodeVisitor extends NodeVisitor {
         Sequence sequence;
         if (!iOperations.empty()) {
             // Forked Name Worker
-            Clone clone = (Clone) iOperations.peek().operation;
-            sequence = new Sequence(clone, null);
-            clone.addOutgoingSequence(sequence);
+            Fork fork = (Fork) iOperations.peek().operation;
+            sequence = new Sequence(fork, null);
+            fork.addOutgoingSequence(sequence);
         } else {
             sequence = new Sequence(null, null);
         }
@@ -200,10 +200,10 @@ public class CodeVisitor extends NodeVisitor {
     @Override
     public void visit(ForkStatementNode node) {
         iOperations.push(new IOperation(node));
-        Clone clone = new Clone(count++);
-        clone.setHeading("Fork");
-        iOperations.peek().done(clone);
-        sequences.peek().addOperation(clone);
+        Fork fork = new Fork(count++);
+        fork.setHeading("Fork");
+        iOperations.peek().done(fork);
+        sequences.peek().addOperation(fork);
         for (NamedWorkerDeclarationNode workerDeclaration : node.namedWorkerDeclarations()) {
             workerDeclaration.accept(this);
         }
@@ -212,16 +212,16 @@ public class CodeVisitor extends NodeVisitor {
 
     @Override
     public void visit(WaitActionNode waitActionNode) {
-        Aggregate aggregate = new Aggregate(count++);
-        aggregate.setHeading("Wait");
-        sequences.peek().addOperation(aggregate);
-        iOperations.peek().done(aggregate);
+        Wait wait = new Wait(count++);
+        wait.setHeading("Wait");
+        sequences.peek().addOperation(wait);
+        iOperations.peek().done(wait);
         waitActionNode.waitFutureExpr().accept(this);
     }
 
     @Override
     public void visit(WaitFieldsListNode waitFieldsListNode) {
-        Aggregate operation = (Aggregate) iOperations.peek().operation;
+        Wait operation = (Wait) iOperations.peek().operation;
         operation.addFormData("Wait", "Wait for All");
         for (Node waitFieldNode : waitFieldsListNode.waitFields()) {
             Optional<Symbol> symbol = semanticModel.symbol(waitFieldNode);
@@ -236,7 +236,7 @@ public class CodeVisitor extends NodeVisitor {
 
     @Override
     public void visit(WaitFieldNode waitFieldNode) {
-        Aggregate operation = (Aggregate) iOperations.peek().operation;
+        Wait operation = (Wait) iOperations.peek().operation;
         operation.addFormData("Wait", "Wait for One");
         Optional<Symbol> symbol = semanticModel.symbol(waitFieldNode);
         if (symbol.isPresent() && symbol.get() instanceof WorkerSymbol workerSymbol) {

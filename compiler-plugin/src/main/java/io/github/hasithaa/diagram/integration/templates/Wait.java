@@ -20,15 +20,15 @@ package io.github.hasithaa.diagram.integration.templates;
 import io.github.hasithaa.diagram.integration.AbstractCompositeInOperation;
 import io.github.hasithaa.diagram.integration.TemplateKind;
 
-public class Aggregate extends AbstractCompositeInOperation {
+public class Wait extends AbstractCompositeInOperation {
 
-    public Aggregate(int id) {
+    public Wait(int id) {
         super(id);
     }
 
     @Override
     public TemplateKind getKind() {
-        return TemplateKind.AGGREGATE;
+        return TemplateKind.WAIT;
     }
 
     @Override
