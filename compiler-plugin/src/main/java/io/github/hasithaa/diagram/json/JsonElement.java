@@ -20,4 +20,11 @@ package io.github.hasithaa.diagram.json;
 public interface JsonElement {
 
     String getJsonString(int wsCount);
+
+    default String encodedString(String value) {
+        if (value != null && value.contains("\"")) {
+            return value.replace("\"", "\\\"");
+        }
+        return value;
+    }
 }

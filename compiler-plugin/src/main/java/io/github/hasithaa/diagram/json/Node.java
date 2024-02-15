@@ -35,11 +35,10 @@ public class Node implements JsonElement {
     LineRange lineRange;
 
     Optional<Node> parent = Optional.empty();
-    Optional<Map<String, List<Node>>> children = Optional.empty();
     List<Edge> edges = new ArrayList<>();
-
     String iId;
     boolean editable = true;
+    private Map<String, List<Node>> children = null;
 
     @Override
     public String getJsonString(int wsCount) {
@@ -66,9 +65,9 @@ public class Node implements JsonElement {
         json.append(ws).append("  },\n");
 
         parent.ifPresent(node -> json.append(ws).append("  \"parent\": \"").append(node.iId).append("\",\n"));
-        children.ifPresent(map -> {
+        if (children != null) {
             json.append(ws).append("  \"children\": {\n");
-            for (Map.Entry<String, List<Node>> entry : map.entrySet()) {
+            for (Map.Entry<String, List<Node>> entry : children.entrySet()) {
                 json.append(ws).append("    \"").append(entry.getKey()).append("\": [\n");
                 for (Node node : entry.getValue()) {
                     json.append(node.getJsonString(wsCount + 2)).append(",\n");
@@ -78,11 +77,11 @@ public class Node implements JsonElement {
                 }
                 json.append(ws).append("    ],\n");
             }
-            if (!map.isEmpty()) {
+            if (!children.isEmpty()) {
                 json.deleteCharAt(json.length() - 2);
             }
             json.append(ws).append("  },\n");
-        });
+        }
         json.append(ws).append("  \"edges\": [\n");
         for (Edge edge : edges) {
             json.append(edge.getJsonString(wsCount + 1)).append(",\n");
@@ -95,6 +94,13 @@ public class Node implements JsonElement {
         json.append(ws).append("  \"editable\": ").append(editable).append("\n");
         json.append(ws).append("}");
         return json.toString();
+    }
+
+    public Map<String, List<Node>> getChildren() {
+        if (children == null) {
+            children = new LinkedHashMap<>();
+        }
+        return children;
     }
 
     enum Kind {
@@ -118,5 +124,8 @@ public class Node implements JsonElement {
 
         // Node Connection
         KONNECTOR, // Intentionally misspelled to avoid conflict with Connectors
+
+        // Default,
+        EXPRESSION, // This is the default kind for all other nodes
     }
 }

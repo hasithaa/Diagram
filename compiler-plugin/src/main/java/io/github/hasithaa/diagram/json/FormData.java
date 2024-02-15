@@ -25,8 +25,8 @@ public class FormData implements JsonElement {
 
     private final String label;
     private int index = -1;
-    private FormDataType type = FormDataType.STRING;
-    private final List<FormDataType[]> allowedTypes = new ArrayList<>();
+    private final List<String[]> allowedTypes = new ArrayList<>();
+    private FormDataTypeKind typeKind = FormDataTypeKind.STRING;
     private String value = "";
     private final List<String> possibleValues = new ArrayList<>();
     private boolean editable = true;
@@ -41,12 +41,12 @@ public class FormData implements JsonElement {
         return this;
     }
 
-    public FormData setType(FormDataType type) {
-        this.type = type;
+    public FormData setTypeKind(FormDataTypeKind typeKind) {
+        this.typeKind = typeKind;
         return this;
     }
 
-    public FormData addAllowedTypes(FormDataType... types) {
+    public FormData addAllowedTypes(String... types) {
         allowedTypes.add(types);
         return this;
     }
@@ -78,11 +78,11 @@ public class FormData implements JsonElement {
         json.append(ws).append("{\n");
         json.append(ws).append("  \"index\": ").append(index).append(",\n");
         json.append(ws).append("  \"label\": \"").append(label).append("\",\n");
-        json.append(ws).append("  \"type\": \"").append(type).append("\",\n");
+        json.append(ws).append("  \"type\": \"").append(typeKind).append("\",\n");
         json.append(ws).append("  \"allowedTypes\": [\n");
-        for (FormDataType[] types : allowedTypes) {
+        for (String[] types : allowedTypes) {
             json.append(ws).append("    [");
-            for (FormDataType type : types) {
+            for (String type : types) {
                 json.append("\"").append(type).append("\", ");
             }
             json.deleteCharAt(json.length() - 2);
@@ -92,10 +92,10 @@ public class FormData implements JsonElement {
             json.deleteCharAt(json.length() - 2);
         }
         json.append(ws).append("  ],\n");
-        json.append(ws).append("  \"value\": \"").append(value).append("\",\n");
+        json.append(ws).append("  \"value\": \"").append(encodedString(value)).append("\",\n");
         json.append(ws).append("  \"possibleValues\": [\n");
         for (String possibleValue : possibleValues) {
-            json.append(ws).append("    \"").append(possibleValue).append("\",\n");
+            json.append(ws).append("    \"").append(encodedString(possibleValue)).append("\",\n");
         }
         if (!possibleValues.isEmpty()) {
             json.deleteCharAt(json.length() - 2);
@@ -114,8 +114,8 @@ public class FormData implements JsonElement {
         return json.toString();
     }
 
-    enum FormDataType {
-        INT, FLOAT, DECIMAL, BOOLEAN, STRING, NIL, XML, JSON, MAPPING, ARRAY, TABLE, IDENTIFIER, DEFAULT, ENUM
+    enum FormDataTypeKind {
+        INT, FLOAT, DECIMAL, BOOLEAN, STRING, NIL, XML, MAPPING, ARRAY, TABLE, IDENTIFIER, DEFAULT, ENUM
     }
 
     enum RepeatType {
