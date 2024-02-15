@@ -26,7 +26,11 @@ public class Edge implements JsonElement {
     Optional<Node> target = Optional.empty();
     EdgeKind kind = EdgeKind.DEFAULT;
 
-    String iId;
+    final String iId;
+
+    Edge(String iId) {
+        this.iId = iId;
+    }
 
     @Override
     public String getJsonString(int wsCount) {

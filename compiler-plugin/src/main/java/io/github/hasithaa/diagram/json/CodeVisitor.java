@@ -22,6 +22,7 @@ import io.ballerina.compiler.api.symbols.AbsResourcePathAttachPoint;
 import io.ballerina.compiler.api.symbols.FunctionSymbol;
 import io.ballerina.compiler.api.symbols.LiteralAttachPoint;
 import io.ballerina.compiler.api.symbols.MethodSymbol;
+import io.ballerina.compiler.api.symbols.ModuleSymbol;
 import io.ballerina.compiler.api.symbols.ParameterSymbol;
 import io.ballerina.compiler.api.symbols.Qualifier;
 import io.ballerina.compiler.api.symbols.ResourceMethodSymbol;
@@ -32,16 +33,26 @@ import io.ballerina.compiler.api.symbols.TypeSymbol;
 import io.ballerina.compiler.api.symbols.VariableSymbol;
 import io.ballerina.compiler.syntax.tree.AssignmentStatementNode;
 import io.ballerina.compiler.syntax.tree.CheckExpressionNode;
+import io.ballerina.compiler.syntax.tree.ClientResourceAccessActionNode;
+import io.ballerina.compiler.syntax.tree.ExpressionNode;
 import io.ballerina.compiler.syntax.tree.ExpressionStatementNode;
+import io.ballerina.compiler.syntax.tree.FunctionCallExpressionNode;
 import io.ballerina.compiler.syntax.tree.FunctionDefinitionNode;
+import io.ballerina.compiler.syntax.tree.IfElseStatementNode;
+import io.ballerina.compiler.syntax.tree.ListConstructorExpressionNode;
 import io.ballerina.compiler.syntax.tree.MappingConstructorExpressionNode;
+import io.ballerina.compiler.syntax.tree.MethodCallExpressionNode;
 import io.ballerina.compiler.syntax.tree.ModuleVariableDeclarationNode;
 import io.ballerina.compiler.syntax.tree.NodeVisitor;
+import io.ballerina.compiler.syntax.tree.RemoteMethodCallActionNode;
 import io.ballerina.compiler.syntax.tree.ServiceDeclarationNode;
 import io.ballerina.compiler.syntax.tree.StatementNode;
 import io.ballerina.compiler.syntax.tree.SyntaxKind;
+import io.ballerina.compiler.syntax.tree.TemplateExpressionNode;
 import io.ballerina.compiler.syntax.tree.VariableDeclarationNode;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Stack;
 
@@ -51,6 +62,7 @@ public class CodeVisitor extends NodeVisitor {
     private final ModelBuilder modelBuilder = new ModelBuilder();
     private final Stack<StatementNode> stmtNodeStack = new Stack<>();
     private final Stack<Symbol> symbolStack = new Stack<>();
+    private final List<Symbol> dataMapping = new ArrayList<>();
 
     public CodeVisitor(SemanticModel semanticModel) {
         this.semanticModel = semanticModel;
@@ -66,7 +78,7 @@ public class CodeVisitor extends NodeVisitor {
     public void visit(FunctionDefinitionNode stNode) {
         Optional<Symbol> symbol = semanticModel.symbol(stNode);
         if (stNode.functionBody().kind() == SyntaxKind.EXPRESSION_FUNCTION_BODY) {
-            symbol.ifPresent(modelBuilder::addDataMapping);
+            symbol.ifPresent(dataMapping::add);
             return;
         }
         if (stNode.functionBody().kind() != SyntaxKind.FUNCTION_BODY_BLOCK) {
@@ -85,7 +97,7 @@ public class CodeVisitor extends NodeVisitor {
             // TODO : improve this further
             String methodName = resourceSymbol.getName().orElse("Unknown");
             diagram.setLabel(methodName + " " + resourceSymbol.resourcePath());
-            node = modelBuilder.addNode(Node.Kind.NETWORK_EVENT);
+            node = modelBuilder.addNewNode(Node.Kind.NETWORK_EVENT);
             modelBuilder.addFormData("Network", new FormData("Method").setTypeKind(FormData.FormDataTypeKind.IDENTIFIER)
                                                                       .setValue(methodName));
             modelBuilder.addFormData("Network", new FormData("Path").setTypeKind(FormData.FormDataTypeKind.STRING)
@@ -105,7 +117,7 @@ public class CodeVisitor extends NodeVisitor {
             }
             // TODO : Function Call Event
             diagram.setLabel(functionSymbol.getName().orElse("Unknown"));
-            node = modelBuilder.addNode(Node.Kind.FUNCTION_START);
+            node = modelBuilder.addNewNode(Node.Kind.FUNCTION_START);
             modelBuilder.addFormData("Function", new FormData("Name").setTypeKind(FormData.FormDataTypeKind.IDENTIFIER)
                                                                      .setValue(functionSymbol.getName()
                                                                                              .orElse("Unknown")));
@@ -115,8 +127,34 @@ public class CodeVisitor extends NodeVisitor {
         node.lineRange = stNode.lineRange();
         extractFunctionSymbolFormData((FunctionSymbol) symbol.get());
         super.visit(stNode);
-        modelBuilder.endChildFlow();
+        Node end = modelBuilder.createNode(Node.Kind.END);
+        modelBuilder.endChildFlow(node, end);
+        modelBuilder.addNode(end, false);
         symbolStack.pop();
+    }
+
+
+    // Statement Nodes
+
+    public void visit(IfElseStatementNode stNode) {
+        Node ifNode = modelBuilder.addNewNode(Node.Kind.IF);
+        Node mergeNode = modelBuilder.createNode(Node.Kind.KONNECTOR);
+        ifNode.label = "If";
+        FormData formData = new FormData("Condition");
+        formData.setTypeKind(FormData.FormDataTypeKind.BOOLEAN);
+        formData.setValue(stNode.condition().toSourceCode());
+        modelBuilder.addFormData("Condition", formData);
+
+        modelBuilder.startChildFlow("Then");
+        stNode.ifBody().accept(this);
+        modelBuilder.endChildFlow(ifNode, mergeNode);
+
+        if (stNode.elseBody().isPresent()) {
+            modelBuilder.startChildFlow("Else");
+            stNode.elseBody().get().accept(this);
+            modelBuilder.endChildFlow(ifNode, mergeNode);
+        }
+        modelBuilder.addNode(mergeNode, true);
     }
 
     public void visit(VariableDeclarationNode stNode) {
@@ -143,16 +181,78 @@ public class CodeVisitor extends NodeVisitor {
         }
     }
 
+    // Deciding Expression Nodes
+
     public void visit(MappingConstructorExpressionNode stNode) {
         // New Message
-        Node node = modelBuilder.addNode(Node.Kind.DATA_NEW_MESSAGE);
+        handleNewMessage(stNode);
+    }
+
+    public void visit(ListConstructorExpressionNode stNode) {
+        // New Message
+        handleNewMessage(stNode);
+    }
+
+    public void visit(TemplateExpressionNode stNode) {
+        // New Message
+        handleNewMessage(stNode);
+    }
+
+    public void visit(MethodCallExpressionNode stNode) {
+        handleFunctionCall(stNode);
+    }
+
+    public void visit(FunctionCallExpressionNode stNode) {
+        handleFunctionCall(stNode);
+    }
+
+    public void visit(RemoteMethodCallActionNode stNode) {
+        handleNetworkCall(stNode);
+    }
+
+    public void visit(ClientResourceAccessActionNode stNode) {
+        handleNetworkCall(stNode);
+    }
+
+    // Utility methods
+
+    private void handleDefaultExpressionNode(StatementNode stNode) {
+        // TODO : Improve this further.
+        Node node = modelBuilder.addNewNode(Node.Kind.EXPRESSION);
+        node.label = "Expression";
+        handleStatementNode(node, stNode);
+    }
+
+    private void handleNewMessage(ExpressionNode stNode) {
+        FormData.FormDataTypeKind typeKind;
+        switch (stNode.kind()) {
+            case MAPPING_CONSTRUCTOR:
+                typeKind = FormData.FormDataTypeKind.MAPPING;
+                break;
+            case LIST_CONSTRUCTOR:
+                typeKind = FormData.FormDataTypeKind.ARRAY;
+                break;
+            case XML_TEMPLATE_EXPRESSION:
+                typeKind = FormData.FormDataTypeKind.XML;
+                break;
+            case STRING_TEMPLATE_EXPRESSION:
+                typeKind = FormData.FormDataTypeKind.STRING;
+                break;
+            case BYTE_ARRAY_LITERAL:
+                typeKind = FormData.FormDataTypeKind.BYTE_ARRAY;
+                break;
+            default:
+                return;
+        }
+        Node node = modelBuilder.addNewNode(Node.Kind.DATA_NEW_MESSAGE);
+        node.label = "New Message";
         boolean localStatement = findAndUpdateParentLocalStatement(node, stNode);
         if (!localStatement) {
             // Safely ignore the node.
             return;
         }
         FormData formData = new FormData("Data");
-        formData.setTypeKind(FormData.FormDataTypeKind.MAPPING);
+        formData.setTypeKind(typeKind);
         semanticModel.symbol(stNode).ifPresent(symbol -> {
             if (symbol instanceof TypeSymbol tSymbol) {
                 formData.addAllowedTypes(tSymbol.signature());
@@ -161,13 +261,69 @@ public class CodeVisitor extends NodeVisitor {
         formData.setValue(stNode.toSourceCode());
     }
 
-
-    // Utility methods
-
-    private void handleDefaultExpressionNode(StatementNode stNode) {
+    private void handleFunctionCall(ExpressionNode stNode) {
         // TODO : Improve this further.
-        Node node = modelBuilder.addNode(Node.Kind.EXPRESSION);
-        handleStatementNode(node, stNode);
+        Optional<Symbol> optionalSymbol = semanticModel.symbol(stNode);
+        if (!optionalSymbol.isPresent()) {
+            return;
+        }
+        if (optionalSymbol.get() instanceof FunctionSymbol functionSymbol) {
+            ModuleSymbol moduleSymbol = functionSymbol.getModule().get();
+            String moduleName = moduleSymbol.id().moduleName();
+            Node node;
+            if (moduleName.equals(".")) {
+                // Local Function Call
+                if (dataMapping.contains(functionSymbol)) {
+                    node = modelBuilder.addNewNode(Node.Kind.DATA_MAPPING);
+                    node.label = "Data Mapping";
+                } else {
+                    node = modelBuilder.addNewNode(Node.Kind.LIBRARY_FUNCTION);
+                    node.label = "Library Call";
+                }
+            } else {
+                node = modelBuilder.addNewNode(Node.Kind.LIBRARY_FUNCTION);
+                node.label = "Library Call";
+            }
+
+            boolean localStatement = findAndUpdateParentLocalStatement(node, stNode);
+            if (!localStatement) {
+                // Safely ignore the node.
+                return;
+            }
+        } else {
+            throw new IllegalStateException("Unexpected value functionSymbol");
+        }
+        // TODO: Handel Function call parameters
+        FormData formData = new FormData("expression");
+        formData.setTypeKind(FormData.FormDataTypeKind.IDENTIFIER);
+        formData.setValue(stNode.toSourceCode());
+        modelBuilder.addFormData("Params", formData);
+    }
+
+    private void handleNetworkCall(ExpressionNode stNode) {
+        // TODO: Improve this further.
+        Optional<Symbol> optionalSymbol = semanticModel.symbol(stNode);
+        if (!optionalSymbol.isPresent()) {
+            return;
+        }
+        if (optionalSymbol.get() instanceof MethodSymbol methodSymbol) {
+            Node.Kind kind = Node.Kind.NETWORK_RESOURCE_CALL;
+            if (stNode.kind() == SyntaxKind.REMOTE_METHOD_CALL_ACTION) {
+                kind = Node.Kind.NETWORK_REMOTE_CALL;
+            }
+            Node node = modelBuilder.addNewNode(kind);
+            node.label = "Network Call";
+            boolean localStatement = findAndUpdateParentLocalStatement(node, stNode);
+            if (!localStatement) {
+                // Safely ignore the node.
+                return;
+            }
+            // TODO: Handel Function call parameters
+            FormData formData = new FormData("expression");
+            formData.setTypeKind(FormData.FormDataTypeKind.IDENTIFIER);
+            formData.setValue(stNode.toSourceCode());
+            modelBuilder.addFormData("Params", formData);
+        }
     }
 
     private boolean findAndUpdateParentLocalStatement(Node node, io.ballerina.compiler.syntax.tree.Node source) {
@@ -226,8 +382,7 @@ public class CodeVisitor extends NodeVisitor {
 
     private void handleAssignmentStatementFormData(Node node, AssignmentStatementNode stNode) {
         semanticModel.symbol(stNode.varRef()).ifPresent(symbol -> {
-            if (symbol.kind() == SymbolKind.VARIABLE) {
-                VariableSymbol variableSymbol = (VariableSymbol) symbol;
+            if (symbol instanceof VariableSymbol variableSymbol) {
                 FormData formData = new FormData("result");
                 formData.setTypeKind(getFormDataType(variableSymbol.typeDescriptor()));
                 formData.addAllowedTypes(variableSymbol.typeDescriptor().signature());

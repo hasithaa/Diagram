@@ -24,7 +24,7 @@ public class Diagram implements JsonElement {
 
     List<Node> nodes = new ArrayList<>();
     List<Subgraph> subgraphs = new ArrayList<>();
-    List<Edge> edges = new ArrayList<>();
+    //    List<Edge> edges = new ArrayList<>();
     private String label;
 
     String iId;
@@ -51,12 +51,17 @@ public class Diagram implements JsonElement {
         }
         json.append(ws).append("  ],\n");
         json.append(ws).append("  \"edges\": [\n");
-        for (Edge edge : edges) {
-            json.append(edge.getJsonString(wsCount + 1)).append(",\n");
-        }
-        if (!edges.isEmpty()) {
-            json.deleteCharAt(json.length() - 2);
-        }
+//        for (Edge edge : edges) {
+//            json.append(edge.getJsonString(wsCount + 1)).append(",\n");
+//        }
+//        if (!edges.isEmpty()) {
+//            json.deleteCharAt(json.length() - 2);
+//        }for (Edge edge : edges) {
+//            json.append(edge.getJsonString(wsCount + 1)).append(",\n");
+//        }
+//        if (!edges.isEmpty()) {
+//            json.deleteCharAt(json.length() - 2);
+//        }
         json.append(ws).append("  ]\n");
         json.append(ws).append("  \"label\": \"").append(label).append("\",\n");
         json.append(ws).append("  \"iId\": \"").append(iId).append("\"\n");

@@ -17,16 +17,14 @@
  */
 package io.github.hasithaa.diagram.json;
 
-import io.ballerina.compiler.api.symbols.Symbol;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Stack;
 
 public class ModelBuilder {
 
     private final Model model;
-    private final List<Symbol> dataMapping;
 
     int diagramCount = 0;
     int edgeCount = 0;
@@ -35,12 +33,7 @@ public class ModelBuilder {
 
     ModelBuilder() {
         this.model = new Model();
-        this.dataMapping = new ArrayList<>();
         this.currentNodeList = new Stack<>();
-    }
-
-    public void addDataMapping(Symbol symbol) {
-        this.dataMapping.add(symbol);
     }
 
     public Diagram addDiagram() {
@@ -54,14 +47,28 @@ public class ModelBuilder {
         return diagram;
     }
 
-    public Node addNode(Node.Kind kind) {
+    public Node createNode(Node.Kind kind) {
         Node node = new Node();
-        node.iId = "Node" + nodeCount;
+        node.iId = "Node" + nodeCount++;
         node.kind = kind;
-        List<Node> nodes = this.model.diagrams.get(this.model.diagrams.size() - 1).nodes;
+        return node;
+    }
+
+    public void addNode(Node node, boolean partial) {
+        List<Node> nodes = currentNodeList.peek();
+        if (!nodes.isEmpty() || !partial) {
+            Node lastNode = nodes.get(nodes.size() - 1);
+            Edge edge = new Edge("Edge" + edgeCount++);
+            edge.source = Optional.of(lastNode);
+            edge.target = Optional.of(node);
+            lastNode.edges.add(edge);
+        }
         nodes.add(node);
-        currentNodeList.peek().add(node);
-        nodeCount++;
+    }
+
+    public Node addNewNode(Node.Kind kind) {
+        Node node = createNode(kind);
+        addNode(node, false);
         return node;
     }
 
@@ -72,12 +79,35 @@ public class ModelBuilder {
         currentNodeList.push(children);
     }
 
-    public void endChildFlow() {
-        currentNodeList.pop();
+    public void endChildFlow(Node source, Node target) {
+        List<Node> nodes = currentNodeList.pop();
+        if (!nodes.isEmpty()) {
+            Node firstElement = nodes.get(0);
+            Edge sourceEdge = new Edge("Edge" + edgeCount++);
+            sourceEdge.source = Optional.of(source);
+            sourceEdge.target = Optional.of(firstElement);
+            source.edges.add(sourceEdge);
+
+            Node lastElement = nodes.get(nodes.size() - 1);
+            Edge targetEdge = new Edge("Edge" + edgeCount++);
+            targetEdge.source = Optional.of(lastElement);
+            targetEdge.target = Optional.of(target);
+            lastElement.edges.add(targetEdge);
+        } else {
+            Edge edge = new Edge("Edge" + edgeCount++);
+            edge.source = Optional.of(source);
+            edge.target = Optional.of(target);
+            edge.kind = Edge.EdgeKind.IMPLICIT;
+            source.edges.add(edge);
+        }
+    }
+
+    private Diagram getCurrentDiagram() {
+        return this.model.diagrams.get(model.diagrams.size() - 1);
     }
 
     public void addFormData(String key, FormData formData) {
-        this.model.diagrams.get(this.model.diagrams.size() - 1).nodes.get(nodeCount - 1).formData.put(key, formData);
+        getCurrentDiagram().nodes.get(nodeCount - 1).formData.put(key, formData);
     }
 
 }

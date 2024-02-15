@@ -24,13 +24,13 @@ import java.util.List;
 public class FormData implements JsonElement {
 
     private final String label;
-    private int index = -1;
     private final List<String[]> allowedTypes = new ArrayList<>();
+    private final List<String> possibleValues = new ArrayList<>();
+    private final List<String> flags = new ArrayList<>();
+    private int index = -1;
     private FormDataTypeKind typeKind = FormDataTypeKind.STRING;
     private String value = "";
-    private final List<String> possibleValues = new ArrayList<>();
     private boolean editable = true;
-    private final List<String> flags = new ArrayList<>();
 
     FormData(String label) {
         this.label = label;
@@ -115,7 +115,7 @@ public class FormData implements JsonElement {
     }
 
     enum FormDataTypeKind {
-        INT, FLOAT, DECIMAL, BOOLEAN, STRING, NIL, XML, MAPPING, ARRAY, TABLE, IDENTIFIER, DEFAULT, ENUM
+        INT, FLOAT, DECIMAL, BOOLEAN, STRING, BYTE_ARRAY, NIL, XML, MAPPING, ARRAY, TABLE, IDENTIFIER, DEFAULT, ENUM
     }
 
     enum RepeatType {
