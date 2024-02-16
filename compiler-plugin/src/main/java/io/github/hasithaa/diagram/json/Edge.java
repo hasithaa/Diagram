@@ -34,7 +34,7 @@ public class Edge implements JsonElement {
 
     @Override
     public String getJsonString(int wsCount) {
-        String ws = " ".repeat(wsCount * 4);
+        String ws = getWs(wsCount);
         StringBuilder json = new StringBuilder();
         json.append(ws).append("{\n");
         label.ifPresent(s -> json.append(ws).append("  \"label\": \"").append(s).append("\",\n"));

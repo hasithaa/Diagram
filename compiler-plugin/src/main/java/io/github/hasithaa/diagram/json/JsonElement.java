@@ -27,4 +27,8 @@ public interface JsonElement {
         }
         return value;
     }
+
+    default String getWs(int wsCount) {
+        return " ".repeat(wsCount * 2);
+    }
 }

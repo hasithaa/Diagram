@@ -73,7 +73,7 @@ public class FormData implements JsonElement {
 
     @Override
     public String getJsonString(int wsCount) {
-        String ws = " ".repeat(wsCount * 4);
+        String ws = getWs(wsCount);
         StringBuilder json = new StringBuilder();
         json.append(ws).append("{\n");
         json.append(ws).append("  \"index\": ").append(index).append(",\n");

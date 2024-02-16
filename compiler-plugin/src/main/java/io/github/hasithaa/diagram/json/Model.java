@@ -27,13 +27,13 @@ public class Model implements JsonElement {
 
     @Override
     public String getJsonString(int wsCount) {
-        String ws = " ".repeat(wsCount * 4);
+        String ws = getWs(wsCount);
         StringBuilder json = new StringBuilder();
         json.append(ws).append("{\n");
         json.append(ws).append("  \"label\": \"").append(label).append("\",\n");
         json.append(ws).append("  \"diagrams\": [\n");
         for (Diagram diagram : diagrams) {
-            json.append(diagram.getJsonString(wsCount + 1)).append(",\n");
+            json.append(diagram.getJsonString(wsCount + 2)).append(",\n");
         }
         if (!diagrams.isEmpty()) {
             json.deleteCharAt(json.length() - 2);

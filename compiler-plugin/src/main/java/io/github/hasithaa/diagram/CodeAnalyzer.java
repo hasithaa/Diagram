@@ -5,13 +5,9 @@ import io.ballerina.projects.ModuleId;
 import io.ballerina.projects.plugins.AnalysisTask;
 import io.ballerina.projects.plugins.CompilationAnalysisContext;
 import io.github.hasithaa.diagram.flowchart.FlowChart;
-import io.github.hasithaa.diagram.flowchart.FlowChartGenerator;
-import io.github.hasithaa.diagram.integration.CodeVisitor;
-import io.github.hasithaa.diagram.integration.Diagram;
-import io.github.hasithaa.diagram.integration.Sequence;
+import io.github.hasithaa.diagram.json.CodeVisitor;
+import io.github.hasithaa.diagram.json.Model;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class CodeAnalyzer<T> implements AnalysisTask<CompilationAnalysisContext> {
@@ -31,20 +27,23 @@ public class CodeAnalyzer<T> implements AnalysisTask<CompilationAnalysisContext>
                         codeVisitor);
             });
 
-            try {
-                List<Sequence> epSequences = codeVisitor.getEp();
-                List<DiagramFile> diagramFiles = new ArrayList<>();
-                for (Diagram diagram : codeVisitor.getDiagrams()) {
+//            try {
+////                List<Sequence> epSequences = codeVisitor.getEp();
+////                List<DiagramFile> diagramFiles = new ArrayList<>();
+////                for (Diagram diagram : codeVisitor.getDiagrams()) {
+////
+////                    DiagramFile diagramFile = new DiagramFile(diagram.getName(), List.of(
+////                            FlowChartGenerator.generateFlowChart(diagram, epSequences, true),
+////                            FlowChartGenerator.generateFlowChart(diagram, epSequences, false)));
+////                    diagramFiles.add(diagramFile);
+////                }
+////                DiagramSerializer.serialize(diagramFiles, ctx.currentPackage().project());
+//            } catch (IOException e) {
+//                throw new RuntimeException("Error occurred while generating the diagram for the function:", e);
+//            }
 
-                    DiagramFile diagramFile = new DiagramFile(diagram.getName(), List.of(
-                            FlowChartGenerator.generateFlowChart(diagram, epSequences, true),
-                            FlowChartGenerator.generateFlowChart(diagram, epSequences, false)));
-                    diagramFiles.add(diagramFile);
-                }
-                DiagramSerializer.serialize(diagramFiles, ctx.currentPackage().project());
-            } catch (IOException e) {
-                throw new RuntimeException("Error occurred while generating the diagram for the function:", e);
-            }
+            Model model = codeVisitor.getModel();
+            DiagramSerializer.serialize(model, ctx.currentPackage().project());
         } catch (Exception e) {
             throw new RuntimeException("Error occurred while generating the diagram for the function:", e);
         }

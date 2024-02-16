@@ -31,7 +31,7 @@ public class Node implements JsonElement {
     Kind kind;
     Optional<String> subkind = Optional.empty();
     Optional<String> sublabel = Optional.empty();
-    Map<String, FormData> formData = new LinkedHashMap<>();
+    Map<String, List<FormData>> formData = new LinkedHashMap<>();
     LineRange lineRange;
 
     Optional<Node> parent = Optional.empty();
@@ -42,7 +42,7 @@ public class Node implements JsonElement {
 
     @Override
     public String getJsonString(int wsCount) {
-        String ws = " ".repeat(wsCount * 4);
+        String ws = getWs(wsCount);
         StringBuilder json = new StringBuilder();
         json.append(ws).append("{\n");
         json.append(ws).append("  \"label\": \"").append(label).append("\",\n");
@@ -50,27 +50,36 @@ public class Node implements JsonElement {
         subkind.ifPresent(s -> json.append(ws).append("  \"subkind\": \"").append(s).append("\",\n"));
         sublabel.ifPresent(s -> json.append(ws).append("  \"sublabel\": \"").append(s).append("\",\n"));
         json.append(ws).append("  \"formData\": {\n");
-        for (Map.Entry<String, FormData> entry : formData.entrySet()) {
-            json.append(ws).append("    \"").append(entry.getKey()).append("\": ").append(
-                    entry.getValue().getJsonString(wsCount + 1)).append(",\n");
+        for (Map.Entry<String, List<FormData>> entry : formData.entrySet()) {
+            json.append(ws).append("    \"").append(entry.getKey()).append("\": [\n");
+            for (FormData formData : entry.getValue()) {
+                json.append(formData.getJsonString(wsCount + 3)).append(",\n");
+            }
+            if (!entry.getValue().isEmpty()) {
+                json.deleteCharAt(json.length() - 2);
+            }
+            json.append(ws).append("    ],\n");
         }
         if (!formData.isEmpty()) {
             json.deleteCharAt(json.length() - 2);
         }
         json.append(ws).append("  },\n");
-        json.append(ws).append(" \"lineRange\": {\n");
-        json.append(ws).append("    \"fileName\": \"").append(lineRange.fileName()).append("\",\n");
-        json.append(ws).append("    \"startLine\": ").append(lineRange.startLine().line()).append(",\n");
-        json.append(ws).append("    \"endLine\": ").append(lineRange.endLine().line()).append("\n");
-        json.append(ws).append("  },\n");
-
+        if (lineRange == null) {
+            json.append(ws).append("  \"lineRange\": null,\n");
+        } else {
+            json.append(ws).append("  \"lineRange\": {\n");
+            json.append(ws).append("    \"fileName\": \"").append(lineRange.fileName()).append("\",\n");
+            json.append(ws).append("    \"startLine\": ").append(lineRange.startLine().line()).append(",\n");
+            json.append(ws).append("    \"endLine\": ").append(lineRange.endLine().line()).append("\n");
+            json.append(ws).append("  },\n");
+        }
         parent.ifPresent(node -> json.append(ws).append("  \"parent\": \"").append(node.iId).append("\",\n"));
         if (children != null) {
             json.append(ws).append("  \"children\": {\n");
             for (Map.Entry<String, List<Node>> entry : children.entrySet()) {
                 json.append(ws).append("    \"").append(entry.getKey()).append("\": [\n");
                 for (Node node : entry.getValue()) {
-                    json.append(node.getJsonString(wsCount + 2)).append(",\n");
+                    json.append(node.getJsonString(wsCount + 3)).append(",\n");
                 }
                 if (!entry.getValue().isEmpty()) {
                     json.deleteCharAt(json.length() - 2);
@@ -84,7 +93,7 @@ public class Node implements JsonElement {
         }
         json.append(ws).append("  \"edges\": [\n");
         for (Edge edge : edges) {
-            json.append(edge.getJsonString(wsCount + 1)).append(",\n");
+            json.append(edge.getJsonString(wsCount + 2)).append(",\n");
         }
         if (!edges.isEmpty()) {
             json.deleteCharAt(json.length() - 2);

@@ -21,6 +21,7 @@ import io.ballerina.projects.Project;
 import io.ballerina.projects.util.ProjectPaths;
 import io.github.hasithaa.diagram.CodeAnalyzer.DiagramFile;
 import io.github.hasithaa.diagram.flowchart.FlowChart;
+import io.github.hasithaa.diagram.json.Model;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -54,5 +55,18 @@ public interface DiagramSerializer {
                 flowChart.generateMermaidSyntax() +
                 "```\n---\n";
         return sb;
+    }
+
+    static void serialize(Model model, Project project) throws IOException {
+        Path packageRootPath = ProjectPaths.packageRoot(project.sourceRoot());
+        Path diagramDirectory = packageRootPath.resolve("diagrams");
+        if (!Files.exists(diagramDirectory)) {
+            Files.createDirectory(diagramDirectory);
+        }
+        Path diagramPath = diagramDirectory.resolve("diagram.json");
+        if (!Files.exists(diagramPath)) {
+            Files.createFile(diagramPath);
+        }
+        Files.writeString(diagramPath, model.getJsonString(0), StandardOpenOption.TRUNCATE_EXISTING);
     }
 }

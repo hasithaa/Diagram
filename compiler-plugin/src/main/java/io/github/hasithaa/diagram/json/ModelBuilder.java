@@ -36,6 +36,10 @@ public class ModelBuilder {
         this.currentNodeList = new Stack<>();
     }
 
+    public Model getModel() {
+        return model;
+    }
+
     public Diagram addDiagram() {
         Diagram diagram = new Diagram();
         diagram.iId = "Diagram" + diagramCount;
@@ -56,7 +60,7 @@ public class ModelBuilder {
 
     public void addNode(Node node, boolean partial) {
         List<Node> nodes = currentNodeList.peek();
-        if (!nodes.isEmpty() || !partial) {
+        if (!nodes.isEmpty() && !partial) {
             Node lastNode = nodes.get(nodes.size() - 1);
             Edge edge = new Edge("Edge" + edgeCount++);
             edge.source = Optional.of(lastNode);
@@ -73,9 +77,11 @@ public class ModelBuilder {
     }
 
     public void startChildFlow(String label) {
-        Node lastElement = currentNodeList.peek().get(currentNodeList.peek().size() - 1);
         List<Node> children = new ArrayList<>();
-        lastElement.getChildren().put(label, children);
+        if (!currentNodeList.peek().isEmpty()) {
+            Node lastElement = currentNodeList.peek().get(currentNodeList.peek().size() - 1);
+            lastElement.getChildren().put(label, children);
+        }
         currentNodeList.push(children);
     }
 
@@ -107,7 +113,12 @@ public class ModelBuilder {
     }
 
     public void addFormData(String key, FormData formData) {
-        getCurrentDiagram().nodes.get(nodeCount - 1).formData.put(key, formData);
+        List<Node> peek = currentNodeList.peek();
+        if (!peek.get(peek.size() - 1).formData.containsKey(key)) {
+            peek.get(peek.size() - 1).formData.put(key, new ArrayList<>());
+        }
+        peek.get(peek.size() - 1).formData.get(key).add(formData);
+
     }
 
 }

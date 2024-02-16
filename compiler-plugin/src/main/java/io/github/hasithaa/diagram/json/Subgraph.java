@@ -33,7 +33,7 @@ public class Subgraph implements JsonElement {
 
     @Override
     public String getJsonString(int wsCount) {
-        String ws = " ".repeat(wsCount * 4);
+        String ws = getWs(wsCount);
         StringBuilder json = new StringBuilder();
         json.append(ws).append("{\n");
         json.append(ws).append("  \"kind\": \"").append(kind).append("\",\n");
@@ -41,7 +41,7 @@ public class Subgraph implements JsonElement {
         json.append(ws).append("  \"iId\": \"").append(iid).append("\",\n");
         json.append(ws).append("  \"nodes\": [\n");
         for (Node node : nodes) {
-            json.append(node.getJsonString(wsCount + 1)).append(",\n");
+            json.append(node.getJsonString(wsCount + 3)).append(",\n");
         }
         if (!nodes.isEmpty()) {
             json.deleteCharAt(json.length() - 2);

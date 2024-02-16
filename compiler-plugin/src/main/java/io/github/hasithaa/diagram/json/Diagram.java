@@ -31,12 +31,12 @@ public class Diagram implements JsonElement {
 
     @Override
     public String getJsonString(int wsCount) {
-        String ws = " ".repeat(wsCount * 4);
+        String ws = getWs(wsCount);
         StringBuilder json = new StringBuilder();
         json.append(ws).append("{\n");
         json.append(ws).append("  \"nodes\": [\n");
         for (Node node : nodes) {
-            json.append(node.getJsonString(wsCount + 1)).append(",\n");
+            json.append(node.getJsonString(wsCount + 2)).append(",\n");
         }
         if (!nodes.isEmpty()) {
             json.deleteCharAt(json.length() - 2);
@@ -44,13 +44,13 @@ public class Diagram implements JsonElement {
         json.append(ws).append("  ],\n");
         json.append(ws).append("  \"subgraphs\": [\n");
         for (Subgraph subgraph : subgraphs) {
-            json.append(subgraph.getJsonString(wsCount + 1)).append(",\n");
+            json.append(subgraph.getJsonString(wsCount + 2)).append(",\n");
         }
         if (!subgraphs.isEmpty()) {
             json.deleteCharAt(json.length() - 2);
         }
         json.append(ws).append("  ],\n");
-        json.append(ws).append("  \"edges\": [\n");
+//        json.append(ws).append("  \"edges\": [\n");
 //        for (Edge edge : edges) {
 //            json.append(edge.getJsonString(wsCount + 1)).append(",\n");
 //        }
@@ -62,12 +62,13 @@ public class Diagram implements JsonElement {
 //        if (!edges.isEmpty()) {
 //            json.deleteCharAt(json.length() - 2);
 //        }
-        json.append(ws).append("  ]\n");
+//        json.append(ws).append("  ]\n");
         json.append(ws).append("  \"label\": \"").append(label).append("\",\n");
         json.append(ws).append("  \"iId\": \"").append(iId).append("\"\n");
         json.append(ws).append("}");
         return json.toString();
     }
+
 
     public void setLabel(String label) {
         this.label = label;

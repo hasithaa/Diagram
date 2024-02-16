@@ -66,7 +66,10 @@ public class CodeVisitor extends NodeVisitor {
 
     public CodeVisitor(SemanticModel semanticModel) {
         this.semanticModel = semanticModel;
+    }
 
+    public Model getModel() {
+        return modelBuilder.getModel();
     }
 
     public void visit(ServiceDeclarationNode stNode) {
@@ -93,10 +96,10 @@ public class CodeVisitor extends NodeVisitor {
         Diagram diagram = modelBuilder.addDiagram();
         Node node;
         if (symbol.get() instanceof ResourceMethodSymbol resourceSymbol) {
-            modelBuilder.startChildFlow("Network Event");
+//            modelBuilder.startChildFlow("Network Event");
             // TODO : improve this further
             String methodName = resourceSymbol.getName().orElse("Unknown");
-            diagram.setLabel(methodName + " " + resourceSymbol.resourcePath());
+            diagram.setLabel(methodName + " " + resourceSymbol.resourcePath().signature());
             node = modelBuilder.addNewNode(Node.Kind.NETWORK_EVENT);
             modelBuilder.addFormData("Network", new FormData("Method").setTypeKind(FormData.FormDataTypeKind.IDENTIFIER)
                                                                       .setValue(methodName));
@@ -107,13 +110,13 @@ public class CodeVisitor extends NodeVisitor {
         } else if (symbol.get() instanceof FunctionSymbol functionSymbol) {
             if (functionSymbol instanceof MethodSymbol methodSymbol) {
                 if (methodSymbol.qualifiers().contains(Qualifier.REMOTE)) {
-                    modelBuilder.startChildFlow("Network Event");
+//                    modelBuilder.startChildFlow("Network Event");
                     extractServiceDeclarationFormData();
                 } else {
-                    modelBuilder.startChildFlow("Method Call");
+//                    modelBuilder.startChildFlow("Method Call");
                 }
             } else {
-                modelBuilder.startChildFlow("Function Call");
+//                modelBuilder.startChildFlow("Function Call");
             }
             // TODO : Function Call Event
             diagram.setLabel(functionSymbol.getName().orElse("Unknown"));
@@ -128,7 +131,7 @@ public class CodeVisitor extends NodeVisitor {
         extractFunctionSymbolFormData((FunctionSymbol) symbol.get());
         super.visit(stNode);
         Node end = modelBuilder.createNode(Node.Kind.END);
-        modelBuilder.endChildFlow(node, end);
+//        modelBuilder.endChildFlow(node, end);
         modelBuilder.addNode(end, false);
         symbolStack.pop();
     }
@@ -138,7 +141,9 @@ public class CodeVisitor extends NodeVisitor {
 
     public void visit(IfElseStatementNode stNode) {
         Node ifNode = modelBuilder.addNewNode(Node.Kind.IF);
+        ifNode.lineRange = stNode.lineRange();
         Node mergeNode = modelBuilder.createNode(Node.Kind.KONNECTOR);
+        mergeNode.lineRange = stNode.lineRange();
         ifNode.label = "If";
         FormData formData = new FormData("Condition");
         formData.setTypeKind(FormData.FormDataTypeKind.BOOLEAN);
@@ -160,7 +165,7 @@ public class CodeVisitor extends NodeVisitor {
     public void visit(VariableDeclarationNode stNode) {
         stmtNodeStack.push(stNode);
         super.visit(stNode);
-        if (stmtNodeStack.peek() == stNode) {
+        if (!stmtNodeStack.empty() && stmtNodeStack.peek() == stNode) {
             handleDefaultExpressionNode(stNode);
         }
     }
@@ -168,7 +173,7 @@ public class CodeVisitor extends NodeVisitor {
     public void visit(AssignmentStatementNode stNode) {
         stmtNodeStack.push(stNode);
         super.visit(stNode);
-        if (stmtNodeStack.peek() == stNode) {
+        if (!stmtNodeStack.empty() && stmtNodeStack.peek() == stNode) {
             handleDefaultExpressionNode(stNode);
         }
     }
@@ -176,7 +181,7 @@ public class CodeVisitor extends NodeVisitor {
     public void visit(ExpressionStatementNode stNode) {
         stmtNodeStack.push(stNode);
         super.visit(stNode);
-        if (stmtNodeStack.peek() == stNode) {
+        if (!stmtNodeStack.empty() && stmtNodeStack.peek() == stNode) {
             handleDefaultExpressionNode(stNode);
         }
     }
@@ -220,6 +225,7 @@ public class CodeVisitor extends NodeVisitor {
         // TODO : Improve this further.
         Node node = modelBuilder.addNewNode(Node.Kind.EXPRESSION);
         node.label = "Expression";
+        node.lineRange = stNode.lineRange();
         handleStatementNode(node, stNode);
     }
 
@@ -331,7 +337,7 @@ public class CodeVisitor extends NodeVisitor {
         while (stNode != null) {
             if (stNode instanceof StatementNode) {
                 node.lineRange = stNode.lineRange();
-                if (stmtNodeStack.peek() != stNode) {
+                if (!stmtNodeStack.empty() && stmtNodeStack.peek() != stNode) {
                     throw new IllegalStateException("Node stack is not in sync with the source node: " + source);
                 }
                 stmtNodeStack.pop();
