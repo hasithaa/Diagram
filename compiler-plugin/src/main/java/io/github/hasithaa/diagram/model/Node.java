@@ -15,7 +15,7 @@
  *  specific language governing permissions and limitations
  *  under the License.
  */
-package io.github.hasithaa.diagram.json;
+package io.github.hasithaa.diagram.model;
 
 import io.ballerina.tools.text.LineRange;
 

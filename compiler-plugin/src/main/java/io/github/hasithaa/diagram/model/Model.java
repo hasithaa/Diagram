@@ -15,44 +15,31 @@
  *  specific language governing permissions and limitations
  *  under the License.
  */
-package io.github.hasithaa.diagram.json;
+package io.github.hasithaa.diagram.model;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Subgraph implements JsonElement {
+public class Model implements JsonElement {
 
-    final SubgraphKind kind;
-    String iid;
+    List<Diagram> diagrams = new ArrayList<>();
     String label;
-    List<Node> nodes = new ArrayList<>();
-
-    public Subgraph(SubgraphKind kind) {
-        this.kind = kind;
-    }
 
     @Override
     public String getJsonString(int wsCount) {
         String ws = getWs(wsCount);
         StringBuilder json = new StringBuilder();
         json.append(ws).append("{\n");
-        json.append(ws).append("  \"kind\": \"").append(kind).append("\",\n");
         json.append(ws).append("  \"label\": \"").append(label).append("\",\n");
-        json.append(ws).append("  \"iId\": \"").append(iid).append("\",\n");
-        json.append(ws).append("  \"nodes\": [\n");
-        for (Node node : nodes) {
-            json.append(node.getJsonString(wsCount + 3)).append(",\n");
+        json.append(ws).append("  \"diagrams\": [\n");
+        for (Diagram diagram : diagrams) {
+            json.append(diagram.getJsonString(wsCount + 2)).append(",\n");
         }
-        if (!nodes.isEmpty()) {
+        if (!diagrams.isEmpty()) {
             json.deleteCharAt(json.length() - 2);
         }
         json.append(ws).append("  ]\n");
         json.append(ws).append("}");
-
         return json.toString();
-    }
-
-    enum SubgraphKind {
-        WORKER, ENDPOINT
     }
 }

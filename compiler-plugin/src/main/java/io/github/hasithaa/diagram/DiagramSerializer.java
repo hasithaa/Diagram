@@ -21,7 +21,7 @@ import io.ballerina.projects.Project;
 import io.ballerina.projects.util.ProjectPaths;
 import io.github.hasithaa.diagram.CodeAnalyzer.DiagramFile;
 import io.github.hasithaa.diagram.flowchart.FlowChart;
-import io.github.hasithaa.diagram.json.Model;
+import io.github.hasithaa.diagram.model.Model;
 
 import java.io.IOException;
 import java.nio.file.Files;

@@ -15,21 +15,20 @@
  *  specific language governing permissions and limitations
  *  under the License.
  */
-package io.github.hasithaa.diagram.json;
+package io.github.hasithaa.diagram.model;
 
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
 
-public class Edge implements JsonElement {
+public class Subgraph implements JsonElement {
 
-    Optional<String> label = Optional.empty();
-    Optional<Node> source = Optional.empty();
-    Optional<Node> target = Optional.empty();
-    EdgeKind kind = EdgeKind.DEFAULT;
+    final SubgraphKind kind;
+    String iid;
+    String label;
+    List<Node> nodes = new ArrayList<>();
 
-    final String iId;
-
-    Edge(String iId) {
-        this.iId = iId;
+    public Subgraph(SubgraphKind kind) {
+        this.kind = kind;
     }
 
     @Override
@@ -37,18 +36,23 @@ public class Edge implements JsonElement {
         String ws = getWs(wsCount);
         StringBuilder json = new StringBuilder();
         json.append(ws).append("{\n");
-        label.ifPresent(s -> json.append(ws).append("  \"label\": \"").append(s).append("\",\n"));
-        source.ifPresent(node -> json.append(ws).append("  \"source\": \"").append(node.iId).append("\",\n"));
-        target.ifPresent(node -> json.append(ws).append("  \"target\": \"").append(node.iId).append("\",\n"));
         json.append(ws).append("  \"kind\": \"").append(kind).append("\",\n");
-        json.append(ws).append("  \"iId\": \"").append(iId).append("\"\n");
+        json.append(ws).append("  \"label\": \"").append(label).append("\",\n");
+        json.append(ws).append("  \"iId\": \"").append(iid).append("\",\n");
+        json.append(ws).append("  \"nodes\": [\n");
+        for (Node node : nodes) {
+            json.append(node.getJsonString(wsCount + 3)).append(",\n");
+        }
+        if (!nodes.isEmpty()) {
+            json.deleteCharAt(json.length() - 2);
+        }
+        json.append(ws).append("  ]\n");
         json.append(ws).append("}");
+
         return json.toString();
     }
 
-    enum EdgeKind {
-        DEFAULT, IMPLICIT, HIDDEN
+    enum SubgraphKind {
+        WORKER, ENDPOINT
     }
-
-
 }

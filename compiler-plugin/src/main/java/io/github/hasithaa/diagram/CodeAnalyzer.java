@@ -5,8 +5,8 @@ import io.ballerina.projects.ModuleId;
 import io.ballerina.projects.plugins.AnalysisTask;
 import io.ballerina.projects.plugins.CompilationAnalysisContext;
 import io.github.hasithaa.diagram.flowchart.FlowChart;
-import io.github.hasithaa.diagram.json.CodeVisitor;
-import io.github.hasithaa.diagram.json.Model;
+import io.github.hasithaa.diagram.model.CodeVisitor;
+import io.github.hasithaa.diagram.model.Model;
 
 import java.util.List;
 
