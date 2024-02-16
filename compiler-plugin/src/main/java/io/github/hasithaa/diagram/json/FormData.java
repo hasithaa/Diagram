@@ -81,12 +81,12 @@ public class FormData implements JsonElement {
         json.append(ws).append("  \"type\": \"").append(typeKind).append("\",\n");
         json.append(ws).append("  \"allowedTypes\": [\n");
         for (String[] types : allowedTypes) {
-            json.append(ws).append("    [");
+            json.append(ws).append("    [\n");
             for (String type : types) {
-                json.append("\"").append(type).append("\", ");
+                json.append(ws).append("      \"").append(type).append("\",\n");
             }
             json.deleteCharAt(json.length() - 2);
-            json.append("],\n");
+            json.append(ws).append("    ],\n");
         }
         if (!allowedTypes.isEmpty()) {
             json.deleteCharAt(json.length() - 2);

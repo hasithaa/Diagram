@@ -1,0 +1,342 @@
+{
+  "label": "null",
+  "diagrams": [
+    {
+      "nodes": [
+        {
+          "label": "null",
+          "kind": "NETWORK_EVENT",
+          "formData": {
+            "Network": [
+              {
+                "index": -1,
+                "label": "Method",
+                "type": "IDENTIFIER",
+                "allowedTypes": [
+                ],
+                "value": "get",
+                "possibleValues": [
+                ],
+                "editable": true,
+                "flags": [
+                ]
+              },
+              {
+                "index": -1,
+                "label": "Path",
+                "type": "STRING",
+                "allowedTypes": [
+                ],
+                "value": "doctor/[string doctorType]",
+                "possibleValues": [
+                ],
+                "editable": true,
+                "flags": [
+                ]
+              }
+            ],
+            "Service": [
+              {
+                "index": -1,
+                "label": "AttachPoint",
+                "type": "DEFAULT",
+                "allowedTypes": [
+                ],
+                "value": "",
+                "possibleValues": [
+                ],
+                "editable": false,
+                "flags": [
+                ]
+              }
+            ],
+            "Return": [
+              {
+                "index": -1,
+                "label": "Return",
+                "type": "IDENTIFIER",
+                "allowedTypes": [
+                ],
+                "value": "json|error",
+                "possibleValues": [
+                ],
+                "editable": true,
+                "flags": [
+                ]
+              }
+            ],
+            "Qualifiers": [
+              {
+                "index": -1,
+                "label": "Qualifier",
+                "type": "IDENTIFIER",
+                "allowedTypes": [
+                ],
+                "value": "ISOLATED",
+                "possibleValues": [
+                ],
+                "editable": true,
+                "flags": [
+                ]
+              },
+              {
+                "index": -1,
+                "label": "Qualifier",
+                "type": "IDENTIFIER",
+                "allowedTypes": [
+                ],
+                "value": "RESOURCE",
+                "possibleValues": [
+                ],
+                "editable": true,
+                "flags": [
+                ]
+              }
+            ]
+          },
+          "lineRange": {
+            "fileName": "main.bal",
+            "startLine": 8,
+            "endLine": 17
+          },
+          "edges": [
+            {
+              "source": "Node0",
+              "target": "Node1",
+              "kind": "DEFAULT",
+              "iId": "Edge0"
+            }
+          ],
+          "iId": "Node0",
+          "editable": true
+        },
+        {
+          "label": "If",
+          "kind": "IF",
+          "formData": {
+            "Condition": [
+              {
+                "index": -1,
+                "label": "Condition",
+                "type": "BOOLEAN",
+                "allowedTypes": [
+                ],
+                "value": "doctorType == \"ENT\" ",
+                "possibleValues": [
+                ],
+                "editable": true,
+                "flags": [
+                ]
+              }
+            ]
+          },
+          "lineRange": {
+            "fileName": "main.bal",
+            "startLine": 9,
+            "endLine": 16
+          },
+          "children": {
+            "Then": [
+              {
+                "label": "Network Call",
+                "kind": "NETWORK_REMOTE_CALL",
+                "formData": {
+                  "Error": [
+                    {
+                      "index": -1,
+                      "label": "Fail On Error",
+                      "type": "BOOLEAN",
+                      "allowedTypes": [
+                      ],
+                      "value": "true",
+                      "possibleValues": [
+                      ],
+                      "editable": true,
+                      "flags": [
+                      ]
+                    }
+                  ],
+                  "Variables": [
+                    {
+                      "index": -1,
+                      "label": "result",
+                      "type": "DEFAULT",
+                      "allowedTypes": [
+                        [
+                          "hasitha/SimpleHospitalService:0.1.0:Result"
+                        ]
+                      ],
+                      "value": "res",
+                      "possibleValues": [
+                      ],
+                      "editable": true,
+                      "flags": [
+                        "Local",
+                        "New"
+                      ]
+                    }
+                  ],
+                  "Params": [
+                    {
+                      "index": -1,
+                      "label": "expression",
+                      "type": "IDENTIFIER",
+                      "allowedTypes": [
+                      ],
+                      "value": "mapleRidgeEp->get(\"/doctor/\" + doctorType)",
+                      "possibleValues": [
+                      ],
+                      "editable": true,
+                      "flags": [
+                      ]
+                    }
+                  ]
+                },
+                "lineRange": {
+                  "fileName": "main.bal",
+                  "startLine": 11,
+                  "endLine": 11
+                },
+                "edges": [
+                  {
+                    "source": "Node3",
+                    "target": "Node2",
+                    "kind": "DEFAULT",
+                    "iId": "Edge2"
+                  }
+                ],
+                "iId": "Node3",
+                "editable": true
+              }
+            ],
+            "Else": [
+              {
+                "label": "Network Call",
+                "kind": "NETWORK_REMOTE_CALL",
+                "formData": {
+                  "Error": [
+                    {
+                      "index": -1,
+                      "label": "Fail On Error",
+                      "type": "BOOLEAN",
+                      "allowedTypes": [
+                      ],
+                      "value": "true",
+                      "possibleValues": [
+                      ],
+                      "editable": true,
+                      "flags": [
+                      ]
+                    }
+                  ],
+                  "Variables": [
+                    {
+                      "index": -1,
+                      "label": "result",
+                      "type": "DEFAULT",
+                      "allowedTypes": [
+                        [
+                          "hasitha/SimpleHospitalService:0.1.0:Result"
+                        ]
+                      ],
+                      "value": "res",
+                      "possibleValues": [
+                      ],
+                      "editable": true,
+                      "flags": [
+                        "Local",
+                        "New"
+                      ]
+                    }
+                  ],
+                  "Params": [
+                    {
+                      "index": -1,
+                      "label": "expression",
+                      "type": "IDENTIFIER",
+                      "allowedTypes": [
+                      ],
+                      "value": "pineValleyEp->get(\"/doctor/\" + doctorType)",
+                      "possibleValues": [
+                      ],
+                      "editable": true,
+                      "flags": [
+                      ]
+                    }
+                  ]
+                },
+                "lineRange": {
+                  "fileName": "main.bal",
+                  "startLine": 14,
+                  "endLine": 14
+                },
+                "edges": [
+                  {
+                    "source": "Node4",
+                    "target": "Node2",
+                    "kind": "DEFAULT",
+                    "iId": "Edge4"
+                  }
+                ],
+                "iId": "Node4",
+                "editable": true
+              }
+            ]
+          },
+          "edges": [
+            {
+              "source": "Node1",
+              "target": "Node3",
+              "kind": "DEFAULT",
+              "iId": "Edge1"
+            },
+            {
+              "source": "Node1",
+              "target": "Node4",
+              "kind": "DEFAULT",
+              "iId": "Edge3"
+            }
+          ],
+          "iId": "Node1",
+          "editable": true
+        },
+        {
+          "label": "null",
+          "kind": "KONNECTOR",
+          "formData": {
+          },
+          "lineRange": {
+            "fileName": "main.bal",
+            "startLine": 9,
+            "endLine": 16
+          },
+          "edges": [
+            {
+              "source": "Node2",
+              "target": "Node5",
+              "kind": "DEFAULT",
+              "iId": "Edge5"
+            }
+          ],
+          "iId": "Node2",
+          "editable": true
+        },
+        {
+          "label": "null",
+          "kind": "END",
+          "formData": {
+          },
+          "lineRange": null,
+          "edges": [
+          ],
+          "iId": "Node5",
+          "editable": true
+        }
+      ],
+      "subgraphs": [
+      ],
+      "label": "get doctor/[string doctorType]",
+      "iId": "Diagram0"
+    }
+  ]
+}

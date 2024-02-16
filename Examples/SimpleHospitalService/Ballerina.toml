@@ -1,0 +1,14 @@
+[package]
+org = "hasitha"
+name = "SimpleHospitalService"
+version = "0.1.0"
+distribution = "2201.8.4"
+
+[build-options]
+observabilityIncluded = true
+
+[[dependency]]
+org = "hasitha"
+name = "diagram"
+version = "0.1.0"
+repository = "local"

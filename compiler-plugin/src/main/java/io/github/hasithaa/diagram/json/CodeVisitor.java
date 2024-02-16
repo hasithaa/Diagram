@@ -105,7 +105,7 @@ public class CodeVisitor extends NodeVisitor {
                                                                       .setValue(methodName));
             modelBuilder.addFormData("Network", new FormData("Path").setTypeKind(FormData.FormDataTypeKind.STRING)
                                                                     .setValue(
-                                                                            resourceSymbol.resourcePath().toString()));
+                                                                            resourceSymbol.resourcePath().signature()));
             extractServiceDeclarationFormData();
         } else if (symbol.get() instanceof FunctionSymbol functionSymbol) {
             if (functionSymbol instanceof MethodSymbol methodSymbol) {
