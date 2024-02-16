@@ -21,7 +21,7 @@ public class CodeAnalyzer<T> implements AnalysisTask<CompilationAnalysisContext>
         try {
             ModuleId currentModuleId = ctx.currentPackage().getDefaultModule().moduleId();
             SemanticModel semanticModel = ctx.compilation().getSemanticModel(currentModuleId);
-            CodeVisitor codeVisitor = new CodeVisitor(semanticModel);
+            CodeVisitor codeVisitor = new CodeVisitor(semanticModel, currentModuleId.moduleName());
             ctx.currentPackage().getDefaultModule().documentIds().forEach(documentId -> {
                 ctx.currentPackage().getDefaultModule().document(documentId).syntaxTree().rootNode().accept(
                         codeVisitor);
@@ -44,6 +44,7 @@ public class CodeAnalyzer<T> implements AnalysisTask<CompilationAnalysisContext>
 
             Model model = codeVisitor.getModel();
             DiagramSerializer.serialize(model, ctx.currentPackage().project());
+            DiagramSerializer.serializeHTML(model, ctx.currentPackage().project());
         } catch (Exception e) {
             throw new RuntimeException("Error occurred while generating the diagram for the function:", e);
         }

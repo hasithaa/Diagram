@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class FormData implements JsonElement {
+public class FormData implements JsonElement, MermaidElement {
 
     private final String label;
     private final List<String[]> allowedTypes = new ArrayList<>();
@@ -92,10 +92,10 @@ public class FormData implements JsonElement {
             json.deleteCharAt(json.length() - 2);
         }
         json.append(ws).append("  ],\n");
-        json.append(ws).append("  \"value\": \"").append(encodedString(value)).append("\",\n");
+        json.append(ws).append("  \"value\": \"").append(safeJsonString(value)).append("\",\n");
         json.append(ws).append("  \"possibleValues\": [\n");
         for (String possibleValue : possibleValues) {
-            json.append(ws).append("    \"").append(encodedString(possibleValue)).append("\",\n");
+            json.append(ws).append("    \"").append(safeJsonString(possibleValue)).append("\",\n");
         }
         if (!possibleValues.isEmpty()) {
             json.deleteCharAt(json.length() - 2);
@@ -112,6 +112,16 @@ public class FormData implements JsonElement {
         json.append(ws).append("  ]\n");
         json.append(ws).append("}");
         return json.toString();
+    }
+
+    @Override
+    public String getMermaidString(int wsCount) {
+        String mermaid = "<tr>" +
+                "<td>" + safeHtmlString(label) + "</td>" +
+                "<td>" + safeHtmlString(typeKind.name()) + "</td>" +
+                "<td>" + safeHtmlString(value) + "</td>" +
+                "</tr>";
+        return mermaid;
     }
 
     enum FormDataTypeKind {

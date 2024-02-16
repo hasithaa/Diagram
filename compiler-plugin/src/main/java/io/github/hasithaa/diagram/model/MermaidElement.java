@@ -17,18 +17,19 @@
  */
 package io.github.hasithaa.diagram.model;
 
-public interface JsonElement {
+public interface MermaidElement {
 
-    String getJsonString(int wsCount);
+    String getMermaidString(int wsCount);
 
-    default String safeJsonString(String value) {
+    default String safeHtmlString(String value) {
         if (value != null && value.contains("\"")) {
-            return value.replace("\"", "\\\"");
+            return value
+                    .replace("<", "&lt;")
+                    .replace(">", "&gt;")
+                    .replace("&", "&amp;")
+                    .replace("'", "&apos;")
+                    .replace("\"", "&quot;");
         }
         return value;
-    }
-
-    default String getWs(int wsCount) {
-        return " ".repeat(wsCount * 2);
     }
 }

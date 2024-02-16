@@ -64,8 +64,9 @@ public class CodeVisitor extends NodeVisitor {
     private final Stack<Symbol> symbolStack = new Stack<>();
     private final List<Symbol> dataMapping = new ArrayList<>();
 
-    public CodeVisitor(SemanticModel semanticModel) {
+    public CodeVisitor(SemanticModel semanticModel, String name) {
         this.semanticModel = semanticModel;
+        modelBuilder.getModel().setLabel(name);
     }
 
     public Model getModel() {
@@ -101,6 +102,7 @@ public class CodeVisitor extends NodeVisitor {
             String methodName = resourceSymbol.getName().orElse("Unknown");
             diagram.setLabel(methodName + " " + resourceSymbol.resourcePath().signature());
             node = modelBuilder.addNewNode(Node.Kind.NETWORK_EVENT);
+            node.label = "Network Event";
             modelBuilder.addFormData("Network", new FormData("Method").setTypeKind(FormData.FormDataTypeKind.IDENTIFIER)
                                                                       .setValue(methodName));
             modelBuilder.addFormData("Network", new FormData("Path").setTypeKind(FormData.FormDataTypeKind.STRING)
@@ -118,9 +120,13 @@ public class CodeVisitor extends NodeVisitor {
             } else {
 //                modelBuilder.startChildFlow("Function Call");
             }
-            // TODO : Function Call Event
             diagram.setLabel(functionSymbol.getName().orElse("Unknown"));
             node = modelBuilder.addNewNode(Node.Kind.FUNCTION_START);
+            if (functionSymbol.getName().isPresent() && functionSymbol.getName().get().equals("main")) {
+                node.label = "Trigger";
+            } else {
+                node.label = "Function Start";
+            }
             modelBuilder.addFormData("Function", new FormData("Name").setTypeKind(FormData.FormDataTypeKind.IDENTIFIER)
                                                                      .setValue(functionSymbol.getName()
                                                                                              .orElse("Unknown")));

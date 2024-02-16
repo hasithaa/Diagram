@@ -25,16 +25,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class Node implements JsonElement {
+public class Node implements JsonElement, MermaidElement {
 
     String label;
     Kind kind;
-    Optional<String> subkind = Optional.empty();
-    Optional<String> sublabel = Optional.empty();
+    String subkind = null;
+    String sublabel = null;
     Map<String, List<FormData>> formData = new LinkedHashMap<>();
     LineRange lineRange;
 
-    Optional<Node> parent = Optional.empty();
+    Node parent = null;
     List<Edge> edges = new ArrayList<>();
     String iId;
     boolean editable = true;
@@ -47,8 +47,10 @@ public class Node implements JsonElement {
         json.append(ws).append("{\n");
         json.append(ws).append("  \"label\": \"").append(label).append("\",\n");
         json.append(ws).append("  \"kind\": \"").append(kind).append("\",\n");
-        subkind.ifPresent(s -> json.append(ws).append("  \"subkind\": \"").append(s).append("\",\n"));
-        sublabel.ifPresent(s -> json.append(ws).append("  \"sublabel\": \"").append(s).append("\",\n"));
+        Optional.ofNullable(subkind).ifPresent(s -> json.append(ws).append("  \"subkind\": \"").append(s)
+                                                        .append("\",\n"));
+        Optional.ofNullable(sublabel).ifPresent(s -> json.append(ws).append("  \"sublabel\": \"").append(s)
+                                                         .append("\",\n"));
         json.append(ws).append("  \"formData\": {\n");
         for (Map.Entry<String, List<FormData>> entry : formData.entrySet()) {
             json.append(ws).append("    \"").append(entry.getKey()).append("\": [\n");
@@ -73,7 +75,8 @@ public class Node implements JsonElement {
             json.append(ws).append("    \"endLine\": ").append(lineRange.endLine().line()).append("\n");
             json.append(ws).append("  },\n");
         }
-        parent.ifPresent(node -> json.append(ws).append("  \"parent\": \"").append(node.iId).append("\",\n"));
+        Optional.ofNullable(parent).ifPresent(node -> json.append(ws).append("  \"parent\": \"").append(node.iId)
+                                                          .append("\",\n"));
         if (children != null) {
             json.append(ws).append("  \"children\": {\n");
             for (Map.Entry<String, List<Node>> entry : children.entrySet()) {
@@ -110,6 +113,18 @@ public class Node implements JsonElement {
             children = new LinkedHashMap<>();
         }
         return children;
+    }
+
+    @Override
+    public String getMermaidString(int wsCount) {
+        String ws = getWs(wsCount);
+        StringBuilder mermaid = new StringBuilder();
+        mermaid.append(ws).append(iId).append("[").append(label).append("]\n");
+        Optional.ofNullable(children).ifPresent(map -> map.forEach((label, nodes) -> {
+            nodes.forEach(node -> mermaid.append(node.getMermaidString(wsCount)));
+        }));
+        edges.forEach(edge -> mermaid.append(edge.getMermaidString(wsCount)));
+        return mermaid.toString();
     }
 
     enum Kind {

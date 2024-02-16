@@ -19,14 +19,13 @@ package io.github.hasithaa.diagram.model;
 
 import java.util.Optional;
 
-public class Edge implements JsonElement {
-
-    Optional<String> label = Optional.empty();
-    Optional<Node> source = Optional.empty();
-    Optional<Node> target = Optional.empty();
-    EdgeKind kind = EdgeKind.DEFAULT;
+public class Edge implements JsonElement, MermaidElement {
 
     final String iId;
+    String label = null;
+    Node source = null;
+    Node target = null;
+    EdgeKind kind = EdgeKind.DEFAULT;
 
     Edge(String iId) {
         this.iId = iId;
@@ -37,13 +36,35 @@ public class Edge implements JsonElement {
         String ws = getWs(wsCount);
         StringBuilder json = new StringBuilder();
         json.append(ws).append("{\n");
-        label.ifPresent(s -> json.append(ws).append("  \"label\": \"").append(s).append("\",\n"));
-        source.ifPresent(node -> json.append(ws).append("  \"source\": \"").append(node.iId).append("\",\n"));
-        target.ifPresent(node -> json.append(ws).append("  \"target\": \"").append(node.iId).append("\",\n"));
+        Optional.ofNullable(label).ifPresent(s -> json.append(ws).append("  \"label\": \"").append(s).append("\",\n"));
+        Optional.ofNullable(source).ifPresent(node -> json.append(ws).append("  \"source\": \"").append(node.iId)
+                                                          .append("\",\n"));
+        Optional.ofNullable(target).ifPresent(node -> json.append(ws).append("  \"target\": \"").append(node.iId)
+                                                          .append("\",\n"));
         json.append(ws).append("  \"kind\": \"").append(kind).append("\",\n");
         json.append(ws).append("  \"iId\": \"").append(iId).append("\"\n");
         json.append(ws).append("}");
         return json.toString();
+    }
+
+    @Override
+    public String getMermaidString(int wsCount) {
+        String ws = getWs(wsCount);
+        StringBuilder mermaid = new StringBuilder();
+        String connection = " --> ";
+        if (kind == EdgeKind.IMPLICIT) {
+            connection = " --- ";
+        } else if (kind == EdgeKind.HIDDEN) {
+            connection = " ~~~ ";
+        }
+        if (source != null && target != null) {
+            mermaid.append(ws).append(source.iId).append(connection);
+            if (label != null) {
+                mermaid.append("|").append(label).append("|");
+            }
+            mermaid.append(target.iId).append("\n");
+        }
+        return mermaid.toString();
     }
 
     enum EdgeKind {

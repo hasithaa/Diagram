@@ -20,14 +20,12 @@ package io.github.hasithaa.diagram.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Diagram implements JsonElement {
+public class Diagram implements JsonElement, MermaidElement {
 
     List<Node> nodes = new ArrayList<>();
     List<Subgraph> subgraphs = new ArrayList<>();
-    //    List<Edge> edges = new ArrayList<>();
-    private String label;
-
     String iId;
+    private String label;
 
     @Override
     public String getJsonString(int wsCount) {
@@ -50,27 +48,28 @@ public class Diagram implements JsonElement {
             json.deleteCharAt(json.length() - 2);
         }
         json.append(ws).append("  ],\n");
-//        json.append(ws).append("  \"edges\": [\n");
-//        for (Edge edge : edges) {
-//            json.append(edge.getJsonString(wsCount + 1)).append(",\n");
-//        }
-//        if (!edges.isEmpty()) {
-//            json.deleteCharAt(json.length() - 2);
-//        }for (Edge edge : edges) {
-//            json.append(edge.getJsonString(wsCount + 1)).append(",\n");
-//        }
-//        if (!edges.isEmpty()) {
-//            json.deleteCharAt(json.length() - 2);
-//        }
-//        json.append(ws).append("  ]\n");
         json.append(ws).append("  \"label\": \"").append(label).append("\",\n");
         json.append(ws).append("  \"iId\": \"").append(iId).append("\"\n");
         json.append(ws).append("}");
         return json.toString();
     }
 
+    public String getLabel() {
+        return label;
+    }
 
     public void setLabel(String label) {
         this.label = label;
+    }
+
+    @Override
+    public String getMermaidString(int wsCount) {
+        String ws = getWs(wsCount);
+        StringBuilder mermaid = new StringBuilder();
+        mermaid.append(ws).append("flowchart TB").append("\n");
+        for (Node node : nodes) {
+            mermaid.append(node.getMermaidString(wsCount + 2));
+        }
+        return mermaid.toString();
     }
 }

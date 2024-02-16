@@ -42,4 +42,16 @@ public class Model implements JsonElement {
         json.append(ws).append("}");
         return json.toString();
     }
+
+    public List<Diagram> getDiagrams() {
+        return diagrams;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
 }

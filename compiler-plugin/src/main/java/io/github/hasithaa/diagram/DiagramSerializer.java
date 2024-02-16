@@ -21,6 +21,7 @@ import io.ballerina.projects.Project;
 import io.ballerina.projects.util.ProjectPaths;
 import io.github.hasithaa.diagram.CodeAnalyzer.DiagramFile;
 import io.github.hasithaa.diagram.flowchart.FlowChart;
+import io.github.hasithaa.diagram.model.Diagram;
 import io.github.hasithaa.diagram.model.Model;
 
 import java.io.IOException;
@@ -69,4 +70,41 @@ public interface DiagramSerializer {
         }
         Files.writeString(diagramPath, model.getJsonString(0), StandardOpenOption.TRUNCATE_EXISTING);
     }
+
+    static void serializeHTML(Model model, Project project) throws IOException {
+        Path packageRootPath = ProjectPaths.packageRoot(project.sourceRoot());
+        Path diagramDirectory = packageRootPath.resolve("diagrams");
+        if (!Files.exists(diagramDirectory)) {
+            Files.createDirectory(diagramDirectory);
+        }
+        Path diagramPath = diagramDirectory.resolve("diagram.html");
+        if (!Files.exists(diagramPath)) {
+            Files.createFile(diagramPath);
+        }
+        Files.writeString(diagramPath, getHtmlString(model), StandardOpenOption.TRUNCATE_EXISTING);
+    }
+
+    static String getHtmlString(Model model) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("<!DOCTYPE html>\n").append("<html>\n");
+        sb.append("<head>\n");
+        sb.append("    <link href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css\" />");
+        sb.append("</head>\n");
+        sb.append("<body>\n");
+        sb.append("    <h1>").append(model.getLabel()).append("</h1>\n");
+        for (Diagram diagram : model.getDiagrams()) {
+            sb.append("    <h2>").append(diagram.getLabel()).append("</h2>\n");
+            sb.append("    <div class=\"mermaid\">\n");
+            sb.append(diagram.getMermaidString(1));
+            sb.append("    </div>\n");
+        }
+        sb.append("    <script src=\"https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js\"></script>\n");
+        sb.append("    <script src=\"https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js\">")
+          .append("</script>\n");
+        sb.append("    <script>mermaid.initialize({startOnLoad:true});</script>\n");
+        sb.append("</body>\n");
+        sb.append("</html>");
+        return sb.toString();
+    }
+
 }

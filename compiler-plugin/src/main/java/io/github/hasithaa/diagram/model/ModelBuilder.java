@@ -19,7 +19,6 @@ package io.github.hasithaa.diagram.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Stack;
 
 public class ModelBuilder {
@@ -63,8 +62,8 @@ public class ModelBuilder {
         if (!nodes.isEmpty() && !partial) {
             Node lastNode = nodes.get(nodes.size() - 1);
             Edge edge = new Edge("Edge" + edgeCount++);
-            edge.source = Optional.of(lastNode);
-            edge.target = Optional.of(node);
+            edge.source = lastNode;
+            edge.target = node;
             lastNode.edges.add(edge);
         }
         nodes.add(node);
@@ -90,19 +89,19 @@ public class ModelBuilder {
         if (!nodes.isEmpty()) {
             Node firstElement = nodes.get(0);
             Edge sourceEdge = new Edge("Edge" + edgeCount++);
-            sourceEdge.source = Optional.of(source);
-            sourceEdge.target = Optional.of(firstElement);
+            sourceEdge.source = source;
+            sourceEdge.target = firstElement;
             source.edges.add(sourceEdge);
 
             Node lastElement = nodes.get(nodes.size() - 1);
             Edge targetEdge = new Edge("Edge" + edgeCount++);
-            targetEdge.source = Optional.of(lastElement);
-            targetEdge.target = Optional.of(target);
+            targetEdge.source = lastElement;
+            targetEdge.target = target;
             lastElement.edges.add(targetEdge);
         } else {
             Edge edge = new Edge("Edge" + edgeCount++);
-            edge.source = Optional.of(source);
-            edge.target = Optional.of(target);
+            edge.source = source;
+            edge.target = target;
             edge.kind = Edge.EdgeKind.IMPLICIT;
             source.edges.add(edge);
         }
