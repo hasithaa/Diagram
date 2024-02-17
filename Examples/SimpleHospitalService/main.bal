@@ -37,8 +37,7 @@ service /search on new http:Listener(9090) {
             xml aResponse = check pineValleyEp->post("/doctor/" + doctorType, data);
             json aJson = check xmldata:toJson(aResponse);
             PineValleyDoctor aPineValleyDoctor = check aJson.cloneWithType();
-            DoctorDetails aDoctorDetails = transformPineValley(aPineValleyDoctor);
-            return aDoctorDetails;
+            return transformPineValley(aPineValleyDoctor);
         }
     }
 }

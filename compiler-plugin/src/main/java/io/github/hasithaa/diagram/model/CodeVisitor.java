@@ -46,6 +46,7 @@ import io.ballerina.compiler.syntax.tree.MethodCallExpressionNode;
 import io.ballerina.compiler.syntax.tree.ModuleVariableDeclarationNode;
 import io.ballerina.compiler.syntax.tree.NodeVisitor;
 import io.ballerina.compiler.syntax.tree.RemoteMethodCallActionNode;
+import io.ballerina.compiler.syntax.tree.ReturnStatementNode;
 import io.ballerina.compiler.syntax.tree.ServiceDeclarationNode;
 import io.ballerina.compiler.syntax.tree.StatementNode;
 import io.ballerina.compiler.syntax.tree.SyntaxKind;
@@ -68,7 +69,7 @@ public class CodeVisitor extends NodeVisitor {
 
     public CodeVisitor(SemanticModel semanticModel, String name) {
         this.semanticModel = semanticModel;
-        modelBuilder.getModel().setLabel(name);
+        modelBuilder.setLabel(name);
     }
 
     public Model getModel() {
@@ -200,6 +201,14 @@ public class CodeVisitor extends NodeVisitor {
         }
     }
 
+    public void visit(ReturnStatementNode stNode) {
+        stmtNodeStack.push(stNode);
+        super.visit(stNode);
+        if (!stmtNodeStack.empty() && stmtNodeStack.peek() == stNode) {
+            handleDefaultExpressionNode(stNode);
+        }
+    }
+
     // Deciding Expression Nodes
 
     public void visit(MappingConstructorExpressionNode stNode) {
@@ -240,7 +249,7 @@ public class CodeVisitor extends NodeVisitor {
         Node node = modelBuilder.addNewNode(Node.Kind.EXPRESSION);
         node.label = "Expression";
         node.lineRange = stNode.lineRange();
-        handleStatementNode(node, stNode);
+        handleStatementNode(node, stNode, true);
     }
 
     private void handleNewMessage(ExpressionNode stNode) {
@@ -249,23 +258,23 @@ public class CodeVisitor extends NodeVisitor {
         switch (stNode.kind()) {
             case MAPPING_CONSTRUCTOR:
                 typeKind = FormData.FormDataTypeKind.MAPPING;
-                node.subkind = "JSON";
+                node.subKind = "JSON";
                 break;
             case LIST_CONSTRUCTOR:
                 typeKind = FormData.FormDataTypeKind.ARRAY;
-                node.subkind = "Array";
+                node.subKind = "Array";
                 break;
             case XML_TEMPLATE_EXPRESSION:
                 typeKind = FormData.FormDataTypeKind.XML;
-                node.subkind = "XML";
+                node.subKind = "XML";
                 break;
             case STRING_TEMPLATE_EXPRESSION:
                 typeKind = FormData.FormDataTypeKind.STRING;
-                node.subkind = "String";
+                node.subKind = "String";
                 break;
             case BYTE_ARRAY_LITERAL:
                 typeKind = FormData.FormDataTypeKind.BYTE_ARRAY;
-                node.subkind = "Bytes";
+                node.subKind = "Bytes";
                 break;
             default:
                 return;
@@ -299,9 +308,9 @@ public class CodeVisitor extends NodeVisitor {
             Node node;
             if (moduleName.equals(this.moduleID) && !(functionSymbol instanceof MethodSymbol)) {
                 // Local Function Call
-                if (dataMapping.contains(functionSymbol)) {
+                if (dataMapping.contains(functionSymbol)) { // Improve this. If order is not correct, this will fail.
                     node = modelBuilder.addNewNode(Node.Kind.DATA_MAPPING);
-                    node.label = "Data Mapping";
+                    node.label = "Data Mapping Activity";
                 } else {
                     node = modelBuilder.addNewNode(Node.Kind.CODE_BLOCK);
                     node.label = "Code Block";
@@ -343,12 +352,12 @@ public class CodeVisitor extends NodeVisitor {
         } else if (moduleID.moduleName().equals("http")) {
             // Improve this further like above
             node = modelBuilder.addNewNode(Node.Kind.KNOWN_FUNCTION_CALL);
-            node.subkind = "HTTP";
+            node.subKind = "HTTP";
             node.label = "HTTP Utility";
         } else if (moduleID.moduleName().equals("sql")) {
             // Improve this further like above
             node = modelBuilder.addNewNode(Node.Kind.KNOWN_FUNCTION_CALL);
-            node.subkind = "SQL";
+            node.subKind = "SQL";
             node.label = "SQL Call";
         } else if (moduleID.moduleName().equals("lang.value")) {
             if (functionSymbol.getName().isPresent()) {
@@ -361,19 +370,19 @@ public class CodeVisitor extends NodeVisitor {
             }
         } else if (moduleID.moduleName().equals("lang.array")) {
             node = modelBuilder.addNewNode(Node.Kind.KNOWN_FUNCTION_CALL);
-            node.subkind = "ARRAY";
+            node.subKind = "ARRAY";
             node.label = "Array Operation";
         } else if (moduleID.moduleName().equals("lang.string")) {
             node = modelBuilder.addNewNode(Node.Kind.KNOWN_FUNCTION_CALL);
-            node.subkind = "STRING";
+            node.subKind = "STRING";
             node.label = "String Operation";
         } else if (moduleID.moduleName().equals("lang.map")) {
             node = modelBuilder.addNewNode(Node.Kind.KNOWN_FUNCTION_CALL);
-            node.subkind = "MAP";
+            node.subKind = "MAP";
             node.label = "Mapping Value Operation";
         } else if (moduleID.moduleName().equals("lang.xml")) {
             node = modelBuilder.addNewNode(Node.Kind.KNOWN_FUNCTION_CALL);
-            node.subkind = "XML";
+            node.subKind = "XML";
             node.label = "XML Operation";
         } // TODO : ADD more
         if (node == null) {
@@ -390,12 +399,13 @@ public class CodeVisitor extends NodeVisitor {
             return;
         }
         if (optionalSymbol.get() instanceof MethodSymbol methodSymbol) {
-            Node.Kind kind = Node.Kind.NETWORK_RESOURCE_CALL;
+            Node node = modelBuilder.addNewNode(Node.Kind.NETWORK_RESOURCE_CALL);
+            node.label = "Resource Call";
             if (stNode.kind() == SyntaxKind.REMOTE_METHOD_CALL_ACTION) {
-                kind = Node.Kind.NETWORK_REMOTE_CALL;
+                node = modelBuilder.addNewNode(Node.Kind.NETWORK_REMOTE_CALL);
+                node.label = "Remote Call";
             }
-            Node node = modelBuilder.addNewNode(kind);
-            node.label = methodSymbol.getModule().get().getName().get() + " " + methodSymbol.getName().orElse(
+            node.subLabel = methodSymbol.getModule().get().getName().get() + " " + methodSymbol.getName().orElse(
                     "Unknown Network Call");
             boolean localStatement = findAndUpdateParentLocalStatement(node, stNode);
             if (!localStatement) {
@@ -435,17 +445,25 @@ public class CodeVisitor extends NodeVisitor {
         if (stNode == null) {
             throw new IllegalStateException("Parent statement not found for the node: " + source);
         }
-        handleStatementNode(node, (StatementNode) stNode);
+        handleStatementNode(node, (StatementNode) stNode, false);
         return true;
     }
 
-    private void handleStatementNode(Node node, StatementNode stNode) {
+    private void handleStatementNode(Node node, StatementNode stNode, boolean defaultCase) {
         if (stNode instanceof VariableDeclarationNode stmt) {
             handleVariableDeclarationFormData(node, stmt);
         } else if (stNode instanceof AssignmentStatementNode stmt) {
             handleAssignmentStatementFormData(node, stmt);
         } else if (stNode instanceof ExpressionStatementNode stmt) {
             handleExpressionStatementNode(node, stmt);
+        } else if (stNode instanceof ReturnStatementNode stmt) {
+            // Fix incorrect node kind
+            if (defaultCase) {
+                node.label = "Return";
+                node.kind = Node.Kind.RETURN;
+            }
+            node.terminal = true;
+            node.returnable = true;
         }
     }
 

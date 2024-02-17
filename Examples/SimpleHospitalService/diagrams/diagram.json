@@ -97,7 +97,9 @@
           "lineRange": {
             "fileName": "main.bal",
             "startLine": 24,
-            "endLine": 42
+            "endLine": 41
+          },
+          "children": {
           },
           "edges": [
             {
@@ -108,6 +110,8 @@
             }
           ],
           "iId": "Node0",
+          "terminal": false,
+          "returnable": false,
           "editable": true
         },
         {
@@ -133,7 +137,7 @@
           "lineRange": {
             "fileName": "main.bal",
             "startLine": 25,
-            "endLine": 41
+            "endLine": 40
           },
           "children": {
             "Then": [
@@ -168,6 +172,8 @@
                   "startLine": 27,
                   "endLine": 27
                 },
+                "children": {
+                },
                 "edges": [
                   {
                     "source": "Node3",
@@ -177,11 +183,14 @@
                   }
                 ],
                 "iId": "Node3",
+                "terminal": false,
+                "returnable": false,
                 "editable": true
               },
               {
-                "label": "http post",
+                "label": "Resource Call",
                 "kind": "NETWORK_RESOURCE_CALL",
+                "sublabel": "http post",
                 "formData": {
                   "Error": [
                     {
@@ -239,6 +248,8 @@
                   "startLine": 28,
                   "endLine": 28
                 },
+                "children": {
+                },
                 "edges": [
                   {
                     "source": "Node4",
@@ -248,6 +259,8 @@
                   }
                 ],
                 "iId": "Node4",
+                "terminal": false,
+                "returnable": false,
                 "editable": true
               },
               {
@@ -310,6 +323,8 @@
                   "startLine": 29,
                   "endLine": 29
                 },
+                "children": {
+                },
                 "edges": [
                   {
                     "source": "Node5",
@@ -319,10 +334,12 @@
                   }
                 ],
                 "iId": "Node5",
+                "terminal": false,
+                "returnable": false,
                 "editable": true
               },
               {
-                "label": "Data Mapping",
+                "label": "Data Mapping Activity",
                 "kind": "DATA_MAPPING",
                 "formData": {
                   "Variables": [
@@ -366,15 +383,44 @@
                   "startLine": 30,
                   "endLine": 30
                 },
+                "children": {
+                },
                 "edges": [
                   {
                     "source": "Node6",
-                    "target": "Node2",
+                    "target": "Node7",
                     "kind": "DEFAULT",
-                    "iId": "Edge5"
+                    "iId": "Edge4"
                   }
                 ],
                 "iId": "Node6",
+                "terminal": false,
+                "returnable": false,
+                "editable": true
+              },
+              {
+                "label": "Return",
+                "kind": "RETURN",
+                "formData": {
+                },
+                "lineRange": {
+                  "fileName": "main.bal",
+                  "startLine": 31,
+                  "endLine": 31
+                },
+                "children": {
+                },
+                "edges": [
+                  {
+                    "source": "Node7",
+                    "target": "Node2",
+                    "kind": "UNREACHABLE",
+                    "iId": "Edge6"
+                  }
+                ],
+                "iId": "Node7",
+                "terminal": true,
+                "returnable": true,
                 "editable": true
               }
             ],
@@ -410,20 +456,46 @@
                   "startLine": 33,
                   "endLine": 35
                 },
+                "children": {
+                },
                 "edges": [
                   {
-                    "source": "Node7",
-                    "target": "Node8",
+                    "source": "Node8",
+                    "target": "Node9",
                     "kind": "DEFAULT",
-                    "iId": "Edge6"
+                    "iId": "Edge7"
                   }
                 ],
-                "iId": "Node7",
+                "iId": "Node8",
+                "terminal": false,
+                "returnable": false,
                 "editable": true
               },
               {
-                "label": "http post",
+                "label": "Resource Call",
+                "kind": "NETWORK_RESOURCE_CALL",
+                "formData": {
+                },
+                "lineRange": null,
+                "children": {
+                },
+                "edges": [
+                  {
+                    "source": "Node9",
+                    "target": "Node10",
+                    "kind": "DEFAULT",
+                    "iId": "Edge8"
+                  }
+                ],
+                "iId": "Node9",
+                "terminal": false,
+                "returnable": false,
+                "editable": true
+              },
+              {
+                "label": "Remote Call",
                 "kind": "NETWORK_REMOTE_CALL",
+                "sublabel": "http post",
                 "formData": {
                   "Error": [
                     {
@@ -481,15 +553,19 @@
                   "startLine": 36,
                   "endLine": 36
                 },
+                "children": {
+                },
                 "edges": [
                   {
-                    "source": "Node8",
-                    "target": "Node9",
+                    "source": "Node10",
+                    "target": "Node11",
                     "kind": "DEFAULT",
-                    "iId": "Edge7"
+                    "iId": "Edge9"
                   }
                 ],
-                "iId": "Node8",
+                "iId": "Node10",
+                "terminal": false,
+                "returnable": false,
                 "editable": true
               },
               {
@@ -552,15 +628,19 @@
                   "startLine": 37,
                   "endLine": 37
                 },
+                "children": {
+                },
                 "edges": [
                   {
-                    "source": "Node9",
-                    "target": "Node10",
+                    "source": "Node11",
+                    "target": "Node12",
                     "kind": "DEFAULT",
-                    "iId": "Edge8"
+                    "iId": "Edge10"
                   }
                 ],
-                "iId": "Node9",
+                "iId": "Node11",
+                "terminal": false,
+                "returnable": false,
                 "editable": true
               },
               {
@@ -623,41 +703,25 @@
                   "startLine": 38,
                   "endLine": 38
                 },
+                "children": {
+                },
                 "edges": [
                   {
-                    "source": "Node10",
-                    "target": "Node11",
+                    "source": "Node12",
+                    "target": "Node13",
                     "kind": "DEFAULT",
-                    "iId": "Edge9"
+                    "iId": "Edge11"
                   }
                 ],
-                "iId": "Node10",
+                "iId": "Node12",
+                "terminal": false,
+                "returnable": false,
                 "editable": true
               },
               {
-                "label": "Data Mapping",
+                "label": "Data Mapping Activity",
                 "kind": "DATA_MAPPING",
                 "formData": {
-                  "Variables": [
-                    {
-                      "index": -1,
-                      "label": "result",
-                      "type": "DEFAULT",
-                      "allowedTypes": [
-                        [
-                          "hasitha/SimpleHospitalService:0.1.0:DoctorDetails"
-                        ]
-                      ],
-                      "value": "aDoctorDetails",
-                      "possibleValues": [
-                      ],
-                      "editable": true,
-                      "flags": [
-                        "Local",
-                        "New"
-                      ]
-                    }
-                  ],
                   "Params": [
                     {
                       "index": -1,
@@ -679,15 +743,19 @@
                   "startLine": 39,
                   "endLine": 39
                 },
+                "children": {
+                },
                 "edges": [
                   {
-                    "source": "Node11",
+                    "source": "Node13",
                     "target": "Node2",
-                    "kind": "DEFAULT",
-                    "iId": "Edge11"
+                    "kind": "UNREACHABLE",
+                    "iId": "Edge13"
                   }
                 ],
-                "iId": "Node11",
+                "iId": "Node13",
+                "terminal": true,
+                "returnable": true,
                 "editable": true
               }
             ]
@@ -698,17 +766,19 @@
               "source": "Node1",
               "target": "Node3",
               "kind": "DEFAULT",
-              "iId": "Edge4"
+              "iId": "Edge5"
             },
             {
               "label": "Else",
               "source": "Node1",
-              "target": "Node7",
+              "target": "Node8",
               "kind": "DEFAULT",
-              "iId": "Edge10"
+              "iId": "Edge12"
             }
           ],
           "iId": "Node1",
+          "terminal": false,
+          "returnable": false,
           "editable": true
         },
         {
@@ -719,17 +789,21 @@
           "lineRange": {
             "fileName": "main.bal",
             "startLine": 25,
-            "endLine": 41
+            "endLine": 40
+          },
+          "children": {
           },
           "edges": [
             {
               "source": "Node2",
-              "target": "Node12",
-              "kind": "DEFAULT",
-              "iId": "Edge12"
+              "target": "Node14",
+              "kind": "UNREACHABLE",
+              "iId": "Edge14"
             }
           ],
           "iId": "Node2",
+          "terminal": false,
+          "returnable": false,
           "editable": true
         },
         {
@@ -738,9 +812,13 @@
           "formData": {
           },
           "lineRange": null,
+          "children": {
+          },
           "edges": [
           ],
-          "iId": "Node12",
+          "iId": "Node14",
+          "terminal": false,
+          "returnable": false,
           "editable": true
         }
       ],

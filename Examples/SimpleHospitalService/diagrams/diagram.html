@@ -19,32 +19,36 @@
     <h2>get doctor/[string doctorType]</h2>
     <div class="mermaid">
         flowchart TB
-        Node0["fa:fa-network-wired fa:fa-arrow-right-to-bracket <br><strong>Network Event</strong><br>"]
-        Node0 --> Node1
-        Node1["fa:fa-code-merge<br><strong>If</strong><br>"]
-        Node3["fa:fa-envelope<br><strong>New JSON</strong><br>"]
-        Node3 --> Node4
-        Node4["fa:fa-right-from-bracket fa:fa-network-wired<br><strong>Resource Call</strong><br>http post<br>"]
-        Node4 --> Node5
-        Node5["fa:fa-envelope-circle-check<br><strong>Data Schema Validation</strong><br>"]
-        Node5 --> Node6
-        Node6["fa:fa-timeline<br><strong>Data Mapping</strong><br>"]
-        Node6 --> Node2
-        Node7["fa:fa-envelope<br><strong>New XML</strong><br>"]
-        Node7 --> Node8
-        Node8["fa:fa-right-from-bracket fa:fa-network-wired<br><strong>Remote Call</strong><br>http post<br>"]
-        Node8 --> Node9
-        Node9["fa:fa-code fa:fa-right-left { }<br><strong>Data Conversion</strong><br>"]
-        Node9 --> Node10
-        Node10["fa:fa-envelope-circle-check<br><strong>Data Schema Validation</strong><br>"]
-        Node10 --> Node11
-        Node11["fa:fa-timeline<br><strong>Data Mapping</strong><br>"]
-        Node11 --> Node2
-        Node1 --> |Then|Node3
-        Node1 --> |Else|Node7
+        Node0["fa:fa-network-wired fa:fa-arrow-right-to-bracket<br><strong>Network Event</strong>"]
+        Node0 ==> Node1
+        Node1["fa:fa-code-merge<br><strong>If</strong>"]
+        Node3["fa:fa-envelope<br><strong>New JSON</strong>"]
+        Node3 ==> Node4
+        Node4["fa:fa-right-from-bracket fa:fa-network-wired<br><strong>Resource Call</strong><br>http post"]
+        Node4 ==> Node5
+        Node5["fa:fa-envelope-circle-check<br><strong>Data Schema Validation</strong>"]
+        Node5 ==> Node6
+        Node6["fa:fa-timeline<br><strong>Data Mapping Activity</strong>"]
+        Node6 ==> Node7
+        Node7["fa:fa-turn-up<br><strong>Return</strong>"]
+        Node7 x-.-x Node2
+        Node8["fa:fa-envelope<br><strong>New XML</strong>"]
+        Node8 ==> Node9
+        Node9["fa:fa-right-from-bracket fa:fa-network-wired<br><strong>Resource Call</strong>"]
+        Node9 ==> Node10
+        Node10["fa:fa-right-from-bracket fa:fa-network-wired<br><strong>Remote Call</strong><br>http post"]
+        Node10 ==> Node11
+        Node11["fa:fa-code fa:fa-right-left { }<br><strong>Data Conversion</strong>"]
+        Node11 ==> Node12
+        Node12["fa:fa-envelope-circle-check<br><strong>Data Schema Validation</strong>"]
+        Node12 ==> Node13
+        Node13["fa:fa-timeline (fa:fa-turn-up)<br><strong>Data Mapping Activity</strong>"]
+        Node13 x-.-x Node2
+        Node1 ==> |Then|Node3
+        Node1 ==> |Else|Node8
         Node2(("fa:fa-code-branch"))
-        Node2 --> Node12
-        Node12((( End )))
+        Node2 x-.-x Node14
+        Node14((("fa:fa-stop")))
     </div>
 </div>
 </div>

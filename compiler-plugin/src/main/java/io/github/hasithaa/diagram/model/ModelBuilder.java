@@ -36,7 +36,24 @@ public class ModelBuilder {
     }
 
     public Model getModel() {
+        optimize();
         return model;
+    }
+
+    private void optimize() {
+        for (Diagram diagram : model.diagrams) {
+            optimizeNodes(diagram.nodes);
+        }
+    }
+
+    private void optimizeNodes(List<Node> nodes) {
+        for (Node node : nodes) {
+            if (!node.incomingEdges.isEmpty() && node.incomingEdges.stream().allMatch(
+                    edge -> edge.kind == Edge.EdgeKind.UNREACHABLE)) {
+                node.edges.forEach(edge -> edge.kind = Edge.EdgeKind.UNREACHABLE);
+            }
+            node.getChildren().forEach((label, children) -> optimizeNodes(children));
+        }
     }
 
     public Diagram addDiagram() {
@@ -61,12 +78,16 @@ public class ModelBuilder {
         List<Node> nodes = currentNodeList.peek();
         if (!nodes.isEmpty() && !partial) {
             Node lastNode = nodes.get(nodes.size() - 1);
-            Edge edge = new Edge("Edge" + edgeCount++);
-            edge.source = lastNode;
-            edge.target = node;
-            lastNode.edges.add(edge);
+            addEdge(lastNode, node);
         }
         nodes.add(node);
+    }
+
+    private Edge addEdge(Node source, Node target) {
+        Edge edge = new Edge("Edge" + edgeCount++, source, target);
+        source.edges.add(edge);
+        target.incomingEdges.add(edge);
+        return edge;
     }
 
     public Node addNewNode(Node.Kind kind) {
@@ -88,23 +109,17 @@ public class ModelBuilder {
         List<Node> nodes = currentNodeList.pop();
         if (!nodes.isEmpty()) {
             Node firstElement = nodes.get(0);
-            Edge sourceEdge = new Edge("Edge" + edgeCount++);
-            sourceEdge.source = source;
-            sourceEdge.target = firstElement;
+            Edge sourceEdge = addEdge(source, firstElement);
             sourceEdge.label = label;
-            source.edges.add(sourceEdge);
 
             Node lastElement = nodes.get(nodes.size() - 1);
-            Edge targetEdge = new Edge("Edge" + edgeCount++);
-            targetEdge.source = lastElement;
-            targetEdge.target = target;
-            lastElement.edges.add(targetEdge);
+            Edge targetEdge = addEdge(lastElement, target);
+            if (lastElement.terminal || lastElement.returnable) {
+                targetEdge.kind = Edge.EdgeKind.UNREACHABLE;
+            }
         } else {
-            Edge edge = new Edge("Edge" + edgeCount++);
-            edge.source = source;
-            edge.target = target;
+            Edge edge = addEdge(source, target);
             edge.kind = Edge.EdgeKind.IMPLICIT;
-            source.edges.add(edge);
         }
     }
 
@@ -121,4 +136,7 @@ public class ModelBuilder {
 
     }
 
+    public void setLabel(String name) {
+        this.model.setLabel(name);
+    }
 }

@@ -23,12 +23,14 @@ public class Edge implements JsonElement, MermaidElement {
 
     final String iId;
     String label = null;
-    Node source = null;
-    Node target = null;
+    final Node source;
+    final Node target;
     EdgeKind kind = EdgeKind.DEFAULT;
 
-    Edge(String iId) {
+    Edge(String iId, Node source, Node target) {
         this.iId = iId;
+        this.source = source;
+        this.target = target;
     }
 
     @Override
@@ -51,11 +53,15 @@ public class Edge implements JsonElement, MermaidElement {
     public String getMermaidString(int wsCount) {
         String ws = getWs(wsCount);
         StringBuilder mermaid = new StringBuilder();
-        String connection = " --> ";
+        String connection = " ==> ";
         if (kind == EdgeKind.IMPLICIT) {
-            connection = " --- ";
+            connection = " --> ";
         } else if (kind == EdgeKind.HIDDEN) {
             connection = " ~~~ ";
+        } else if (kind == EdgeKind.OPTIONAL) {
+            connection = " -.-> ";
+        } else if (kind == EdgeKind.UNREACHABLE) {
+            connection = " x-.-x ";
         }
         if (source != null && target != null) {
             mermaid.append(ws).append(source.iId).append(connection);
@@ -68,7 +74,7 @@ public class Edge implements JsonElement, MermaidElement {
     }
 
     enum EdgeKind {
-        DEFAULT, IMPLICIT, HIDDEN
+        DEFAULT, IMPLICIT, HIDDEN, OPTIONAL, UNREACHABLE
     }
 
 

@@ -29,15 +29,18 @@ public class Node implements JsonElement, MermaidElement {
 
     String label;
     Kind kind;
-    String subkind = null;
-    String sublabel = null;
+    String subKind = null;
+    String subLabel = null;
     Map<String, List<FormData>> formData = new LinkedHashMap<>();
     LineRange lineRange;
 
     Node parent = null;
     List<Edge> edges = new ArrayList<>();
+    List<Edge> incomingEdges = new ArrayList<>();
     String iId;
     boolean editable = true;
+    boolean terminal = false;
+    boolean returnable = false;
     private Map<String, List<Node>> children = null;
 
     @Override
@@ -47,9 +50,9 @@ public class Node implements JsonElement, MermaidElement {
         json.append(ws).append("{\n");
         json.append(ws).append("  \"label\": \"").append(label).append("\",\n");
         json.append(ws).append("  \"kind\": \"").append(kind).append("\",\n");
-        Optional.ofNullable(subkind).ifPresent(s -> json.append(ws).append("  \"subkind\": \"").append(s)
+        Optional.ofNullable(subKind).ifPresent(s -> json.append(ws).append("  \"subkind\": \"").append(s)
                                                         .append("\",\n"));
-        Optional.ofNullable(sublabel).ifPresent(s -> json.append(ws).append("  \"sublabel\": \"").append(s)
+        Optional.ofNullable(subLabel).ifPresent(s -> json.append(ws).append("  \"sublabel\": \"").append(s)
                                                          .append("\",\n"));
         json.append(ws).append("  \"formData\": {\n");
         for (Map.Entry<String, List<FormData>> entry : formData.entrySet()) {
@@ -103,6 +106,8 @@ public class Node implements JsonElement, MermaidElement {
         }
         json.append(ws).append("  ],\n");
         json.append(ws).append("  \"iId\": \"").append(iId).append("\",\n");
+        json.append(ws).append("  \"terminal\": ").append(terminal).append(",\n");
+        json.append(ws).append("  \"returnable\": ").append(returnable).append(",\n");
         json.append(ws).append("  \"editable\": ").append(editable).append("\n");
         json.append(ws).append("}");
         return json.toString();
@@ -128,28 +133,73 @@ public class Node implements JsonElement, MermaidElement {
     }
 
     private String getMermaidNode() {
-        return switch (kind) {
-            case IF -> "[\"fa:fa-code-merge<br><strong>If</strong><br>\"]";
-            case CLONE -> "[\"fa:fa-clone<br><strong>Fork</strong><br>\"]";
-            case WAIT -> "[\"fa:fa-clock<br><strong>Wait</strong><br>\"]";
-            case NETWORK_EVENT ->
-                    "[\"fa:fa-network-wired fa:fa-arrow-right-to-bracket <br><strong>Network Event</strong><br>\"]";
-            case NETWORK_REMOTE_CALL ->
-                    "[\"fa:fa-right-from-bracket fa:fa-network-wired<br><strong>Remote Call</strong><br>" + label +
-                            "<br>\"]";
-            case NETWORK_RESOURCE_CALL ->
-                    "[\"fa:fa-right-from-bracket fa:fa-network-wired<br><strong>Resource Call</strong><br>" + label +
-                            "<br>\"]";
-            case KONNECTOR -> "((\"fa:fa-code-branch\"))";
-            case LIBRARY_FUNCTION -> "[\"fa:fa-cogs<br><strong>Library Function</strong><br>" + label + "<br>\"]";
-            case DATA_MAPPING -> "[\"fa:fa-timeline<br><strong>Data Mapping</strong><br>\"]";
-            case DATA_CONVERT -> "[\"fa:fa-code fa:fa-right-left { }<br><strong>Data Conversion</strong><br>\"]";
-            case END -> "((( End )))";
-            case DATA_NEW_MESSAGE -> "[\"fa:fa-envelope<br><strong>New " + subkind + "</strong><br>\"]";
-            case DATA_VALIDATION -> "[\"fa:fa-envelope-circle-check<br><strong>" + label + "</strong><br>\"]";
-            case KNOWN_FUNCTION_CALL -> "[\"fa:fa-gears<br><strong>" + label + "</strong><br>\"]";
-            default -> "[\"fa:fa-gears<br>" + label + "<br>\"]";
+        StringBuilder sb = new StringBuilder();
+        sb.append(getNodeStart()).append("\"");
+        sb.append(getIcon());
+        String heading = getHeading();
+        if (heading != null && !heading.isEmpty()) {
+            sb.append("<br><strong>").append(getHeading()).append("</strong>");
+        }
+        String subHeading = getSubHeading();
+        if (subHeading != null && !subHeading.isEmpty()) {
+            sb.append("<br>").append(getSubHeading());
+        }
+        sb.append("\"").append(getNodeEnd());
+        return sb.toString();
+    }
+
+    private String getNodeStart() {
+        if (kind == Kind.KONNECTOR) {
+            return "((";
+        } else if (kind == Kind.END) {
+            return "(((";
+        }
+        return "[";
+    }
+
+    private String getNodeEnd() {
+        if (kind == Kind.KONNECTOR) {
+            return "))";
+        } else if (kind == Kind.END) {
+            return ")))";
+        }
+        return "]";
+    }
+
+    private String getIcon() {
+        String icon = switch (kind) {
+            case IF -> "fa:fa-code-merge";
+            case CLONE -> "fa:fa-clone";
+            case WAIT -> "fa:fa-clock";
+            case NETWORK_EVENT -> "fa:fa-network-wired fa:fa-arrow-right-to-bracket";
+            case NETWORK_REMOTE_CALL, NETWORK_RESOURCE_CALL -> "fa:fa-right-from-bracket fa:fa-network-wired";
+            case KONNECTOR -> "fa:fa-code-branch";
+            case LIBRARY_FUNCTION -> "fa:fa-cogs";
+            case DATA_MAPPING -> "fa:fa-timeline";
+            case DATA_CONVERT -> "fa:fa-code fa:fa-right-left { }";
+            case END -> "fa:fa-stop";
+            case DATA_NEW_MESSAGE -> "fa:fa-envelope";
+            case DATA_VALIDATION -> "fa:fa-envelope-circle-check";
+            case KNOWN_FUNCTION_CALL -> "fa:fa-gear";
+            case RETURN -> "fa:fa-turn-up";
+            default -> "fa:fa-gears";
         };
+        if (returnable && kind != Kind.RETURN) {
+            icon = icon + " (fa:fa-turn-up)";
+        }
+        return icon;
+    }
+
+    private String getHeading() {
+        return switch (kind) {
+            case DATA_NEW_MESSAGE -> "New " + subKind;
+            case KONNECTOR -> "";
+            default -> label;
+        };
+    }
+
+    private String getSubHeading() {
+        return subLabel;
     }
 
     enum Kind {
