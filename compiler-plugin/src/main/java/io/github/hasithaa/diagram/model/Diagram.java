@@ -70,6 +70,9 @@ public class Diagram implements JsonElement, MermaidElement {
         for (Node node : nodes) {
             mermaid.append(node.getMermaidString(wsCount + 2));
         }
+        for (Subgraph subgraph : subgraphs) {
+            mermaid.append(subgraph.getMermaidString(wsCount + 2));
+        }
         return mermaid.toString();
     }
 }

@@ -25,23 +25,33 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class Node implements JsonElement, MermaidElement {
+public class Node implements JsonElement, MermaidElement, Linkable {
 
+    private final String iId;
     String label;
     Kind kind;
     String subKind = null;
     String subLabel = null;
     Map<String, List<FormData>> formData = new LinkedHashMap<>();
     LineRange lineRange;
-
     Node parent = null;
     List<Edge> edges = new ArrayList<>();
-    List<Edge> incomingEdges = new ArrayList<>();
-    String iId;
     boolean editable = true;
     boolean terminal = false;
     boolean returnable = false;
+    // Temporary list to hold incoming edges for optimization
+    List<Edge> incomingEdges = new ArrayList<>();
     private Map<String, List<Node>> children = null;
+    private Map<String, Subgraph> subgraphMap = null;
+
+    Node(String iId) {
+        this.iId = iId;
+    }
+
+    @Override
+    public String getIId() {
+        return iId;
+    }
 
     @Override
     public String getJsonString(int wsCount) {
@@ -120,6 +130,13 @@ public class Node implements JsonElement, MermaidElement {
         return children;
     }
 
+    public Map<String, Subgraph> getSubgraphMap() {
+        if (subgraphMap == null) {
+            subgraphMap = new LinkedHashMap<>();
+        }
+        return subgraphMap;
+    }
+
     @Override
     public String getMermaidString(int wsCount) {
         String ws = getWs(wsCount);
@@ -142,14 +159,14 @@ public class Node implements JsonElement, MermaidElement {
         }
         String subHeading = getSubHeading();
         if (subHeading != null && !subHeading.isEmpty()) {
-            sb.append("<br>").append(getSubHeading());
+            sb.append("<br>").append(subHeading);
         }
         sb.append("\"").append(getNodeEnd());
         return sb.toString();
     }
 
     private String getNodeStart() {
-        if (kind == Kind.KONNECTOR) {
+        if (kind == Kind.KONNECTOR || kind == Kind.ASYNC_START) {
             return "((";
         } else if (kind == Kind.END) {
             return "(((";
@@ -158,7 +175,7 @@ public class Node implements JsonElement, MermaidElement {
     }
 
     private String getNodeEnd() {
-        if (kind == Kind.KONNECTOR) {
+        if (kind == Kind.KONNECTOR || kind == Kind.ASYNC_START) {
             return "))";
         } else if (kind == Kind.END) {
             return ")))";
@@ -182,9 +199,11 @@ public class Node implements JsonElement, MermaidElement {
             case DATA_VALIDATION -> "fa:fa-envelope-circle-check";
             case KNOWN_FUNCTION_CALL -> "fa:fa-gear";
             case RETURN -> "fa:fa-turn-up";
+            case ASYNC_START -> "fa:fa-play";
+            case ASYNC_RETURN -> "fa:fa-arrow-up-right-from-square";
             default -> "fa:fa-gears";
         };
-        if (returnable && kind != Kind.RETURN) {
+        if (returnable && kind != Kind.RETURN && kind != Kind.ASYNC_RETURN) {
             icon = icon + " (fa:fa-turn-up)";
         }
         return icon;
@@ -193,7 +212,7 @@ public class Node implements JsonElement, MermaidElement {
     private String getHeading() {
         return switch (kind) {
             case DATA_NEW_MESSAGE -> "New " + subKind;
-            case KONNECTOR -> "";
+            case KONNECTOR, ASYNC_START -> "";
             default -> label;
         };
     }
@@ -204,10 +223,10 @@ public class Node implements JsonElement, MermaidElement {
 
     enum Kind {
         // Events
-        TRIGGER, NETWORK_EVENT, FUNCTION_START,
+        TRIGGER, NETWORK_EVENT, FUNCTION_START, ASYNC_START,
 
         // Control flow
-        IF, CLONE, WAIT, RETURN, FOREACH, WHILE, CONTINUE, BREAK, WORKER_RETURN,
+        IF, CLONE, WAIT, RETURN, FOREACH, WHILE, CONTINUE, BREAK, ASYNC_RETURN,
 
         // Data Operations
         DATA_MAPPING, DATA_NEW_MESSAGE, DATA_UPDATE, DATA_VARIABLE,

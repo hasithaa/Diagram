@@ -20,15 +20,22 @@ package io.github.hasithaa.diagram.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Subgraph implements JsonElement {
+public class Subgraph implements JsonElement, MermaidElement, Linkable {
 
     final SubgraphKind kind;
-    String iid;
+    private final String iId;
     String label;
     List<Node> nodes = new ArrayList<>();
+    List<Edge> edges = new ArrayList<>();
 
-    public Subgraph(SubgraphKind kind) {
+    public Subgraph(String iId, SubgraphKind kind) {
+        this.iId = iId;
         this.kind = kind;
+    }
+
+    @Override
+    public String getIId() {
+        return iId;
     }
 
     @Override
@@ -38,7 +45,7 @@ public class Subgraph implements JsonElement {
         json.append(ws).append("{\n");
         json.append(ws).append("  \"kind\": \"").append(kind).append("\",\n");
         json.append(ws).append("  \"label\": \"").append(label).append("\",\n");
-        json.append(ws).append("  \"iId\": \"").append(iid).append("\",\n");
+        json.append(ws).append("  \"iId\": \"").append(iId).append("\",\n");
         json.append(ws).append("  \"nodes\": [\n");
         for (Node node : nodes) {
             json.append(node.getJsonString(wsCount + 3)).append(",\n");
@@ -50,6 +57,20 @@ public class Subgraph implements JsonElement {
         json.append(ws).append("}");
 
         return json.toString();
+    }
+
+    @Override
+    public String getMermaidString(int wsCount) {
+        String ws = getWs(wsCount);
+        StringBuilder mermaid = new StringBuilder();
+        mermaid.append(ws).append("subgraph ").append(iId).append("[").append(label).append("]\n");
+        mermaid.append(ws).append("direction ").append("TB").append("\n");
+        for (Node node : nodes) {
+            mermaid.append(node.getMermaidString(wsCount + 2));
+        }
+        mermaid.append(ws).append("end\n");
+        edges.forEach(edge -> mermaid.append(ws).append(edge.getMermaidString(wsCount)));
+        return mermaid.toString();
     }
 
     enum SubgraphKind {

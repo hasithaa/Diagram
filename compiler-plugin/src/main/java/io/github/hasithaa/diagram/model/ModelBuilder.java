@@ -28,6 +28,7 @@ public class ModelBuilder {
     int diagramCount = 0;
     int edgeCount = 0;
     int nodeCount = 0;
+    int subGraphCount = 0;
     Stack<List<Node>> currentNodeList;
 
     ModelBuilder() {
@@ -62,14 +63,14 @@ public class ModelBuilder {
         this.model.diagrams.add(diagram);
         nodeCount = 0;
         edgeCount = 0;
+        subGraphCount = 0;
         currentNodeList = new Stack<>();
         currentNodeList.push(diagram.nodes);
         return diagram;
     }
 
     public Node createNode(Node.Kind kind) {
-        Node node = new Node();
-        node.iId = "Node" + nodeCount++;
+        Node node = new Node("Node" + nodeCount++);
         node.kind = kind;
         return node;
     }
@@ -83,17 +84,52 @@ public class ModelBuilder {
         nodes.add(node);
     }
 
-    private Edge addEdge(Node source, Node target) {
+    public Node addNewNode(Node.Kind kind) {
+        Node node = createNode(kind);
+        addNode(node, false);
+        return node;
+    }
+
+    public Edge addEdge(Node source, Subgraph target) {
+        Edge edge = new Edge("Edge" + edgeCount++, source, target);
+        source.edges.add(edge);
+        return edge;
+    }
+
+    public Edge addEdge(Subgraph source, Node target) {
         Edge edge = new Edge("Edge" + edgeCount++, source, target);
         source.edges.add(edge);
         target.incomingEdges.add(edge);
         return edge;
     }
 
-    public Node addNewNode(Node.Kind kind) {
-        Node node = createNode(kind);
-        addNode(node, false);
-        return node;
+    public Edge addEdge(Node source, Node target) {
+        Edge edge = new Edge("Edge" + edgeCount++, source, target);
+        source.edges.add(edge);
+        if (target != null) {
+            target.incomingEdges.add(edge);
+        }
+        return edge;
+    }
+
+    public Subgraph startSubGraph(String label) {
+        Subgraph subGraph = new Subgraph("SubGraph" + subGraphCount++, Subgraph.SubgraphKind.WORKER);
+        subGraph.label = label;
+        getCurrentDiagram().subgraphs.add(subGraph);
+        if (!currentNodeList.peek().isEmpty()) {
+            Node lastElement = currentNodeList.peek().get(currentNodeList.peek().size() - 1);
+            lastElement.getSubgraphMap().put(label, subGraph);
+            Edge sourceEdge = addEdge(lastElement, subGraph);
+            sourceEdge.kind = Edge.EdgeKind.IMPLICIT;
+            sourceEdge.label = "Start";
+        }
+        currentNodeList.push(subGraph.nodes);
+        addNewNode(Node.Kind.ASYNC_START);
+        return subGraph;
+    }
+
+    public void endSubGraph() {
+        currentNodeList.pop();
     }
 
     public void startChildFlow(String label) {

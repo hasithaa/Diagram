@@ -19,6 +19,7 @@ function transformPineValley(PineValleyDoctor doctor) returns DoctorDetails => {
 
 
 final http:Client pineValleyEp = check new ("http://localhost:9091/pineValley/");
+final http:Client grandOakEp = check new ("http://localhost:9092/grandOak/");
 final http:Client mapleRidgeEp = check new ("http://localhost:9093/mapleRidge/");
 
 service /search on new http:Listener(9090) {
@@ -38,6 +39,35 @@ service /search on new http:Listener(9090) {
             json aJson = check xmldata:toJson(aResponse);
             PineValleyDoctor aPineValleyDoctor = check aJson.cloneWithType();
             return transformPineValley(aPineValleyDoctor);
+        }
+    }
+
+    resource function get doctors/[string doctorType]() returns json|error {
+
+        if doctorType == "ENT" {
+            // Call Maple Ridge
+            Result res = check mapleRidgeEp->get("/doctor/" + doctorType);
+            return res;
+        } else {
+            // Call Pine Valley & Grand Oak
+            fork {
+                worker pineValley returns Result|error {
+                    Result res = check pineValleyEp->get("/doctor/" + doctorType);
+                    return res;
+                }
+                worker grandOak returns Result|error {
+                    PineValleyReq req = {doctorType: doctorType};
+                    Result res = check grandOakEp->post("/doctor/", req);
+                    return res;
+                }
+            }
+            Result result = [];
+            map<Result|error> res = wait {pineValley, grandOak};
+            Result pineValleyRes = check res.get("pineValley");
+            Result grandOakRes = check res.get("grandOak");
+            result.push(...pineValleyRes);
+            result.push(...grandOakRes);
+            return result; 
         }
     }
 }
@@ -67,3 +97,14 @@ type DoctorDetails record {
     string room;
     string specialization;
 };
+
+type DoctorType record {|
+    string name;
+    string doctorType;
+|};
+
+type PineValleyReq record {|
+    string doctorType;
+|};
+
+type Result DoctorType[];

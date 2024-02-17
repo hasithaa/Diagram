@@ -22,12 +22,12 @@ import java.util.Optional;
 public class Edge implements JsonElement, MermaidElement {
 
     final String iId;
+    final Linkable source;
+    final Linkable target;
     String label = null;
-    final Node source;
-    final Node target;
     EdgeKind kind = EdgeKind.DEFAULT;
 
-    Edge(String iId, Node source, Node target) {
+    Edge(String iId, Linkable source, Linkable target) {
         this.iId = iId;
         this.source = source;
         this.target = target;
@@ -39,9 +39,9 @@ public class Edge implements JsonElement, MermaidElement {
         StringBuilder json = new StringBuilder();
         json.append(ws).append("{\n");
         Optional.ofNullable(label).ifPresent(s -> json.append(ws).append("  \"label\": \"").append(s).append("\",\n"));
-        Optional.ofNullable(source).ifPresent(node -> json.append(ws).append("  \"source\": \"").append(node.iId)
+        Optional.ofNullable(source).ifPresent(node -> json.append(ws).append("  \"source\": \"").append(node.getIId())
                                                           .append("\",\n"));
-        Optional.ofNullable(target).ifPresent(node -> json.append(ws).append("  \"target\": \"").append(node.iId)
+        Optional.ofNullable(target).ifPresent(node -> json.append(ws).append("  \"target\": \"").append(node.getIId())
                                                           .append("\",\n"));
         json.append(ws).append("  \"kind\": \"").append(kind).append("\",\n");
         json.append(ws).append("  \"iId\": \"").append(iId).append("\"\n");
@@ -64,11 +64,11 @@ public class Edge implements JsonElement, MermaidElement {
             connection = " x-.-x ";
         }
         if (source != null && target != null) {
-            mermaid.append(ws).append(source.iId).append(connection);
+            mermaid.append(ws).append(source.getIId()).append(connection);
             if (label != null) {
                 mermaid.append("|").append(label).append("|");
             }
-            mermaid.append(target.iId).append("\n");
+            mermaid.append(target.getIId()).append("\n");
         }
         return mermaid.toString();
     }

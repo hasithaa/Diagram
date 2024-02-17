@@ -32,11 +32,13 @@ import io.ballerina.compiler.api.symbols.Symbol;
 import io.ballerina.compiler.api.symbols.SymbolKind;
 import io.ballerina.compiler.api.symbols.TypeSymbol;
 import io.ballerina.compiler.api.symbols.VariableSymbol;
+import io.ballerina.compiler.api.symbols.WorkerSymbol;
 import io.ballerina.compiler.syntax.tree.AssignmentStatementNode;
 import io.ballerina.compiler.syntax.tree.CheckExpressionNode;
 import io.ballerina.compiler.syntax.tree.ClientResourceAccessActionNode;
 import io.ballerina.compiler.syntax.tree.ExpressionNode;
 import io.ballerina.compiler.syntax.tree.ExpressionStatementNode;
+import io.ballerina.compiler.syntax.tree.ForkStatementNode;
 import io.ballerina.compiler.syntax.tree.FunctionCallExpressionNode;
 import io.ballerina.compiler.syntax.tree.FunctionDefinitionNode;
 import io.ballerina.compiler.syntax.tree.IfElseStatementNode;
@@ -44,6 +46,7 @@ import io.ballerina.compiler.syntax.tree.ListConstructorExpressionNode;
 import io.ballerina.compiler.syntax.tree.MappingConstructorExpressionNode;
 import io.ballerina.compiler.syntax.tree.MethodCallExpressionNode;
 import io.ballerina.compiler.syntax.tree.ModuleVariableDeclarationNode;
+import io.ballerina.compiler.syntax.tree.NamedWorkerDeclarationNode;
 import io.ballerina.compiler.syntax.tree.NodeVisitor;
 import io.ballerina.compiler.syntax.tree.RemoteMethodCallActionNode;
 import io.ballerina.compiler.syntax.tree.ReturnStatementNode;
@@ -52,9 +55,13 @@ import io.ballerina.compiler.syntax.tree.StatementNode;
 import io.ballerina.compiler.syntax.tree.SyntaxKind;
 import io.ballerina.compiler.syntax.tree.TemplateExpressionNode;
 import io.ballerina.compiler.syntax.tree.VariableDeclarationNode;
+import io.ballerina.compiler.syntax.tree.WaitFieldNode;
+import io.ballerina.compiler.syntax.tree.WaitFieldsListNode;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Stack;
 
@@ -66,6 +73,8 @@ public class CodeVisitor extends NodeVisitor {
     private final Stack<Symbol> symbolStack = new Stack<>();
     private final List<Symbol> dataMapping = new ArrayList<>();
     private String moduleID;
+
+    private final Map<WorkerSymbol, Subgraph> workerSymbols = new HashMap<>();
 
     public CodeVisitor(SemanticModel semanticModel, String name) {
         this.semanticModel = semanticModel;
@@ -96,6 +105,7 @@ public class CodeVisitor extends NodeVisitor {
 
     public void visit(FunctionDefinitionNode stNode) {
         setCurrentModule(stNode);
+        workerSymbols.clear();
         Optional<Symbol> symbol = semanticModel.symbol(stNode);
         if (stNode.functionBody().kind() == SyntaxKind.EXPRESSION_FUNCTION_BODY) {
             symbol.ifPresent(dataMapping::add);
@@ -177,6 +187,23 @@ public class CodeVisitor extends NodeVisitor {
         modelBuilder.addNode(mergeNode, true);
     }
 
+    @Override
+    public void visit(ForkStatementNode stNode) {
+        Node forkNode = modelBuilder.addNewNode(Node.Kind.CLONE);
+        forkNode.lineRange = stNode.lineRange();
+        forkNode.label = "Fork";
+        for (NamedWorkerDeclarationNode workerDeclaration : stNode.namedWorkerDeclarations()) {
+            Subgraph subgraph = modelBuilder.startSubGraph(workerDeclaration.workerName().text());
+            semanticModel.symbol(workerDeclaration).ifPresent(symbol -> {
+                if (symbol instanceof WorkerSymbol workerSymbol) {
+                    workerSymbols.put(workerSymbol, subgraph);
+                }
+            });
+            workerDeclaration.accept(this);
+            modelBuilder.endSubGraph();
+        }
+    }
+
     public void visit(VariableDeclarationNode stNode) {
         stmtNodeStack.push(stNode);
         super.visit(stNode);
@@ -210,6 +237,46 @@ public class CodeVisitor extends NodeVisitor {
     }
 
     // Deciding Expression Nodes
+
+    @Override
+    public void visit(WaitFieldsListNode stNode) {
+        Node node = modelBuilder.addNewNode(Node.Kind.WAIT);
+        node.label = "Wait for All";
+        for (io.ballerina.compiler.syntax.tree.Node waitFieldNode : stNode.waitFields()) {
+            Optional<Symbol> symbol = semanticModel.symbol(waitFieldNode);
+            if (symbol.isPresent() && symbol.get() instanceof WorkerSymbol workerSymbol) {
+                Subgraph subgraph = workerSymbols.get(workerSymbol);
+                if (subgraph != null) {
+                    Edge edge = modelBuilder.addEdge(subgraph, node);
+                    edge.kind = Edge.EdgeKind.OPTIONAL;
+                }
+            }
+        }
+        boolean localStatement = findAndUpdateParentLocalStatement(node, stNode);
+        if (!localStatement) {
+            // Safely ignore the node.
+        }
+        // TODO : Extract Form Data
+    }
+
+    @Override
+    public void visit(WaitFieldNode stNode) {
+        Node node = modelBuilder.addNewNode(Node.Kind.WAIT);
+        node.label = "Wait";
+        Optional<Symbol> symbol = semanticModel.symbol(stNode);
+        if (symbol.isPresent() && symbol.get() instanceof WorkerSymbol workerSymbol) {
+            Subgraph subgraph = workerSymbols.get(workerSymbol);
+            if (subgraph != null) {
+                Edge edge = modelBuilder.addEdge(subgraph, node);
+                edge.kind = Edge.EdgeKind.IMPLICIT;
+            }
+        }
+        boolean localStatement = findAndUpdateParentLocalStatement(node, stNode);
+        if (!localStatement) {
+            // Safely ignore the node.
+        }
+        // TODO : Extract Form Data
+    }
 
     public void visit(MappingConstructorExpressionNode stNode) {
         // New Message
@@ -457,10 +524,26 @@ public class CodeVisitor extends NodeVisitor {
         } else if (stNode instanceof ExpressionStatementNode stmt) {
             handleExpressionStatementNode(node, stmt);
         } else if (stNode instanceof ReturnStatementNode stmt) {
+
             // Fix incorrect node kind
             if (defaultCase) {
-                node.label = "Return";
-                node.kind = Node.Kind.RETURN;
+
+                io.ballerina.compiler.syntax.tree.Node parent = stmt;
+                boolean insideWorker = false;
+                while (parent != null) {
+                    if (parent instanceof NamedWorkerDeclarationNode) {
+                        insideWorker = true;
+                        break;
+                    }
+                    parent = parent.parent();
+                }
+                if (insideWorker) {
+                    node.kind = Node.Kind.ASYNC_RETURN;
+                    node.label = "Async Result";
+                } else {
+                    node.kind = Node.Kind.RETURN;
+                    node.label = "Return";
+                }
             }
             node.terminal = true;
             node.returnable = true;
