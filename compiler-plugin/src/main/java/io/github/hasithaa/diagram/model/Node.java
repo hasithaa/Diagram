@@ -119,12 +119,37 @@ public class Node implements JsonElement, MermaidElement {
     public String getMermaidString(int wsCount) {
         String ws = getWs(wsCount);
         StringBuilder mermaid = new StringBuilder();
-        mermaid.append(ws).append(iId).append("[").append(label).append("]\n");
+        mermaid.append(ws).append(iId).append(getMermaidNode()).append("\n");
         Optional.ofNullable(children).ifPresent(map -> map.forEach((label, nodes) -> {
             nodes.forEach(node -> mermaid.append(node.getMermaidString(wsCount)));
         }));
         edges.forEach(edge -> mermaid.append(edge.getMermaidString(wsCount)));
         return mermaid.toString();
+    }
+
+    private String getMermaidNode() {
+        return switch (kind) {
+            case IF -> "[\"fa:fa-code-merge<br><strong>If</strong><br>\"]";
+            case CLONE -> "[\"fa:fa-clone<br><strong>Fork</strong><br>\"]";
+            case WAIT -> "[\"fa:fa-clock<br><strong>Wait</strong><br>\"]";
+            case NETWORK_EVENT ->
+                    "[\"fa:fa-network-wired fa:fa-arrow-right-to-bracket <br><strong>Network Event</strong><br>\"]";
+            case NETWORK_REMOTE_CALL ->
+                    "[\"fa:fa-right-from-bracket fa:fa-network-wired<br><strong>Remote Call</strong><br>" + label +
+                            "<br>\"]";
+            case NETWORK_RESOURCE_CALL ->
+                    "[\"fa:fa-right-from-bracket fa:fa-network-wired<br><strong>Resource Call</strong><br>" + label +
+                            "<br>\"]";
+            case KONNECTOR -> "((\"fa:fa-code-branch\"))";
+            case LIBRARY_FUNCTION -> "[\"fa:fa-cogs<br><strong>Library Function</strong><br>" + label + "<br>\"]";
+            case DATA_MAPPING -> "[\"fa:fa-timeline<br><strong>Data Mapping</strong><br>\"]";
+            case DATA_CONVERT -> "[\"fa:fa-code fa:fa-right-left { }<br><strong>Data Conversion</strong><br>\"]";
+            case END -> "((( End )))";
+            case DATA_NEW_MESSAGE -> "[\"fa:fa-envelope<br><strong>New " + subkind + "</strong><br>\"]";
+            case DATA_VALIDATION -> "[\"fa:fa-envelope-circle-check<br><strong>" + label + "</strong><br>\"]";
+            case KNOWN_FUNCTION_CALL -> "[\"fa:fa-gears<br><strong>" + label + "</strong><br>\"]";
+            default -> "[\"fa:fa-gears<br>" + label + "<br>\"]";
+        };
     }
 
     enum Kind {
@@ -137,19 +162,25 @@ public class Node implements JsonElement, MermaidElement {
         // Data Operations
         DATA_MAPPING, DATA_NEW_MESSAGE, DATA_UPDATE, DATA_VARIABLE,
 
+        // Data Conversion
+        DATA_CONVERT, DATA_VALIDATION,
+
         // Network Operations
         NETWORK_RESOURCE_CALL, NETWORK_REMOTE_CALL,
 
         // LIBRARY FUNCTIONS
-        LIBRARY_FUNCTION,
+        LIBRARY_FUNCTION, KNOWN_FUNCTION_CALL,
 
         // Terminal
         END,
+
+        // ERROR Handling
+        DO,
 
         // Node Connection
         KONNECTOR, // Intentionally misspelled to avoid conflict with Connectors
 
         // Default,
-        EXPRESSION, // This is the default kind for all other nodes
+        EXPRESSION, CODE_BLOCK// This is the default kind for all other nodes
     }
 }

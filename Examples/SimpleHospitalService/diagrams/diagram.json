@@ -1,10 +1,10 @@
 {
-  "label": "null",
+  "label": "SimpleHospitalService",
   "diagrams": [
     {
       "nodes": [
         {
-          "label": "null",
+          "label": "Network Event",
           "kind": "NETWORK_EVENT",
           "formData": {
             "Network": [
@@ -42,7 +42,7 @@
                 "type": "DEFAULT",
                 "allowedTypes": [
                 ],
-                "value": "",
+                "value": "/search",
                 "possibleValues": [
                 ],
                 "editable": false,
@@ -57,7 +57,7 @@
                 "type": "IDENTIFIER",
                 "allowedTypes": [
                 ],
-                "value": "json|error",
+                "value": "hasitha/SimpleHospitalService:0.1.0:DoctorDetails|error",
                 "possibleValues": [
                 ],
                 "editable": true,
@@ -96,8 +96,8 @@
           },
           "lineRange": {
             "fileName": "main.bal",
-            "startLine": 8,
-            "endLine": 17
+            "startLine": 24,
+            "endLine": 42
           },
           "edges": [
             {
@@ -132,14 +132,127 @@
           },
           "lineRange": {
             "fileName": "main.bal",
-            "startLine": 9,
-            "endLine": 16
+            "startLine": 25,
+            "endLine": 41
           },
           "children": {
             "Then": [
               {
-                "label": "Network Call",
-                "kind": "NETWORK_REMOTE_CALL",
+                "label": "New Message",
+                "kind": "DATA_NEW_MESSAGE",
+                "subkind": "JSON",
+                "formData": {
+                  "Variables": [
+                    {
+                      "index": -1,
+                      "label": "result",
+                      "type": "DEFAULT",
+                      "allowedTypes": [
+                        [
+                          "hasitha/SimpleHospitalService:0.1.0:Payload"
+                        ]
+                      ],
+                      "value": "payload",
+                      "possibleValues": [
+                      ],
+                      "editable": true,
+                      "flags": [
+                        "Local",
+                        "New"
+                      ]
+                    }
+                  ]
+                },
+                "lineRange": {
+                  "fileName": "main.bal",
+                  "startLine": 27,
+                  "endLine": 27
+                },
+                "edges": [
+                  {
+                    "source": "Node3",
+                    "target": "Node4",
+                    "kind": "DEFAULT",
+                    "iId": "Edge1"
+                  }
+                ],
+                "iId": "Node3",
+                "editable": true
+              },
+              {
+                "label": "http post",
+                "kind": "NETWORK_RESOURCE_CALL",
+                "formData": {
+                  "Error": [
+                    {
+                      "index": -1,
+                      "label": "Fail On Error",
+                      "type": "BOOLEAN",
+                      "allowedTypes": [
+                      ],
+                      "value": "true",
+                      "possibleValues": [
+                      ],
+                      "editable": true,
+                      "flags": [
+                      ]
+                    }
+                  ],
+                  "Variables": [
+                    {
+                      "index": -1,
+                      "label": "result",
+                      "type": "MAPPING",
+                      "allowedTypes": [
+                        [
+                          "json"
+                        ]
+                      ],
+                      "value": "aResponse",
+                      "possibleValues": [
+                      ],
+                      "editable": true,
+                      "flags": [
+                        "Local",
+                        "New"
+                      ]
+                    }
+                  ],
+                  "Params": [
+                    {
+                      "index": -1,
+                      "label": "expression",
+                      "type": "IDENTIFIER",
+                      "allowedTypes": [
+                      ],
+                      "value": "mapleRidgeEp->/doctor/[doctorType].post(payload)",
+                      "possibleValues": [
+                      ],
+                      "editable": true,
+                      "flags": [
+                      ]
+                    }
+                  ]
+                },
+                "lineRange": {
+                  "fileName": "main.bal",
+                  "startLine": 28,
+                  "endLine": 28
+                },
+                "edges": [
+                  {
+                    "source": "Node4",
+                    "target": "Node5",
+                    "kind": "DEFAULT",
+                    "iId": "Edge2"
+                  }
+                ],
+                "iId": "Node4",
+                "editable": true
+              },
+              {
+                "label": "Data Schema Validation",
+                "kind": "DATA_VALIDATION",
                 "formData": {
                   "Error": [
                     {
@@ -163,10 +276,10 @@
                       "type": "DEFAULT",
                       "allowedTypes": [
                         [
-                          "hasitha/SimpleHospitalService:0.1.0:Result"
+                          "hasitha/SimpleHospitalService:0.1.0:MapleRidgeDoctor"
                         ]
                       ],
-                      "value": "res",
+                      "value": "aMapleRidgeDoctor",
                       "possibleValues": [
                       ],
                       "editable": true,
@@ -183,7 +296,7 @@
                       "type": "IDENTIFIER",
                       "allowedTypes": [
                       ],
-                      "value": "mapleRidgeEp->get(\"/doctor/\" + doctorType)",
+                      "value": "aResponse.cloneWithType()",
                       "possibleValues": [
                       ],
                       "editable": true,
@@ -194,25 +307,265 @@
                 },
                 "lineRange": {
                   "fileName": "main.bal",
-                  "startLine": 11,
-                  "endLine": 11
+                  "startLine": 29,
+                  "endLine": 29
                 },
                 "edges": [
                   {
-                    "source": "Node3",
-                    "target": "Node2",
+                    "source": "Node5",
+                    "target": "Node6",
                     "kind": "DEFAULT",
-                    "iId": "Edge2"
+                    "iId": "Edge3"
                   }
                 ],
-                "iId": "Node3",
+                "iId": "Node5",
+                "editable": true
+              },
+              {
+                "label": "Data Mapping",
+                "kind": "DATA_MAPPING",
+                "formData": {
+                  "Variables": [
+                    {
+                      "index": -1,
+                      "label": "result",
+                      "type": "DEFAULT",
+                      "allowedTypes": [
+                        [
+                          "hasitha/SimpleHospitalService:0.1.0:DoctorDetails"
+                        ]
+                      ],
+                      "value": "aDoctorDetail",
+                      "possibleValues": [
+                      ],
+                      "editable": true,
+                      "flags": [
+                        "Local",
+                        "New"
+                      ]
+                    }
+                  ],
+                  "Params": [
+                    {
+                      "index": -1,
+                      "label": "expression",
+                      "type": "IDENTIFIER",
+                      "allowedTypes": [
+                      ],
+                      "value": "transformMapleRidge(aMapleRidgeDoctor)",
+                      "possibleValues": [
+                      ],
+                      "editable": true,
+                      "flags": [
+                      ]
+                    }
+                  ]
+                },
+                "lineRange": {
+                  "fileName": "main.bal",
+                  "startLine": 30,
+                  "endLine": 30
+                },
+                "edges": [
+                  {
+                    "source": "Node6",
+                    "target": "Node2",
+                    "kind": "DEFAULT",
+                    "iId": "Edge5"
+                  }
+                ],
+                "iId": "Node6",
                 "editable": true
               }
             ],
             "Else": [
               {
-                "label": "Network Call",
+                "label": "New Message",
+                "kind": "DATA_NEW_MESSAGE",
+                "subkind": "XML",
+                "formData": {
+                  "Variables": [
+                    {
+                      "index": -1,
+                      "label": "result",
+                      "type": "XML",
+                      "allowedTypes": [
+                        [
+                          "xml"
+                        ]
+                      ],
+                      "value": "data",
+                      "possibleValues": [
+                      ],
+                      "editable": true,
+                      "flags": [
+                        "Local",
+                        "New"
+                      ]
+                    }
+                  ]
+                },
+                "lineRange": {
+                  "fileName": "main.bal",
+                  "startLine": 33,
+                  "endLine": 35
+                },
+                "edges": [
+                  {
+                    "source": "Node7",
+                    "target": "Node8",
+                    "kind": "DEFAULT",
+                    "iId": "Edge6"
+                  }
+                ],
+                "iId": "Node7",
+                "editable": true
+              },
+              {
+                "label": "http post",
                 "kind": "NETWORK_REMOTE_CALL",
+                "formData": {
+                  "Error": [
+                    {
+                      "index": -1,
+                      "label": "Fail On Error",
+                      "type": "BOOLEAN",
+                      "allowedTypes": [
+                      ],
+                      "value": "true",
+                      "possibleValues": [
+                      ],
+                      "editable": true,
+                      "flags": [
+                      ]
+                    }
+                  ],
+                  "Variables": [
+                    {
+                      "index": -1,
+                      "label": "result",
+                      "type": "XML",
+                      "allowedTypes": [
+                        [
+                          "xml"
+                        ]
+                      ],
+                      "value": "aResponse",
+                      "possibleValues": [
+                      ],
+                      "editable": true,
+                      "flags": [
+                        "Local",
+                        "New"
+                      ]
+                    }
+                  ],
+                  "Params": [
+                    {
+                      "index": -1,
+                      "label": "expression",
+                      "type": "IDENTIFIER",
+                      "allowedTypes": [
+                      ],
+                      "value": "pineValleyEp->post(\"/doctor/\" + doctorType, data)",
+                      "possibleValues": [
+                      ],
+                      "editable": true,
+                      "flags": [
+                      ]
+                    }
+                  ]
+                },
+                "lineRange": {
+                  "fileName": "main.bal",
+                  "startLine": 36,
+                  "endLine": 36
+                },
+                "edges": [
+                  {
+                    "source": "Node8",
+                    "target": "Node9",
+                    "kind": "DEFAULT",
+                    "iId": "Edge7"
+                  }
+                ],
+                "iId": "Node8",
+                "editable": true
+              },
+              {
+                "label": "Data Conversion",
+                "kind": "DATA_CONVERT",
+                "formData": {
+                  "Error": [
+                    {
+                      "index": -1,
+                      "label": "Fail On Error",
+                      "type": "BOOLEAN",
+                      "allowedTypes": [
+                      ],
+                      "value": "true",
+                      "possibleValues": [
+                      ],
+                      "editable": true,
+                      "flags": [
+                      ]
+                    }
+                  ],
+                  "Variables": [
+                    {
+                      "index": -1,
+                      "label": "result",
+                      "type": "MAPPING",
+                      "allowedTypes": [
+                        [
+                          "json"
+                        ]
+                      ],
+                      "value": "aJson",
+                      "possibleValues": [
+                      ],
+                      "editable": true,
+                      "flags": [
+                        "Local",
+                        "New"
+                      ]
+                    }
+                  ],
+                  "Params": [
+                    {
+                      "index": -1,
+                      "label": "expression",
+                      "type": "IDENTIFIER",
+                      "allowedTypes": [
+                      ],
+                      "value": "xmldata:toJson(aResponse)",
+                      "possibleValues": [
+                      ],
+                      "editable": true,
+                      "flags": [
+                      ]
+                    }
+                  ]
+                },
+                "lineRange": {
+                  "fileName": "main.bal",
+                  "startLine": 37,
+                  "endLine": 37
+                },
+                "edges": [
+                  {
+                    "source": "Node9",
+                    "target": "Node10",
+                    "kind": "DEFAULT",
+                    "iId": "Edge8"
+                  }
+                ],
+                "iId": "Node9",
+                "editable": true
+              },
+              {
+                "label": "Data Schema Validation",
+                "kind": "DATA_VALIDATION",
                 "formData": {
                   "Error": [
                     {
@@ -236,10 +589,10 @@
                       "type": "DEFAULT",
                       "allowedTypes": [
                         [
-                          "hasitha/SimpleHospitalService:0.1.0:Result"
+                          "hasitha/SimpleHospitalService:0.1.0:PineValleyDoctor"
                         ]
                       ],
-                      "value": "res",
+                      "value": "aPineValleyDoctor",
                       "possibleValues": [
                       ],
                       "editable": true,
@@ -256,7 +609,7 @@
                       "type": "IDENTIFIER",
                       "allowedTypes": [
                       ],
-                      "value": "pineValleyEp->get(\"/doctor/\" + doctorType)",
+                      "value": "aJson.cloneWithType()",
                       "possibleValues": [
                       ],
                       "editable": true,
@@ -267,34 +620,92 @@
                 },
                 "lineRange": {
                   "fileName": "main.bal",
-                  "startLine": 14,
-                  "endLine": 14
+                  "startLine": 38,
+                  "endLine": 38
                 },
                 "edges": [
                   {
-                    "source": "Node4",
-                    "target": "Node2",
+                    "source": "Node10",
+                    "target": "Node11",
                     "kind": "DEFAULT",
-                    "iId": "Edge4"
+                    "iId": "Edge9"
                   }
                 ],
-                "iId": "Node4",
+                "iId": "Node10",
+                "editable": true
+              },
+              {
+                "label": "Data Mapping",
+                "kind": "DATA_MAPPING",
+                "formData": {
+                  "Variables": [
+                    {
+                      "index": -1,
+                      "label": "result",
+                      "type": "DEFAULT",
+                      "allowedTypes": [
+                        [
+                          "hasitha/SimpleHospitalService:0.1.0:DoctorDetails"
+                        ]
+                      ],
+                      "value": "aDoctorDetails",
+                      "possibleValues": [
+                      ],
+                      "editable": true,
+                      "flags": [
+                        "Local",
+                        "New"
+                      ]
+                    }
+                  ],
+                  "Params": [
+                    {
+                      "index": -1,
+                      "label": "expression",
+                      "type": "IDENTIFIER",
+                      "allowedTypes": [
+                      ],
+                      "value": "transformPineValley(aPineValleyDoctor)",
+                      "possibleValues": [
+                      ],
+                      "editable": true,
+                      "flags": [
+                      ]
+                    }
+                  ]
+                },
+                "lineRange": {
+                  "fileName": "main.bal",
+                  "startLine": 39,
+                  "endLine": 39
+                },
+                "edges": [
+                  {
+                    "source": "Node11",
+                    "target": "Node2",
+                    "kind": "DEFAULT",
+                    "iId": "Edge11"
+                  }
+                ],
+                "iId": "Node11",
                 "editable": true
               }
             ]
           },
           "edges": [
             {
+              "label": "Then",
               "source": "Node1",
               "target": "Node3",
               "kind": "DEFAULT",
-              "iId": "Edge1"
+              "iId": "Edge4"
             },
             {
+              "label": "Else",
               "source": "Node1",
-              "target": "Node4",
+              "target": "Node7",
               "kind": "DEFAULT",
-              "iId": "Edge3"
+              "iId": "Edge10"
             }
           ],
           "iId": "Node1",
@@ -307,15 +718,15 @@
           },
           "lineRange": {
             "fileName": "main.bal",
-            "startLine": 9,
-            "endLine": 16
+            "startLine": 25,
+            "endLine": 41
           },
           "edges": [
             {
               "source": "Node2",
-              "target": "Node5",
+              "target": "Node12",
               "kind": "DEFAULT",
-              "iId": "Edge5"
+              "iId": "Edge12"
             }
           ],
           "iId": "Node2",
@@ -329,7 +740,7 @@
           "lineRange": null,
           "edges": [
           ],
-          "iId": "Node5",
+          "iId": "Node12",
           "editable": true
         }
       ],

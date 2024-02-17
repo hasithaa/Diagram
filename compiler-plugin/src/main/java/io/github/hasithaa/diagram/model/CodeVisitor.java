@@ -17,6 +17,7 @@
  */
 package io.github.hasithaa.diagram.model;
 
+import io.ballerina.compiler.api.ModuleID;
 import io.ballerina.compiler.api.SemanticModel;
 import io.ballerina.compiler.api.symbols.AbsResourcePathAttachPoint;
 import io.ballerina.compiler.api.symbols.FunctionSymbol;
@@ -63,6 +64,7 @@ public class CodeVisitor extends NodeVisitor {
     private final Stack<StatementNode> stmtNodeStack = new Stack<>();
     private final Stack<Symbol> symbolStack = new Stack<>();
     private final List<Symbol> dataMapping = new ArrayList<>();
+    private String moduleID;
 
     public CodeVisitor(SemanticModel semanticModel, String name) {
         this.semanticModel = semanticModel;
@@ -79,7 +81,20 @@ public class CodeVisitor extends NodeVisitor {
         symbolStack.pop();
     }
 
+    private void setCurrentModule(FunctionDefinitionNode stNode) {
+        if (moduleID != null) {
+            return;
+        }
+        semanticModel.symbol(stNode).ifPresent(symbol -> {
+            if (symbol instanceof FunctionSymbol functionSymbol) {
+                ModuleSymbol moduleSymbol = functionSymbol.getModule().get();
+                this.moduleID = moduleSymbol.id().toString();
+            }
+        });
+    }
+
     public void visit(FunctionDefinitionNode stNode) {
+        setCurrentModule(stNode);
         Optional<Symbol> symbol = semanticModel.symbol(stNode);
         if (stNode.functionBody().kind() == SyntaxKind.EXPRESSION_FUNCTION_BODY) {
             symbol.ifPresent(dataMapping::add);
@@ -97,7 +112,6 @@ public class CodeVisitor extends NodeVisitor {
         Diagram diagram = modelBuilder.addDiagram();
         Node node;
         if (symbol.get() instanceof ResourceMethodSymbol resourceSymbol) {
-//            modelBuilder.startChildFlow("Network Event");
             // TODO : improve this further
             String methodName = resourceSymbol.getName().orElse("Unknown");
             diagram.setLabel(methodName + " " + resourceSymbol.resourcePath().signature());
@@ -112,13 +126,8 @@ public class CodeVisitor extends NodeVisitor {
         } else if (symbol.get() instanceof FunctionSymbol functionSymbol) {
             if (functionSymbol instanceof MethodSymbol methodSymbol) {
                 if (methodSymbol.qualifiers().contains(Qualifier.REMOTE)) {
-//                    modelBuilder.startChildFlow("Network Event");
                     extractServiceDeclarationFormData();
-                } else {
-//                    modelBuilder.startChildFlow("Method Call");
                 }
-            } else {
-//                modelBuilder.startChildFlow("Function Call");
             }
             diagram.setLabel(functionSymbol.getName().orElse("Unknown"));
             node = modelBuilder.addNewNode(Node.Kind.FUNCTION_START);
@@ -137,7 +146,6 @@ public class CodeVisitor extends NodeVisitor {
         extractFunctionSymbolFormData((FunctionSymbol) symbol.get());
         super.visit(stNode);
         Node end = modelBuilder.createNode(Node.Kind.END);
-//        modelBuilder.endChildFlow(node, end);
         modelBuilder.addNode(end, false);
         symbolStack.pop();
     }
@@ -158,12 +166,12 @@ public class CodeVisitor extends NodeVisitor {
 
         modelBuilder.startChildFlow("Then");
         stNode.ifBody().accept(this);
-        modelBuilder.endChildFlow(ifNode, mergeNode);
+        modelBuilder.endChildFlow(ifNode, mergeNode, "Then");
 
         if (stNode.elseBody().isPresent()) {
             modelBuilder.startChildFlow("Else");
             stNode.elseBody().get().accept(this);
-            modelBuilder.endChildFlow(ifNode, mergeNode);
+            modelBuilder.endChildFlow(ifNode, mergeNode, "Else");
         }
         modelBuilder.addNode(mergeNode, true);
     }
@@ -236,27 +244,32 @@ public class CodeVisitor extends NodeVisitor {
     }
 
     private void handleNewMessage(ExpressionNode stNode) {
+        Node node = modelBuilder.addNewNode(Node.Kind.DATA_NEW_MESSAGE);
         FormData.FormDataTypeKind typeKind;
         switch (stNode.kind()) {
             case MAPPING_CONSTRUCTOR:
                 typeKind = FormData.FormDataTypeKind.MAPPING;
+                node.subkind = "JSON";
                 break;
             case LIST_CONSTRUCTOR:
                 typeKind = FormData.FormDataTypeKind.ARRAY;
+                node.subkind = "Array";
                 break;
             case XML_TEMPLATE_EXPRESSION:
                 typeKind = FormData.FormDataTypeKind.XML;
+                node.subkind = "XML";
                 break;
             case STRING_TEMPLATE_EXPRESSION:
                 typeKind = FormData.FormDataTypeKind.STRING;
+                node.subkind = "String";
                 break;
             case BYTE_ARRAY_LITERAL:
                 typeKind = FormData.FormDataTypeKind.BYTE_ARRAY;
+                node.subkind = "Bytes";
                 break;
             default:
                 return;
         }
-        Node node = modelBuilder.addNewNode(Node.Kind.DATA_NEW_MESSAGE);
         node.label = "New Message";
         boolean localStatement = findAndUpdateParentLocalStatement(node, stNode);
         if (!localStatement) {
@@ -279,24 +292,23 @@ public class CodeVisitor extends NodeVisitor {
         if (!optionalSymbol.isPresent()) {
             return;
         }
+
         if (optionalSymbol.get() instanceof FunctionSymbol functionSymbol) {
             ModuleSymbol moduleSymbol = functionSymbol.getModule().get();
-            String moduleName = moduleSymbol.id().moduleName();
+            String moduleName = moduleSymbol.id().toString();
             Node node;
-            if (moduleName.equals(".")) {
+            if (moduleName.equals(this.moduleID) && !(functionSymbol instanceof MethodSymbol)) {
                 // Local Function Call
                 if (dataMapping.contains(functionSymbol)) {
                     node = modelBuilder.addNewNode(Node.Kind.DATA_MAPPING);
                     node.label = "Data Mapping";
                 } else {
-                    node = modelBuilder.addNewNode(Node.Kind.LIBRARY_FUNCTION);
-                    node.label = "Library Call";
+                    node = modelBuilder.addNewNode(Node.Kind.CODE_BLOCK);
+                    node.label = "Code Block";
                 }
             } else {
-                node = modelBuilder.addNewNode(Node.Kind.LIBRARY_FUNCTION);
-                node.label = "Library Call";
+                node = handleKnownFunctionCall(functionSymbol, moduleSymbol.id());
             }
-
             boolean localStatement = findAndUpdateParentLocalStatement(node, stNode);
             if (!localStatement) {
                 // Safely ignore the node.
@@ -312,6 +324,65 @@ public class CodeVisitor extends NodeVisitor {
         modelBuilder.addFormData("Params", formData);
     }
 
+    private Node handleKnownFunctionCall(FunctionSymbol functionSymbol, ModuleID moduleID) {
+        if (!moduleID.orgName().equals("ballerina")) {
+            Node node = modelBuilder.addNewNode(Node.Kind.LIBRARY_FUNCTION);
+            node.label = "Library Call";
+            return node;
+        }
+        Node node = null;
+        if (moduleID.moduleName().equals("xmldata")) {
+            if (functionSymbol.getName().isPresent()) {
+                switch (functionSymbol.getName().get()) {
+                    case "fromXml", "toJson", "toXml" -> {
+                        node = modelBuilder.addNewNode(Node.Kind.DATA_CONVERT);
+                        node.label = "Data Conversion";
+                    }
+                }
+            }
+        } else if (moduleID.moduleName().equals("http")) {
+            // Improve this further like above
+            node = modelBuilder.addNewNode(Node.Kind.KNOWN_FUNCTION_CALL);
+            node.subkind = "HTTP";
+            node.label = "HTTP Utility";
+        } else if (moduleID.moduleName().equals("sql")) {
+            // Improve this further like above
+            node = modelBuilder.addNewNode(Node.Kind.KNOWN_FUNCTION_CALL);
+            node.subkind = "SQL";
+            node.label = "SQL Call";
+        } else if (moduleID.moduleName().equals("lang.value")) {
+            if (functionSymbol.getName().isPresent()) {
+                switch (functionSymbol.getName().get()) {
+                    case "cloneWithType", "ensureType" -> {
+                        node = modelBuilder.addNewNode(Node.Kind.DATA_VALIDATION);
+                        node.label = "Data Schema Validation";
+                    }
+                }
+            }
+        } else if (moduleID.moduleName().equals("lang.array")) {
+            node = modelBuilder.addNewNode(Node.Kind.KNOWN_FUNCTION_CALL);
+            node.subkind = "ARRAY";
+            node.label = "Array Operation";
+        } else if (moduleID.moduleName().equals("lang.string")) {
+            node = modelBuilder.addNewNode(Node.Kind.KNOWN_FUNCTION_CALL);
+            node.subkind = "STRING";
+            node.label = "String Operation";
+        } else if (moduleID.moduleName().equals("lang.map")) {
+            node = modelBuilder.addNewNode(Node.Kind.KNOWN_FUNCTION_CALL);
+            node.subkind = "MAP";
+            node.label = "Mapping Value Operation";
+        } else if (moduleID.moduleName().equals("lang.xml")) {
+            node = modelBuilder.addNewNode(Node.Kind.KNOWN_FUNCTION_CALL);
+            node.subkind = "XML";
+            node.label = "XML Operation";
+        } // TODO : ADD more
+        if (node == null) {
+            node = modelBuilder.addNewNode(Node.Kind.LIBRARY_FUNCTION);
+            node.label = functionSymbol.getName().orElse("Unknown Function");
+        }
+        return node;
+    }
+
     private void handleNetworkCall(ExpressionNode stNode) {
         // TODO: Improve this further.
         Optional<Symbol> optionalSymbol = semanticModel.symbol(stNode);
@@ -324,7 +395,8 @@ public class CodeVisitor extends NodeVisitor {
                 kind = Node.Kind.NETWORK_REMOTE_CALL;
             }
             Node node = modelBuilder.addNewNode(kind);
-            node.label = "Network Call";
+            node.label = methodSymbol.getModule().get().getName().get() + " " + methodSymbol.getName().orElse(
+                    "Unknown Network Call");
             boolean localStatement = findAndUpdateParentLocalStatement(node, stNode);
             if (!localStatement) {
                 // Safely ignore the node.

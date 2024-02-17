@@ -84,13 +84,14 @@ public class ModelBuilder {
         currentNodeList.push(children);
     }
 
-    public void endChildFlow(Node source, Node target) {
+    public void endChildFlow(Node source, Node target, String label) {
         List<Node> nodes = currentNodeList.pop();
         if (!nodes.isEmpty()) {
             Node firstElement = nodes.get(0);
             Edge sourceEdge = new Edge("Edge" + edgeCount++);
             sourceEdge.source = source;
             sourceEdge.target = firstElement;
+            sourceEdge.label = label;
             source.edges.add(sourceEdge);
 
             Node lastElement = nodes.get(nodes.size() - 1);

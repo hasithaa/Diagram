@@ -88,18 +88,31 @@ public interface DiagramSerializer {
         StringBuilder sb = new StringBuilder();
         sb.append("<!DOCTYPE html>\n").append("<html>\n");
         sb.append("<head>\n");
-        sb.append("    <link href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css\" />");
+        sb.append("    <meta charset=\"utf-8\">\n");
+        sb.append("    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n");
+        sb.append(
+                "    <link href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css\" " +
+                        "rel=\"stylesheet\" />");
+        sb.append(
+                "    <link href=\"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css\" " +
+                        "rel=\"stylesheet\" />");
         sb.append("</head>\n");
         sb.append("<body>\n");
         sb.append("    <h1>").append(model.getLabel()).append("</h1>\n");
+        sb.append("    <p><button class=\"btn btn-primary\" type=\"button\" data-bs-toggle=\"collapse\"")
+          .append(" data-bs-target=\".forms\" aria-expanded=\"false\">Toggle Data</button></p>\n");
         for (Diagram diagram : model.getDiagrams()) {
+            sb.append("    <div class=\"diagram forms show\" \">\n");
+            sb.append("    <div class=\"card card-body\">\n");
             sb.append("    <h2>").append(diagram.getLabel()).append("</h2>\n");
             sb.append("    <div class=\"mermaid\">\n");
             sb.append(diagram.getMermaidString(1));
             sb.append("    </div>\n");
+            sb.append("    </div>\n");
+            sb.append("    </div>\n");
         }
         sb.append("    <script src=\"https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js\"></script>\n");
-        sb.append("    <script src=\"https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js\">")
+        sb.append("    <script src=\"https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js\">")
           .append("</script>\n");
         sb.append("    <script>mermaid.initialize({startOnLoad:true});</script>\n");
         sb.append("</body>\n");

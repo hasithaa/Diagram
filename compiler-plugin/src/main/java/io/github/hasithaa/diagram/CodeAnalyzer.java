@@ -27,21 +27,6 @@ public class CodeAnalyzer<T> implements AnalysisTask<CompilationAnalysisContext>
                         codeVisitor);
             });
 
-//            try {
-////                List<Sequence> epSequences = codeVisitor.getEp();
-////                List<DiagramFile> diagramFiles = new ArrayList<>();
-////                for (Diagram diagram : codeVisitor.getDiagrams()) {
-////
-////                    DiagramFile diagramFile = new DiagramFile(diagram.getName(), List.of(
-////                            FlowChartGenerator.generateFlowChart(diagram, epSequences, true),
-////                            FlowChartGenerator.generateFlowChart(diagram, epSequences, false)));
-////                    diagramFiles.add(diagramFile);
-////                }
-////                DiagramSerializer.serialize(diagramFiles, ctx.currentPackage().project());
-//            } catch (IOException e) {
-//                throw new RuntimeException("Error occurred while generating the diagram for the function:", e);
-//            }
-
             Model model = codeVisitor.getModel();
             DiagramSerializer.serialize(model, ctx.currentPackage().project());
             DiagramSerializer.serializeHTML(model, ctx.currentPackage().project());
