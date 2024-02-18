@@ -1,0 +1,1511 @@
+{
+  "label": "HospitalService",
+  "diagrams": [
+    {
+      "nodes": [
+        {
+          "label": "Network Event",
+          "kind": "NETWORK_EVENT",
+          "formData": {
+            "Network": [
+              {
+                "index": -1,
+                "label": "Method",
+                "type": "IDENTIFIER",
+                "allowedTypes": [
+                ],
+                "value": "get",
+                "possibleValues": [
+                ],
+                "editable": true,
+                "flags": [
+                ]
+              },
+              {
+                "index": -1,
+                "label": "Path",
+                "type": "STRING",
+                "allowedTypes": [
+                ],
+                "value": "doctor/[string doctorType]",
+                "possibleValues": [
+                ],
+                "editable": true,
+                "flags": [
+                ]
+              }
+            ],
+            "Service": [
+              {
+                "index": -1,
+                "label": "AttachPoint",
+                "type": "DEFAULT",
+                "allowedTypes": [
+                ],
+                "value": "",
+                "possibleValues": [
+                ],
+                "editable": false,
+                "flags": [
+                ]
+              }
+            ],
+            "Return": [
+              {
+                "index": -1,
+                "label": "Return",
+                "type": "IDENTIFIER",
+                "allowedTypes": [
+                ],
+                "value": "json|error",
+                "possibleValues": [
+                ],
+                "editable": true,
+                "flags": [
+                ]
+              }
+            ],
+            "Qualifiers": [
+              {
+                "index": -1,
+                "label": "Qualifier",
+                "type": "IDENTIFIER",
+                "allowedTypes": [
+                ],
+                "value": "ISOLATED",
+                "possibleValues": [
+                ],
+                "editable": true,
+                "flags": [
+                ]
+              },
+              {
+                "index": -1,
+                "label": "Qualifier",
+                "type": "IDENTIFIER",
+                "allowedTypes": [
+                ],
+                "value": "RESOURCE",
+                "possibleValues": [
+                ],
+                "editable": true,
+                "flags": [
+                ]
+              }
+            ]
+          },
+          "lineRange": {
+            "fileName": "main.bal",
+            "startLine": 25,
+            "endLine": 53
+          },
+          "children": {
+          },
+          "edges": [
+            {
+              "source": "Diagram0Node0",
+              "target": "Diagram0Node1",
+              "kind": "DEFAULT",
+              "iId": "Diagram0Edge0"
+            }
+          ],
+          "iId": "Diagram0Node0",
+          "terminal": false,
+          "returnable": false,
+          "editable": true
+        },
+        {
+          "label": "If",
+          "kind": "IF",
+          "formData": {
+            "Condition": [
+              {
+                "index": -1,
+                "label": "Condition",
+                "type": "BOOLEAN",
+                "allowedTypes": [
+                ],
+                "value": "doctorType == \"ENT\" ",
+                "possibleValues": [
+                ],
+                "editable": true,
+                "flags": [
+                ]
+              }
+            ]
+          },
+          "lineRange": {
+            "fileName": "main.bal",
+            "startLine": 27,
+            "endLine": 52
+          },
+          "children": {
+            "Then": [
+              {
+                "label": "Remote Call",
+                "kind": "NETWORK_REMOTE_CALL",
+                "sublabel": "http get",
+                "formData": {
+                  "Error": [
+                    {
+                      "index": -1,
+                      "label": "Fail On Error",
+                      "type": "BOOLEAN",
+                      "allowedTypes": [
+                      ],
+                      "value": "true",
+                      "possibleValues": [
+                      ],
+                      "editable": true,
+                      "flags": [
+                      ]
+                    }
+                  ],
+                  "Variables": [
+                    {
+                      "index": -1,
+                      "label": "result",
+                      "type": "DEFAULT",
+                      "allowedTypes": [
+                        [
+                          "hasitha/HospitalService:0.1.0:Result"
+                        ]
+                      ],
+                      "value": "res",
+                      "possibleValues": [
+                      ],
+                      "editable": true,
+                      "flags": [
+                        "Local",
+                        "New"
+                      ]
+                    }
+                  ],
+                  "Params": [
+                    {
+                      "index": -1,
+                      "label": "expression",
+                      "type": "IDENTIFIER",
+                      "allowedTypes": [
+                      ],
+                      "value": "mapleRidgeEp->get(\"/doctor/\" + doctorType)",
+                      "possibleValues": [
+                      ],
+                      "editable": true,
+                      "flags": [
+                      ]
+                    }
+                  ]
+                },
+                "lineRange": {
+                  "fileName": "main.bal",
+                  "startLine": 29,
+                  "endLine": 29
+                },
+                "children": {
+                },
+                "edges": [
+                  {
+                    "source": "Diagram0Node3",
+                    "target": "Diagram0Node4",
+                    "kind": "DEFAULT",
+                    "iId": "Diagram0Edge1"
+                  }
+                ],
+                "iId": "Diagram0Node3",
+                "terminal": false,
+                "returnable": false,
+                "editable": true
+              },
+              {
+                "label": "Return",
+                "kind": "RETURN",
+                "formData": {
+                },
+                "lineRange": {
+                  "fileName": "main.bal",
+                  "startLine": 30,
+                  "endLine": 30
+                },
+                "children": {
+                },
+                "edges": [
+                  {
+                    "source": "Diagram0Node4",
+                    "target": "Diagram0Node2",
+                    "kind": "UNREACHABLE",
+                    "iId": "Diagram0Edge3"
+                  }
+                ],
+                "iId": "Diagram0Node4",
+                "terminal": true,
+                "returnable": true,
+                "editable": true
+              }
+            ],
+            "Else": [
+              {
+                "label": "Fork",
+                "kind": "CLONE",
+                "formData": {
+                },
+                "lineRange": {
+                  "fileName": "main.bal",
+                  "startLine": 33,
+                  "endLine": 43
+                },
+                "children": {
+                },
+                "edges": [
+                  {
+                    "label": "Start",
+                    "source": "Diagram0Node5",
+                    "target": "Diagram0SubGraph0",
+                    "kind": "IMPLICIT",
+                    "iId": "Diagram0Edge4"
+                  },
+                  {
+                    "label": "Start",
+                    "source": "Diagram0Node5",
+                    "target": "Diagram0SubGraph1",
+                    "kind": "IMPLICIT",
+                    "iId": "Diagram0Edge7"
+                  },
+                  {
+                    "source": "Diagram0Node5",
+                    "target": "Diagram0Node13",
+                    "kind": "DEFAULT",
+                    "iId": "Diagram0Edge11"
+                  }
+                ],
+                "iId": "Diagram0Node5",
+                "terminal": false,
+                "returnable": false,
+                "editable": true
+              },
+              {
+                "label": "New Message",
+                "kind": "DATA_NEW_MESSAGE",
+                "subkind": "Array",
+                "formData": {
+                  "Variables": [
+                    {
+                      "index": -1,
+                      "label": "result",
+                      "type": "DEFAULT",
+                      "allowedTypes": [
+                        [
+                          "hasitha/HospitalService:0.1.0:Result"
+                        ]
+                      ],
+                      "value": "result",
+                      "possibleValues": [
+                      ],
+                      "editable": true,
+                      "flags": [
+                        "Local",
+                        "New"
+                      ]
+                    }
+                  ]
+                },
+                "lineRange": {
+                  "fileName": "main.bal",
+                  "startLine": 44,
+                  "endLine": 44
+                },
+                "children": {
+                },
+                "edges": [
+                  {
+                    "source": "Diagram0Node13",
+                    "target": "Diagram0Node14",
+                    "kind": "DEFAULT",
+                    "iId": "Diagram0Edge12"
+                  }
+                ],
+                "iId": "Diagram0Node13",
+                "terminal": false,
+                "returnable": false,
+                "editable": true
+              },
+              {
+                "label": "Wait for All",
+                "kind": "WAIT",
+                "formData": {
+                  "Variables": [
+                    {
+                      "index": -1,
+                      "label": "result",
+                      "type": "MAPPING",
+                      "allowedTypes": [
+                        [
+                          "record {|hasitha/HospitalService:0.1.0:Result|error pineValley; hasitha/HospitalService:0.1.0:Result|error grandOak; anydata...;|}"
+                        ]
+                      ],
+                      "value": "res",
+                      "possibleValues": [
+                      ],
+                      "editable": true,
+                      "flags": [
+                        "Local",
+                        "New"
+                      ]
+                    }
+                  ]
+                },
+                "lineRange": {
+                  "fileName": "main.bal",
+                  "startLine": 45,
+                  "endLine": 45
+                },
+                "children": {
+                },
+                "edges": [
+                  {
+                    "source": "Diagram0Node14",
+                    "target": "Diagram0Node15",
+                    "kind": "DEFAULT",
+                    "iId": "Diagram0Edge15"
+                  }
+                ],
+                "iId": "Diagram0Node14",
+                "terminal": false,
+                "returnable": false,
+                "editable": true
+              },
+              {
+                "label": "Expression",
+                "kind": "EXPRESSION",
+                "formData": {
+                  "Variables": [
+                    {
+                      "index": -1,
+                      "label": "result",
+                      "type": "DEFAULT",
+                      "allowedTypes": [
+                        [
+                          "hasitha/HospitalService:0.1.0:Result"
+                        ]
+                      ],
+                      "value": "pineValleyRes",
+                      "possibleValues": [
+                      ],
+                      "editable": true,
+                      "flags": [
+                        "Local",
+                        "New"
+                      ]
+                    }
+                  ]
+                },
+                "lineRange": {
+                  "fileName": "main.bal",
+                  "startLine": 47,
+                  "endLine": 47
+                },
+                "children": {
+                },
+                "edges": [
+                  {
+                    "source": "Diagram0Node15",
+                    "target": "Diagram0Node16",
+                    "kind": "DEFAULT",
+                    "iId": "Diagram0Edge16"
+                  }
+                ],
+                "iId": "Diagram0Node15",
+                "terminal": false,
+                "returnable": false,
+                "editable": true
+              },
+              {
+                "label": "Expression",
+                "kind": "EXPRESSION",
+                "formData": {
+                  "Variables": [
+                    {
+                      "index": -1,
+                      "label": "result",
+                      "type": "DEFAULT",
+                      "allowedTypes": [
+                        [
+                          "hasitha/HospitalService:0.1.0:Result"
+                        ]
+                      ],
+                      "value": "grandOakRes",
+                      "possibleValues": [
+                      ],
+                      "editable": true,
+                      "flags": [
+                        "Local",
+                        "New"
+                      ]
+                    }
+                  ]
+                },
+                "lineRange": {
+                  "fileName": "main.bal",
+                  "startLine": 48,
+                  "endLine": 48
+                },
+                "children": {
+                },
+                "edges": [
+                  {
+                    "source": "Diagram0Node16",
+                    "target": "Diagram0Node17",
+                    "kind": "DEFAULT",
+                    "iId": "Diagram0Edge17"
+                  }
+                ],
+                "iId": "Diagram0Node16",
+                "terminal": false,
+                "returnable": false,
+                "editable": true
+              },
+              {
+                "label": "Array Operation",
+                "kind": "KNOWN_FUNCTION_CALL",
+                "subkind": "ARRAY",
+                "formData": {
+                  "Params": [
+                    {
+                      "index": -1,
+                      "label": "expression",
+                      "type": "IDENTIFIER",
+                      "allowedTypes": [
+                      ],
+                      "value": "            result.push(...pineValleyRes)",
+                      "possibleValues": [
+                      ],
+                      "editable": true,
+                      "flags": [
+                      ]
+                    }
+                  ]
+                },
+                "lineRange": {
+                  "fileName": "main.bal",
+                  "startLine": 49,
+                  "endLine": 49
+                },
+                "children": {
+                },
+                "edges": [
+                  {
+                    "source": "Diagram0Node17",
+                    "target": "Diagram0Node18",
+                    "kind": "DEFAULT",
+                    "iId": "Diagram0Edge18"
+                  }
+                ],
+                "iId": "Diagram0Node17",
+                "terminal": false,
+                "returnable": false,
+                "editable": true
+              },
+              {
+                "label": "Array Operation",
+                "kind": "KNOWN_FUNCTION_CALL",
+                "subkind": "ARRAY",
+                "formData": {
+                  "Params": [
+                    {
+                      "index": -1,
+                      "label": "expression",
+                      "type": "IDENTIFIER",
+                      "allowedTypes": [
+                      ],
+                      "value": "            result.push(...grandOakRes)",
+                      "possibleValues": [
+                      ],
+                      "editable": true,
+                      "flags": [
+                      ]
+                    }
+                  ]
+                },
+                "lineRange": {
+                  "fileName": "main.bal",
+                  "startLine": 50,
+                  "endLine": 50
+                },
+                "children": {
+                },
+                "edges": [
+                  {
+                    "source": "Diagram0Node18",
+                    "target": "Diagram0Node19",
+                    "kind": "DEFAULT",
+                    "iId": "Diagram0Edge19"
+                  }
+                ],
+                "iId": "Diagram0Node18",
+                "terminal": false,
+                "returnable": false,
+                "editable": true
+              },
+              {
+                "label": "Return",
+                "kind": "RETURN",
+                "formData": {
+                },
+                "lineRange": {
+                  "fileName": "main.bal",
+                  "startLine": 51,
+                  "endLine": 51
+                },
+                "children": {
+                },
+                "edges": [
+                  {
+                    "source": "Diagram0Node19",
+                    "target": "Diagram0Node2",
+                    "kind": "UNREACHABLE",
+                    "iId": "Diagram0Edge21"
+                  }
+                ],
+                "iId": "Diagram0Node19",
+                "terminal": true,
+                "returnable": true,
+                "editable": true
+              }
+            ]
+          },
+          "edges": [
+            {
+              "label": "Then",
+              "source": "Diagram0Node1",
+              "target": "Diagram0Node3",
+              "kind": "DEFAULT",
+              "iId": "Diagram0Edge2"
+            },
+            {
+              "label": "Else",
+              "source": "Diagram0Node1",
+              "target": "Diagram0Node5",
+              "kind": "DEFAULT",
+              "iId": "Diagram0Edge20"
+            }
+          ],
+          "iId": "Diagram0Node1",
+          "terminal": false,
+          "returnable": false,
+          "editable": true
+        },
+        {
+          "label": "null",
+          "kind": "KONNECTOR",
+          "formData": {
+          },
+          "lineRange": {
+            "fileName": "main.bal",
+            "startLine": 27,
+            "endLine": 52
+          },
+          "children": {
+          },
+          "edges": [
+            {
+              "source": "Diagram0Node2",
+              "target": "Diagram0Node20",
+              "kind": "UNREACHABLE",
+              "iId": "Diagram0Edge22"
+            }
+          ],
+          "iId": "Diagram0Node2",
+          "terminal": false,
+          "returnable": false,
+          "editable": true
+        },
+        {
+          "label": "null",
+          "kind": "END",
+          "formData": {
+          },
+          "lineRange": null,
+          "children": {
+          },
+          "edges": [
+          ],
+          "iId": "Diagram0Node20",
+          "terminal": false,
+          "returnable": false,
+          "editable": true
+        }
+      ],
+      "subgraphs": [
+        {
+          "kind": "WORKER",
+          "label": "pineValley",
+          "iId": "Diagram0SubGraph0",
+          "nodes": [
+            {
+              "label": "null",
+              "kind": "ASYNC_START",
+              "formData": {
+              },
+              "lineRange": null,
+              "edges": [
+                {
+                  "source": "Diagram0Node6",
+                  "target": "Diagram0Node7",
+                  "kind": "DEFAULT",
+                  "iId": "Diagram0Edge5"
+                }
+              ],
+              "iId": "Diagram0Node6",
+              "terminal": false,
+              "returnable": false,
+              "editable": true
+            },
+            {
+              "label": "Remote Call",
+              "kind": "NETWORK_REMOTE_CALL",
+              "sublabel": "http get",
+              "formData": {
+                "Error": [
+                  {
+                    "index": -1,
+                    "label": "Fail On Error",
+                    "type": "BOOLEAN",
+                    "allowedTypes": [
+                    ],
+                    "value": "true",
+                    "possibleValues": [
+                    ],
+                    "editable": true,
+                    "flags": [
+                    ]
+                  }
+                ],
+                "Variables": [
+                  {
+                    "index": -1,
+                    "label": "result",
+                    "type": "DEFAULT",
+                    "allowedTypes": [
+                      [
+                        "hasitha/HospitalService:0.1.0:Result"
+                      ]
+                    ],
+                    "value": "res",
+                    "possibleValues": [
+                    ],
+                    "editable": true,
+                    "flags": [
+                      "Local",
+                      "New"
+                    ]
+                  }
+                ],
+                "Params": [
+                  {
+                    "index": -1,
+                    "label": "expression",
+                    "type": "IDENTIFIER",
+                    "allowedTypes": [
+                    ],
+                    "value": "pineValleyEp->get(\"/doctor/\" + doctorType)",
+                    "possibleValues": [
+                    ],
+                    "editable": true,
+                    "flags": [
+                    ]
+                  }
+                ]
+              },
+              "lineRange": {
+                "fileName": "main.bal",
+                "startLine": 35,
+                "endLine": 35
+              },
+              "edges": [
+                {
+                  "source": "Diagram0Node7",
+                  "target": "Diagram0Node8",
+                  "kind": "DEFAULT",
+                  "iId": "Diagram0Edge6"
+                }
+              ],
+              "iId": "Diagram0Node7",
+              "terminal": false,
+              "returnable": false,
+              "editable": true
+            },
+            {
+              "label": "Async Result",
+              "kind": "ASYNC_RETURN",
+              "formData": {
+              },
+              "lineRange": {
+                "fileName": "main.bal",
+                "startLine": 36,
+                "endLine": 36
+              },
+              "edges": [
+              ],
+              "iId": "Diagram0Node8",
+              "terminal": true,
+              "returnable": true,
+              "editable": true
+            }
+          ]
+        },
+        {
+          "kind": "WORKER",
+          "label": "grandOak",
+          "iId": "Diagram0SubGraph1",
+          "nodes": [
+            {
+              "label": "null",
+              "kind": "ASYNC_START",
+              "formData": {
+              },
+              "lineRange": null,
+              "edges": [
+                {
+                  "source": "Diagram0Node9",
+                  "target": "Diagram0Node10",
+                  "kind": "DEFAULT",
+                  "iId": "Diagram0Edge8"
+                }
+              ],
+              "iId": "Diagram0Node9",
+              "terminal": false,
+              "returnable": false,
+              "editable": true
+            },
+            {
+              "label": "New Message",
+              "kind": "DATA_NEW_MESSAGE",
+              "subkind": "JSON",
+              "formData": {
+                "Variables": [
+                  {
+                    "index": -1,
+                    "label": "result",
+                    "type": "DEFAULT",
+                    "allowedTypes": [
+                      [
+                        "hasitha/HospitalService:0.1.0:PineValleyReq"
+                      ]
+                    ],
+                    "value": "req",
+                    "possibleValues": [
+                    ],
+                    "editable": true,
+                    "flags": [
+                      "Local",
+                      "New"
+                    ]
+                  }
+                ]
+              },
+              "lineRange": {
+                "fileName": "main.bal",
+                "startLine": 39,
+                "endLine": 39
+              },
+              "edges": [
+                {
+                  "source": "Diagram0Node10",
+                  "target": "Diagram0Node11",
+                  "kind": "DEFAULT",
+                  "iId": "Diagram0Edge9"
+                }
+              ],
+              "iId": "Diagram0Node10",
+              "terminal": false,
+              "returnable": false,
+              "editable": true
+            },
+            {
+              "label": "Remote Call",
+              "kind": "NETWORK_REMOTE_CALL",
+              "sublabel": "http post",
+              "formData": {
+                "Error": [
+                  {
+                    "index": -1,
+                    "label": "Fail On Error",
+                    "type": "BOOLEAN",
+                    "allowedTypes": [
+                    ],
+                    "value": "true",
+                    "possibleValues": [
+                    ],
+                    "editable": true,
+                    "flags": [
+                    ]
+                  }
+                ],
+                "Variables": [
+                  {
+                    "index": -1,
+                    "label": "result",
+                    "type": "DEFAULT",
+                    "allowedTypes": [
+                      [
+                        "hasitha/HospitalService:0.1.0:Result"
+                      ]
+                    ],
+                    "value": "res",
+                    "possibleValues": [
+                    ],
+                    "editable": true,
+                    "flags": [
+                      "Local",
+                      "New"
+                    ]
+                  }
+                ],
+                "Params": [
+                  {
+                    "index": -1,
+                    "label": "expression",
+                    "type": "IDENTIFIER",
+                    "allowedTypes": [
+                    ],
+                    "value": "grandOakEp->post(\"/doctor/\", req)",
+                    "possibleValues": [
+                    ],
+                    "editable": true,
+                    "flags": [
+                    ]
+                  }
+                ]
+              },
+              "lineRange": {
+                "fileName": "main.bal",
+                "startLine": 40,
+                "endLine": 40
+              },
+              "edges": [
+                {
+                  "source": "Diagram0Node11",
+                  "target": "Diagram0Node12",
+                  "kind": "DEFAULT",
+                  "iId": "Diagram0Edge10"
+                }
+              ],
+              "iId": "Diagram0Node11",
+              "terminal": false,
+              "returnable": false,
+              "editable": true
+            },
+            {
+              "label": "Async Result",
+              "kind": "ASYNC_RETURN",
+              "formData": {
+              },
+              "lineRange": {
+                "fileName": "main.bal",
+                "startLine": 41,
+                "endLine": 41
+              },
+              "edges": [
+              ],
+              "iId": "Diagram0Node12",
+              "terminal": true,
+              "returnable": true,
+              "editable": true
+            }
+          ]
+        }
+      ],
+      "label": "get doctor/[string doctorType]",
+      "iId": "Diagram0"
+    },
+    {
+      "nodes": [
+        {
+          "label": "Network Event",
+          "kind": "NETWORK_EVENT",
+          "formData": {
+            "Network": [
+              {
+                "index": -1,
+                "label": "Method",
+                "type": "IDENTIFIER",
+                "allowedTypes": [
+                ],
+                "value": "post",
+                "possibleValues": [
+                ],
+                "editable": true,
+                "flags": [
+                ]
+              },
+              {
+                "index": -1,
+                "label": "Path",
+                "type": "STRING",
+                "allowedTypes": [
+                ],
+                "value": "doctorTypes/[string doctorType]",
+                "possibleValues": [
+                ],
+                "editable": true,
+                "flags": [
+                ]
+              }
+            ],
+            "Service": [
+              {
+                "index": -1,
+                "label": "AttachPoint",
+                "type": "DEFAULT",
+                "allowedTypes": [
+                ],
+                "value": "",
+                "possibleValues": [
+                ],
+                "editable": false,
+                "flags": [
+                ]
+              }
+            ],
+            "Return": [
+              {
+                "index": -1,
+                "label": "Return",
+                "type": "IDENTIFIER",
+                "allowedTypes": [
+                ],
+                "value": "json|error",
+                "possibleValues": [
+                ],
+                "editable": true,
+                "flags": [
+                ]
+              }
+            ],
+            "Qualifiers": [
+              {
+                "index": -1,
+                "label": "Qualifier",
+                "type": "IDENTIFIER",
+                "allowedTypes": [
+                ],
+                "value": "ISOLATED",
+                "possibleValues": [
+                ],
+                "editable": true,
+                "flags": [
+                ]
+              },
+              {
+                "index": -1,
+                "label": "Qualifier",
+                "type": "IDENTIFIER",
+                "allowedTypes": [
+                ],
+                "value": "RESOURCE",
+                "possibleValues": [
+                ],
+                "editable": true,
+                "flags": [
+                ]
+              }
+            ]
+          },
+          "lineRange": {
+            "fileName": "main.bal",
+            "startLine": 55,
+            "endLine": 70
+          },
+          "children": {
+          },
+          "edges": [
+            {
+              "source": "Diagram0Node0",
+              "target": "Diagram0Node1",
+              "kind": "DEFAULT",
+              "iId": "Diagram0Edge0"
+            }
+          ],
+          "iId": "Diagram0Node0",
+          "terminal": false,
+          "returnable": false,
+          "editable": true
+        },
+        {
+          "label": "Remote Call",
+          "kind": "NETWORK_REMOTE_CALL",
+          "sublabel": "http get",
+          "formData": {
+            "Error": [
+              {
+                "index": -1,
+                "label": "Fail On Error",
+                "type": "BOOLEAN",
+                "allowedTypes": [
+                ],
+                "value": "true",
+                "possibleValues": [
+                ],
+                "editable": true,
+                "flags": [
+                ]
+              }
+            ],
+            "Variables": [
+              {
+                "index": -1,
+                "label": "result",
+                "type": "DEFAULT",
+                "allowedTypes": [
+                  [
+                    "hasitha/HospitalService:0.1.0:Result"
+                  ]
+                ],
+                "value": "res",
+                "possibleValues": [
+                ],
+                "editable": true,
+                "flags": [
+                  "Local",
+                  "New"
+                ]
+              }
+            ],
+            "Params": [
+              {
+                "index": -1,
+                "label": "expression",
+                "type": "IDENTIFIER",
+                "allowedTypes": [
+                ],
+                "value": "mapleRidgeEp->get(\"/doctor/\" + doctorType)",
+                "possibleValues": [
+                ],
+                "editable": true,
+                "flags": [
+                ]
+              }
+            ]
+          },
+          "lineRange": {
+            "fileName": "main.bal",
+            "startLine": 56,
+            "endLine": 56
+          },
+          "children": {
+          },
+          "edges": [
+            {
+              "source": "Diagram0Node1",
+              "target": "Diagram0Node2",
+              "kind": "DEFAULT",
+              "iId": "Diagram0Edge1"
+            }
+          ],
+          "iId": "Diagram0Node1",
+          "terminal": false,
+          "returnable": false,
+          "editable": true
+        },
+        {
+          "label": "Remote Call",
+          "kind": "NETWORK_REMOTE_CALL",
+          "sublabel": "http post",
+          "formData": {
+            "Error": [
+              {
+                "index": -1,
+                "label": "Fail On Error",
+                "type": "BOOLEAN",
+                "allowedTypes": [
+                ],
+                "value": "true",
+                "possibleValues": [
+                ],
+                "editable": true,
+                "flags": [
+                ]
+              }
+            ],
+            "Variables": [
+              {
+                "index": -1,
+                "label": "result",
+                "type": "MAPPING",
+                "allowedTypes": [
+                  [
+                    "json"
+                  ]
+                ],
+                "value": "j",
+                "possibleValues": [
+                ],
+                "editable": true,
+                "flags": [
+                  "Local",
+                  "New"
+                ]
+              }
+            ],
+            "Params": [
+              {
+                "index": -1,
+                "label": "expression",
+                "type": "IDENTIFIER",
+                "allowedTypes": [
+                ],
+                "value": "insurance->post(\"/doctor/\", {\"doctor\": doctor.doctorType})",
+                "possibleValues": [
+                ],
+                "editable": true,
+                "flags": [
+                ]
+              }
+            ]
+          },
+          "lineRange": {
+            "fileName": "main.bal",
+            "startLine": 58,
+            "endLine": 58
+          },
+          "children": {
+          },
+          "edges": [
+            {
+              "source": "Diagram0Node2",
+              "target": "Diagram0Node3",
+              "kind": "DEFAULT",
+              "iId": "Diagram0Edge2"
+            }
+          ],
+          "iId": "Diagram0Node2",
+          "terminal": false,
+          "returnable": false,
+          "editable": true
+        },
+        {
+          "label": "If",
+          "kind": "IF",
+          "formData": {
+            "Condition": [
+              {
+                "index": -1,
+                "label": "Condition",
+                "type": "BOOLEAN",
+                "allowedTypes": [
+                ],
+                "value": "j.status != \"error\" ",
+                "possibleValues": [
+                ],
+                "editable": true,
+                "flags": [
+                ]
+              }
+            ]
+          },
+          "lineRange": {
+            "fileName": "main.bal",
+            "startLine": 59,
+            "endLine": 61
+          },
+          "children": {
+            "Then": [
+              {
+                "label": "New Message",
+                "kind": "DATA_NEW_MESSAGE",
+                "subkind": "JSON",
+                "formData": {
+                },
+                "lineRange": {
+                  "fileName": "main.bal",
+                  "startLine": 60,
+                  "endLine": 60
+                },
+                "children": {
+                },
+                "edges": [
+                  {
+                    "source": "Diagram0Node5",
+                    "target": "Diagram0Node4",
+                    "kind": "UNREACHABLE",
+                    "iId": "Diagram0Edge4"
+                  }
+                ],
+                "iId": "Diagram0Node5",
+                "terminal": true,
+                "returnable": true,
+                "editable": true
+              }
+            ]
+          },
+          "edges": [
+            {
+              "label": "Then",
+              "source": "Diagram0Node3",
+              "target": "Diagram0Node5",
+              "kind": "DEFAULT",
+              "iId": "Diagram0Edge3"
+            }
+          ],
+          "iId": "Diagram0Node3",
+          "terminal": false,
+          "returnable": false,
+          "editable": true
+        },
+        {
+          "label": "null",
+          "kind": "KONNECTOR",
+          "formData": {
+          },
+          "lineRange": {
+            "fileName": "main.bal",
+            "startLine": 59,
+            "endLine": 61
+          },
+          "children": {
+          },
+          "edges": [
+            {
+              "source": "Diagram0Node4",
+              "target": "Diagram0Node6",
+              "kind": "UNREACHABLE",
+              "iId": "Diagram0Edge5"
+            }
+          ],
+          "iId": "Diagram0Node4",
+          "terminal": false,
+          "returnable": false,
+          "editable": true
+        },
+        {
+          "label": "If",
+          "kind": "IF",
+          "formData": {
+            "Condition": [
+              {
+                "index": -1,
+                "label": "Condition",
+                "type": "BOOLEAN",
+                "allowedTypes": [
+                ],
+                "value": "j.status == \"Unknown\" ",
+                "possibleValues": [
+                ],
+                "editable": true,
+                "flags": [
+                ]
+              }
+            ]
+          },
+          "lineRange": {
+            "fileName": "main.bal",
+            "startLine": 62,
+            "endLine": 66
+          },
+          "children": {
+            "Then": [
+            ],
+            "Else": [
+              {
+                "label": "If",
+                "kind": "IF",
+                "formData": {
+                  "Condition": [
+                    {
+                      "index": -1,
+                      "label": "Condition",
+                      "type": "BOOLEAN",
+                      "allowedTypes": [
+                      ],
+                      "value": "j.status == \"New\" ",
+                      "possibleValues": [
+                      ],
+                      "editable": true,
+                      "flags": [
+                      ]
+                    }
+                  ]
+                },
+                "lineRange": {
+                  "fileName": "main.bal",
+                  "startLine": 64,
+                  "endLine": 66
+                },
+                "children": {
+                  "Then": [
+                  ]
+                },
+                "edges": [
+                  {
+                    "source": "Diagram0Node8",
+                    "target": "Diagram0Node9",
+                    "kind": "UNREACHABLE",
+                    "iId": "Diagram0Edge7"
+                  }
+                ],
+                "iId": "Diagram0Node8",
+                "terminal": false,
+                "returnable": false,
+                "editable": true
+              },
+              {
+                "label": "null",
+                "kind": "KONNECTOR",
+                "formData": {
+                },
+                "lineRange": {
+                  "fileName": "main.bal",
+                  "startLine": 64,
+                  "endLine": 66
+                },
+                "children": {
+                },
+                "edges": [
+                  {
+                    "source": "Diagram0Node9",
+                    "target": "Diagram0Node7",
+                    "kind": "UNREACHABLE",
+                    "iId": "Diagram0Edge9"
+                  }
+                ],
+                "iId": "Diagram0Node9",
+                "terminal": false,
+                "returnable": false,
+                "editable": true
+              }
+            ]
+          },
+          "edges": [
+            {
+              "source": "Diagram0Node6",
+              "target": "Diagram0Node7",
+              "kind": "UNREACHABLE",
+              "iId": "Diagram0Edge6"
+            },
+            {
+              "label": "Else",
+              "source": "Diagram0Node6",
+              "target": "Diagram0Node8",
+              "kind": "UNREACHABLE",
+              "iId": "Diagram0Edge8"
+            }
+          ],
+          "iId": "Diagram0Node6",
+          "terminal": false,
+          "returnable": false,
+          "editable": true
+        },
+        {
+          "label": "null",
+          "kind": "KONNECTOR",
+          "formData": {
+          },
+          "lineRange": {
+            "fileName": "main.bal",
+            "startLine": 62,
+            "endLine": 66
+          },
+          "children": {
+          },
+          "edges": [
+            {
+              "source": "Diagram0Node7",
+              "target": "Diagram0Node10",
+              "kind": "UNREACHABLE",
+              "iId": "Diagram0Edge10"
+            }
+          ],
+          "iId": "Diagram0Node7",
+          "terminal": false,
+          "returnable": false,
+          "editable": true
+        },
+        {
+          "label": "println",
+          "kind": "LIBRARY_FUNCTION",
+          "formData": {
+            "Params": [
+              {
+                "index": -1,
+                "label": "expression",
+                "type": "IDENTIFIER",
+                "allowedTypes": [
+                ],
+                "value": "            io:println(\"Data Submit\")",
+                "possibleValues": [
+                ],
+                "editable": true,
+                "flags": [
+                ]
+              }
+            ]
+          },
+          "lineRange": {
+            "fileName": "main.bal",
+            "startLine": 67,
+            "endLine": 67
+          },
+          "children": {
+          },
+          "edges": [
+            {
+              "source": "Diagram0Node10",
+              "target": "Diagram0Node11",
+              "kind": "UNREACHABLE",
+              "iId": "Diagram0Edge11"
+            }
+          ],
+          "iId": "Diagram0Node10",
+          "terminal": false,
+          "returnable": false,
+          "editable": true
+        },
+        {
+          "label": "New Message",
+          "kind": "DATA_NEW_MESSAGE",
+          "subkind": "JSON",
+          "formData": {
+          },
+          "lineRange": {
+            "fileName": "main.bal",
+            "startLine": 69,
+            "endLine": 69
+          },
+          "children": {
+          },
+          "edges": [
+            {
+              "source": "Diagram0Node11",
+              "target": "Diagram0Node12",
+              "kind": "UNREACHABLE",
+              "iId": "Diagram0Edge12"
+            }
+          ],
+          "iId": "Diagram0Node11",
+          "terminal": true,
+          "returnable": true,
+          "editable": true
+        },
+        {
+          "label": "null",
+          "kind": "END",
+          "formData": {
+          },
+          "lineRange": null,
+          "children": {
+          },
+          "edges": [
+          ],
+          "iId": "Diagram0Node12",
+          "terminal": false,
+          "returnable": false,
+          "editable": true
+        }
+      ],
+      "subgraphs": [
+      ],
+      "label": "post doctorTypes/[string doctorType]",
+      "iId": "Diagram0"
+    }
+  ]
+}

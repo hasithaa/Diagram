@@ -1,4 +1,5 @@
 import ballerina/http;
+import ballerina/io;
 import ballerina/xmldata;
 
 import hasitha/diagram as _;
@@ -16,7 +17,6 @@ function transformPineValley(PineValleyDoctor doctor) returns DoctorDetails => {
     room: doctor.room.toString(),
     specialization: doctor.department
 };
-
 
 final http:Client pineValleyEp = check new ("http://localhost:9091/pineValley/");
 final http:Client grandOakEp = check new ("http://localhost:9092/grandOak/");
@@ -67,7 +67,7 @@ service /search on new http:Listener(9090) {
             Result grandOakRes = check res.get("grandOak");
             result.push(...pineValleyRes);
             result.push(...grandOakRes);
-            return result; 
+            return result;
         }
     }
 }
@@ -110,12 +110,11 @@ type PineValleyReq record {|
 type Result DoctorType[];
 
 public function main() {
-    int i = 0;
-    worker w1 {
-        i = i + 1;
-        
+    int[] arr = [1, 2, 3, 4, 5];
+    if arr.length() > 3 {
+        io:println("Length is greater than 3");
+    } else {
+        return;
     }
-    worker w2 {
-        i = i + 2;
-    }
+    io:println("Hello World;");
 }

@@ -80,7 +80,7 @@ public interface DiagramSerializer {
             sb.append("    <h2>").append("[").append(diagram.getDiagramType()).append("] ").append(diagram.getLabel())
               .append(
                       "</h2>\n");
-            sb.append("    <div class=\"row row-cols-2\" \">\n");
+            sb.append("    <div class=\"row row-cols-2\">\n");
             sb.append("         <div class=\"col\">\n");
             sb.append("             <h3>Overview</h3>\n");
             sb.append(getDiagramOverview(diagram));

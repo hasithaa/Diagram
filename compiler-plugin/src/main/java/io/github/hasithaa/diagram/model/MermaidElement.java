@@ -27,8 +27,14 @@ public interface MermaidElement {
                     .replace("<", "&lt;")
                     .replace(">", "&gt;")
                     .replace("&", "&amp;")
-                    .replace("'", "&apos;")
+                    .replace("{", "&#123;")
+                    .replace("}", "&#125;")
+                    .replace("\\", "&#92;")
+                    .replace("[", "&#91;")
+                    .replace("]", "&#93;")
+                    .replace("/", "&#47;")
                     .replace("\"", "&quot;");
+
         }
         return value;
     }

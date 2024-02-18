@@ -165,6 +165,20 @@ public class Node implements JsonElement, MermaidElement, Linkable {
         if (subHeading != null && !subHeading.isEmpty()) {
             sb.append("<br>").append(subHeading);
         }
+        if (!formData.isEmpty()) {
+            sb.append("<br><table class=\"table\">");
+            if (formData.containsKey("Network")) {
+                sb.append("<tr><td><strong>Network</strong></td></tr>");
+                formData.getOrDefault("Network", new ArrayList<>()).forEach(
+                        formData -> sb.append(formData.getMermaidString(0)));
+            }
+            if (formData.containsKey("Variables")) {
+                sb.append("<tr><td><strong>Variables</strong></td></tr>");
+                formData.getOrDefault("Variables", new ArrayList<>()).forEach(
+                        formData -> sb.append(formData.getMermaidString(0)));
+            }
+            sb.append("</table>");
+        }
         sb.append("\"").append(getNodeEnd());
         return sb.toString();
     }

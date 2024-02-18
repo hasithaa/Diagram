@@ -10,291 +10,526 @@
 <h1>SimpleHospitalService</h1>
 <div class="container">
     <h2>[API] get doctor/[string doctorType]</h2>
-    <div class="row row-cols-2"
-    ">
-    <div class="col">
-        <h3>Overview</h3>
-        <h4>Main Flow</h4><br>
-        <ul id="overview-get doctor/[string doctorType]">
-            <li>
-                <i class="fa fa-network-wired"></i><i class="fa fa-arrow-right-to-bracket"></i> Network Event
-            </li>
-            <li>
-                <i class="fa fa-code-merge"></i> If
-                <div>
-                    <a aria-expanded="false" class="dropdown-toggle" data-bs-toggle="collapse" href="#overview-Then"><i
-                            class="fa fa-code-merge"></i> Then</a>
-                    <ul class="collapse" id="overview-Then">
-                        <li>
-                            <i class="fa fa-envelope"></i> New JSON
-                        </li>
-                        <li>
-                            <i class="fa fa-right-from-bracket"></i><i class="fa fa-network-wired"></i> Resource Call
-                        </li>
-                        <li>
-                            <i class="fa fa-envelope-circle-check"></i> Data Schema Validation
-                        </li>
-                        <li>
-                            <i class="fa fa-timeline"></i> Data Mapping Activity
-                        </li>
-                        <li>
-                            <i class="fa fa-turn-up"></i> Return
-                        </li>
-                    </ul>
-                </div>
-                <div>
-                    <a aria-expanded="false" class="dropdown-toggle" data-bs-toggle="collapse" href="#overview-Else"><i
-                            class="fa fa-code-merge"></i> Else</a>
-                    <ul class="collapse" id="overview-Else">
-                        <li>
-                            <i class="fa fa-envelope"></i> New XML
-                        </li>
-                        <li>
-                            <i class="fa fa-right-from-bracket"></i><i class="fa fa-network-wired"></i> Remote Call
-                        </li>
-                        <li>
-                            <i class="fa fa-file-code"></i><i class="fa fa-right-left"></i><i
-                                class="fa fa-file-csv"></i> Data Conversion
-                        </li>
-                        <li>
-                            <i class="fa fa-envelope-circle-check"></i> Data Schema Validation
-                        </li>
-                        <li>
-                            <i class="fa fa-timeline"></i><i class="fa fa-turn-up"></i> Data Mapping Activity
-                        </li>
-                    </ul>
-                </div>
-            </li>
-        </ul>
-    </div>
-    <div class="diagram col">
-        <h3>Diagram</h3>
-        <div class="mermaid">
-            flowchart TB
-            Diagram0Node0["fa:fa-network-wired fa:fa-arrow-right-to-bracket<br><strong>Network Event</strong>"]
-            Diagram0Node0 ==> Diagram0Node1
-            Diagram0Node1["fa:fa-code-merge<br><strong>If</strong>"]
-            Diagram0Node3["fa:fa-envelope<br><strong>New JSON</strong>"]
-            Diagram0Node3 ==> Diagram0Node4
-            Diagram0Node4["fa:fa-right-from-bracket fa:fa-network-wired<br><strong>Resource Call</strong><br>http post"]
-            Diagram0Node4 ==> Diagram0Node5
-            Diagram0Node5["fa:fa-envelope-circle-check<br><strong>Data Schema Validation</strong>"]
-            Diagram0Node5 ==> Diagram0Node6
-            Diagram0Node6["fa:fa-timeline<br><strong>Data Mapping Activity</strong>"]
-            Diagram0Node6 ==> Diagram0Node7
-            Diagram0Node7["fa:fa-turn-up<br><strong>Return</strong>"]
-            Diagram0Node7 x-.-x Diagram0Node2
-            Diagram0Node8["fa:fa-envelope<br><strong>New XML</strong>"]
-            Diagram0Node8 ==> Diagram0Node9
-            Diagram0Node9["fa:fa-right-from-bracket fa:fa-network-wired<br><strong>Remote Call</strong><br>http post"]
-            Diagram0Node9 ==> Diagram0Node10
-            Diagram0Node10["fa:fa-file-code fa:fa-right-left fa:fa-file-csv<br><strong>Data Conversion</strong>"]
-            Diagram0Node10 ==> Diagram0Node11
-            Diagram0Node11["fa:fa-envelope-circle-check<br><strong>Data Schema Validation</strong>"]
-            Diagram0Node11 ==> Diagram0Node12
-            Diagram0Node12["fa:fa-timeline fa:fa-turn-up<br><strong>Data Mapping Activity</strong>"]
-            Diagram0Node12 x-.-x Diagram0Node2
-            Diagram0Node1 ==> |Then|Diagram0Node3
-            Diagram0Node1 ==> |Else|Diagram0Node8
-            Diagram0Node2(("fa:fa-code-branch"))
-            Diagram0Node2 x-.-x Diagram0Node13
-            Diagram0Node13((("fa:fa-stop")))
+    <div class="row row-cols-2">
+        <div class="col">
+            <h3>Overview</h3>
+            <h4>Main Flow</h4><br>
+            <ul id="overview-get doctor/[string doctorType]">
+                <li>
+                    <i class="fa fa-network-wired"></i><i class="fa fa-arrow-right-to-bracket"></i> Network Event
+                </li>
+                <li>
+                    <i class="fa fa-code-merge"></i> If
+                    <div>
+                        <a aria-expanded="false" class="dropdown-toggle" data-bs-toggle="collapse"
+                           href="#overview-Then"><i class="fa fa-code-merge"></i> Then</a>
+                        <ul class="collapse" id="overview-Then">
+                            <li>
+                                <i class="fa fa-envelope"></i> New JSON
+                            </li>
+                            <li>
+                                <i class="fa fa-right-from-bracket"></i><i class="fa fa-network-wired"></i> Remote Call
+                            </li>
+                            <li>
+                                <i class="fa fa-envelope-circle-check"></i> Data Schema Validation
+                            </li>
+                            <li>
+                                <i class="fa fa-timeline"></i> Data Mapping Activity
+                            </li>
+                            <li>
+                                <i class="fa fa-turn-up"></i> Return
+                            </li>
+                        </ul>
+                    </div>
+                    <div>
+                        <a aria-expanded="false" class="dropdown-toggle" data-bs-toggle="collapse"
+                           href="#overview-Else"><i class="fa fa-code-merge"></i> Else</a>
+                        <ul class="collapse" id="overview-Else">
+                            <li>
+                                <i class="fa fa-envelope"></i> New XML
+                            </li>
+                            <li>
+                                <i class="fa fa-right-from-bracket"></i><i class="fa fa-network-wired"></i> Resource
+                                Call
+                            </li>
+                            <li>
+                                <i class="fa fa-file-code"></i><i class="fa fa-right-left"></i><i
+                                    class="fa fa-file-csv"></i> Data Conversion
+                            </li>
+                            <li>
+                                <i class="fa fa-envelope-circle-check"></i> Data Schema Validation
+                            </li>
+                            <li>
+                                <i class="fa fa-timeline"></i><i class="fa fa-turn-up"></i> Data Mapping Activity
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="diagram col">
+            <h3>Diagram</h3>
+            <div class="mermaid">
+                flowchart TB
+                Diagram0Node0["fa:fa-network-wired fa:fa-arrow-right-to-bracket<br><strong>Network Event</strong><br>
+                <table class="table">
+                    <tr>
+                        <td><strong>Network</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Method</td>
+                        <td>get</td>
+                    </tr>
+                    <tr>
+                        <td>Path</td>
+                        <td>doctor/[string docto...</td>
+                    </tr>
+                    <tr>
+                        <td>BasePath</td>
+                        <td>/search</td>
+                    </tr>
+                </table>
+                "]
+                Diagram0Node0 ==> Diagram0Node1
+                Diagram0Node1["fa:fa-code-merge<br><strong>If</strong><br>
+                <table class="table"></table>
+                "]
+                Diagram0Node3["fa:fa-envelope<br><strong>New JSON</strong><br>
+                <table class="table">
+                    <tr>
+                        <td><strong>Variables</strong></td>
+                    </tr>
+                    <tr>
+                        <td>New Variable</td>
+                        <td>payload</td>
+                    </tr>
+                </table>
+                "]
+                Diagram0Node3 ==> Diagram0Node4
+                Diagram0Node4["fa:fa-right-from-bracket fa:fa-network-wired<br><strong>Remote Call</strong><br>http post<br>
+                <table class="table">
+                    <tr>
+                        <td><strong>Variables</strong></td>
+                    </tr>
+                    <tr>
+                        <td>New Variable</td>
+                        <td>aResponse</td>
+                    </tr>
+                </table>
+                "]
+                Diagram0Node4 ==> Diagram0Node5
+                Diagram0Node5["fa:fa-envelope-circle-check<br><strong>Data Schema Validation</strong><br>
+                <table class="table">
+                    <tr>
+                        <td><strong>Variables</strong></td>
+                    </tr>
+                    <tr>
+                        <td>New Variable</td>
+                        <td>aMapleRidgeDoctor</td>
+                    </tr>
+                </table>
+                "]
+                Diagram0Node5 ==> Diagram0Node6
+                Diagram0Node6["fa:fa-timeline<br><strong>Data Mapping Activity</strong><br>
+                <table class="table">
+                    <tr>
+                        <td><strong>Variables</strong></td>
+                    </tr>
+                    <tr>
+                        <td>New Variable</td>
+                        <td>aDoctorDetail</td>
+                    </tr>
+                </table>
+                "]
+                Diagram0Node6 ==> Diagram0Node7
+                Diagram0Node7["fa:fa-turn-up<br><strong>Return</strong>"]
+                Diagram0Node7 x-.-x Diagram0Node2
+                Diagram0Node8["fa:fa-envelope<br><strong>New XML</strong><br>
+                <table class="table">
+                    <tr>
+                        <td><strong>Variables</strong></td>
+                    </tr>
+                    <tr>
+                        <td>New Variable</td>
+                        <td>data</td>
+                    </tr>
+                </table>
+                "]
+                Diagram0Node8 ==> Diagram0Node9
+                Diagram0Node9["fa:fa-right-from-bracket fa:fa-network-wired<br><strong>Resource Call</strong><br>http
+                post<br>
+                <table class="table">
+                    <tr>
+                        <td><strong>Variables</strong></td>
+                    </tr>
+                    <tr>
+                        <td>New Variable</td>
+                        <td>aResponse</td>
+                    </tr>
+                </table>
+                "]
+                Diagram0Node9 ==> Diagram0Node10
+                Diagram0Node10["fa:fa-file-code fa:fa-right-left fa:fa-file-csv<br><strong>Data Conversion</strong><br>
+                <table class="table">
+                    <tr>
+                        <td><strong>Variables</strong></td>
+                    </tr>
+                    <tr>
+                        <td>New Variable</td>
+                        <td>aJson</td>
+                    </tr>
+                </table>
+                "]
+                Diagram0Node10 ==> Diagram0Node11
+                Diagram0Node11["fa:fa-envelope-circle-check<br><strong>Data Schema Validation</strong><br>
+                <table class="table">
+                    <tr>
+                        <td><strong>Variables</strong></td>
+                    </tr>
+                    <tr>
+                        <td>New Variable</td>
+                        <td>aPineValleyDoctor</td>
+                    </tr>
+                </table>
+                "]
+                Diagram0Node11 ==> Diagram0Node12
+                Diagram0Node12["fa:fa-timeline fa:fa-turn-up<br><strong>Data Mapping Activity</strong><br>
+                <table class="table"></table>
+                "]
+                Diagram0Node12 x-.-x Diagram0Node2
+                Diagram0Node1 ==> |Then|Diagram0Node3
+                Diagram0Node1 ==> |Else|Diagram0Node8
+                Diagram0Node2(("fa:fa-code-branch"))
+                Diagram0Node2 x-.-x Diagram0Node13
+                Diagram0Node13((("fa:fa-stop")))
+            </div>
         </div>
     </div>
-</div>
-<hr>
-<h2>[API] get doctors/[string doctorType]</h2>
-<div class="row row-cols-2"
-">
-<div class="col">
-    <h3>Overview</h3>
-    <h4>Main Flow</h4><br>
-    <ul id="overview-get doctors/[string doctorType]">
-        <li>
-            <i class="fa fa-network-wired"></i><i class="fa fa-arrow-right-to-bracket"></i> Network Event
-        </li>
-        <li>
-            <i class="fa fa-code-merge"></i> If
-            <div>
-                <a aria-expanded="false" class="dropdown-toggle" data-bs-toggle="collapse" href="#overview-Then"><i
-                        class="fa fa-code-merge"></i> Then</a>
-                <ul class="collapse" id="overview-Then">
-                    <li>
-                        <i class="fa fa-right-from-bracket"></i><i class="fa fa-network-wired"></i> Remote Call
-                    </li>
-                    <li>
-                        <i class="fa fa-turn-up"></i> Return
-                    </li>
-                </ul>
+    <hr>
+    <h2>[API] get doctors/[string doctorType]</h2>
+    <div class="row row-cols-2">
+        <div class="col">
+            <h3>Overview</h3>
+            <h4>Main Flow</h4><br>
+            <ul id="overview-get doctors/[string doctorType]">
+                <li>
+                    <i class="fa fa-network-wired"></i><i class="fa fa-arrow-right-to-bracket"></i> Network Event
+                </li>
+                <li>
+                    <i class="fa fa-code-merge"></i> If
+                    <div>
+                        <a aria-expanded="false" class="dropdown-toggle" data-bs-toggle="collapse"
+                           href="#overview-Then"><i class="fa fa-code-merge"></i> Then</a>
+                        <ul class="collapse" id="overview-Then">
+                            <li>
+                                <i class="fa fa-right-from-bracket"></i><i class="fa fa-network-wired"></i> Resource
+                                Call
+                            </li>
+                            <li>
+                                <i class="fa fa-turn-up"></i> Return
+                            </li>
+                        </ul>
     </div>
-            <div>
-                <a aria-expanded="false" class="dropdown-toggle" data-bs-toggle="collapse" href="#overview-Else"><i
-                        class="fa fa-code-merge"></i> Else</a>
-                <ul class="collapse" id="overview-Else">
-                    <li>
-                        <i class="fa fa-clone"></i> Fork
-                    </li>
-                    <li>
-                        <i class="fa fa-envelope"></i> New Array
-                    </li>
-                    <li>
-                        <i class="fa fa-clock"></i> Wait for All
-                    </li>
-                    <li>
-                        <i class="fa fa-gear"></i> Mapping Value Operation
-                    </li>
-                    <li>
-                        <i class="fa fa-gear"></i> Mapping Value Operation
-                    </li>
-                    <li>
-                        <i class="fa fa-gear"></i> Array Operation
-                    </li>
-                    <li>
-                        <i class="fa fa-gear"></i> Array Operation
-                    </li>
-                    <li>
-                        <i class="fa fa-turn-up"></i> Return
-                    </li>
-                </ul>
-            </div>
-        </li>
+                    <div>
+                        <a aria-expanded="false" class="dropdown-toggle" data-bs-toggle="collapse"
+                           href="#overview-Else"><i class="fa fa-code-merge"></i> Else</a>
+                        <ul class="collapse" id="overview-Else">
+                            <li>
+                                <i class="fa fa-clone"></i> Fork
+                            </li>
+                            <li>
+                                <i class="fa fa-envelope"></i> New Array
+                            </li>
+                            <li>
+                                <i class="fa fa-clock"></i> Wait for All
+                            </li>
+                            <li>
+                                <i class="fa fa-gear"></i> Mapping Value Operation
+                            </li>
+                            <li>
+                                <i class="fa fa-gear"></i> Mapping Value Operation
+                            </li>
+                            <li>
+                                <i class="fa fa-gear"></i> Array Operation
+                            </li>
+                            <li>
+                                <i class="fa fa-gear"></i> Array Operation
+                            </li>
+                            <li>
+                                <i class="fa fa-turn-up"></i> Return
+                            </li>
+                        </ul>
+                    </div>
+                </li>
     </ul>
-    <h4>Async Flows</h4><br>
-    <strong>pineValley</strong>
-    <ul id="overview-pineValley">
+            <h4>Async Flows</h4><br>
+            <strong>pineValley</strong>
+            <ul id="overview-pineValley">
         <li>
-            <i class="fa fa-right-from-bracket"></i><i class="fa fa-network-wired"></i> Remote Call
+            <i class="fa fa-right-from-bracket"></i><i class="fa fa-network-wired"></i> Resource Call
         </li>
         <li>
             <i class="fa fa-arrow-up-right-from-square"></i> Async Result
         </li>
-    </ul>
-    <strong>grandOak</strong>
-    <ul id="overview-grandOak">
+            </ul>
+            <strong>grandOak</strong>
+            <ul id="overview-grandOak">
         <li>
             <i class="fa fa-envelope"></i> New JSON
         </li>
         <li>
-            <i class="fa fa-right-from-bracket"></i><i class="fa fa-network-wired"></i> Remote Call
+            <i class="fa fa-right-from-bracket"></i><i class="fa fa-network-wired"></i> Resource Call
         </li>
         <li>
             <i class="fa fa-arrow-up-right-from-square"></i> Async Result
         </li>
-    </ul>
-</div>
-<div class="diagram col">
-    <h3>Diagram</h3>
-    <div class="mermaid">
-        flowchart TB
-        Diagram0Node0["fa:fa-network-wired fa:fa-arrow-right-to-bracket<br><strong>Network Event</strong>"]
-        Diagram0Node0 ==> Diagram0Node1
-        Diagram0Node1["fa:fa-code-merge<br><strong>If</strong>"]
-        Diagram0Node3["fa:fa-right-from-bracket fa:fa-network-wired<br><strong>Remote Call</strong><br>http get"]
-        Diagram0Node3 ==> Diagram0Node4
-        Diagram0Node4["fa:fa-turn-up<br><strong>Return</strong>"]
-        Diagram0Node4 x-.-x Diagram0Node2
-        Diagram0Node5["fa:fa-clone<br><strong>Fork</strong>"]
-        Diagram0Node5 --> |Start|Diagram0SubGraph0
-        Diagram0Node5 --> |Start|Diagram0SubGraph1
-        Diagram0Node5 ==> Diagram0Node13
-        Diagram0Node13["fa:fa-envelope<br><strong>New Array</strong>"]
-        Diagram0Node13 ==> Diagram0Node14
-        Diagram0Node14["fa:fa-clock<br><strong>Wait for All</strong>"]
-        Diagram0Node14 ==> Diagram0Node15
-        Diagram0Node15["fa:fa-gear<br><strong>Mapping Value Operation</strong>"]
-        Diagram0Node15 ==> Diagram0Node16
-        Diagram0Node16["fa:fa-gear<br><strong>Mapping Value Operation</strong>"]
-        Diagram0Node16 ==> Diagram0Node17
-        Diagram0Node17["fa:fa-gear<br><strong>Array Operation</strong>"]
-        Diagram0Node17 ==> Diagram0Node18
-        Diagram0Node18["fa:fa-gear<br><strong>Array Operation</strong>"]
-        Diagram0Node18 ==> Diagram0Node19
-        Diagram0Node19["fa:fa-turn-up<br><strong>Return</strong>"]
-        Diagram0Node19 x-.-x Diagram0Node2
-        Diagram0Node1 ==> |Then|Diagram0Node3
-        Diagram0Node1 ==> |Else|Diagram0Node5
-        Diagram0Node2(("fa:fa-code-branch"))
-        Diagram0Node2 x-.-x Diagram0Node20
-        Diagram0Node20((("fa:fa-stop")))
-        subgraph Diagram0SubGraph0[pineValley]
-        direction TB
-        Diagram0Node6(("fa:fa-play"))
-        Diagram0Node6 ==> Diagram0Node7
-        Diagram0Node7["fa:fa-right-from-bracket fa:fa-network-wired<br><strong>Remote Call</strong><br>http get"]
-        Diagram0Node7 ==> Diagram0Node8
-        Diagram0Node8["fa:fa-arrow-up-right-from-square<br><strong>Async Result</strong>"]
-        end
-        Diagram0SubGraph0 -.-> Diagram0Node14
-        subgraph Diagram0SubGraph1[grandOak]
-        direction TB
-        Diagram0Node9(("fa:fa-play"))
-        Diagram0Node9 ==> Diagram0Node10
-        Diagram0Node10["fa:fa-envelope<br><strong>New JSON</strong>"]
-        Diagram0Node10 ==> Diagram0Node11
-        Diagram0Node11["fa:fa-right-from-bracket fa:fa-network-wired<br><strong>Remote Call</strong><br>http post"]
-        Diagram0Node11 ==> Diagram0Node12
-        Diagram0Node12["fa:fa-arrow-up-right-from-square<br><strong>Async Result</strong>"]
-        end
-        Diagram0SubGraph1 -.-> Diagram0Node14
+            </ul>
+        </div>
+        <div class="diagram col">
+            <h3>Diagram</h3>
+            <div class="mermaid">
+                flowchart TB
+                Diagram0Node0["fa:fa-network-wired fa:fa-arrow-right-to-bracket<br><strong>Network Event</strong><br>
+                <table class="table">
+                    <tr>
+                        <td><strong>Network</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Method</td>
+                        <td>get</td>
+                    </tr>
+                    <tr>
+                        <td>Path</td>
+                        <td>doctors/[string doct...</td>
+                    </tr>
+                    <tr>
+                        <td>BasePath</td>
+                        <td>/search</td>
+                    </tr>
+                </table>
+                "]
+                Diagram0Node0 ==> Diagram0Node1
+                Diagram0Node1["fa:fa-code-merge<br><strong>If</strong><br>
+                <table class="table"></table>
+                "]
+                Diagram0Node3["fa:fa-right-from-bracket fa:fa-network-wired<br><strong>Resource Call</strong><br>http
+                get<br>
+                <table class="table">
+                    <tr>
+                        <td><strong>Variables</strong></td>
+                    </tr>
+                    <tr>
+                        <td>New Variable</td>
+                        <td>res</td>
+                    </tr>
+                </table>
+                "]
+                Diagram0Node3 ==> Diagram0Node4
+                Diagram0Node4["fa:fa-turn-up<br><strong>Return</strong>"]
+                Diagram0Node4 x-.-x Diagram0Node2
+                Diagram0Node5["fa:fa-clone<br><strong>Fork</strong>"]
+                Diagram0Node5 --> |Start|Diagram0SubGraph0
+                Diagram0Node5 --> |Start|Diagram0SubGraph1
+                Diagram0Node5 ==> Diagram0Node13
+                Diagram0Node13["fa:fa-envelope<br><strong>New Array</strong><br>
+                <table class="table">
+                    <tr>
+                        <td><strong>Variables</strong></td>
+                    </tr>
+                    <tr>
+                        <td>New Variable</td>
+                        <td>result</td>
+                    </tr>
+                </table>
+                "]
+                Diagram0Node13 ==> Diagram0Node14
+                Diagram0Node14["fa:fa-clock<br><strong>Wait for All</strong><br>
+                <table class="table">
+                    <tr>
+                        <td><strong>Variables</strong></td>
+                    </tr>
+                    <tr>
+                        <td>New Variable</td>
+                        <td>res</td>
+                    </tr>
+                </table>
+                "]
+                Diagram0Node14 ==> Diagram0Node15
+                Diagram0Node15["fa:fa-gear<br><strong>Mapping Value Operation</strong><br>
+                <table class="table">
+                    <tr>
+                        <td><strong>Variables</strong></td>
+                    </tr>
+                    <tr>
+                        <td>New Variable</td>
+                        <td>pineValleyRes</td>
+                    </tr>
+                </table>
+                "]
+                Diagram0Node15 ==> Diagram0Node16
+                Diagram0Node16["fa:fa-gear<br><strong>Mapping Value Operation</strong><br>
+                <table class="table">
+                    <tr>
+                        <td><strong>Variables</strong></td>
+                    </tr>
+                    <tr>
+                        <td>New Variable</td>
+                        <td>grandOakRes</td>
+                    </tr>
+                </table>
+                "]
+                Diagram0Node16 ==> Diagram0Node17
+                Diagram0Node17["fa:fa-gear<br><strong>Array Operation</strong><br>
+                <table class="table"></table>
+                "]
+                Diagram0Node17 ==> Diagram0Node18
+                Diagram0Node18["fa:fa-gear<br><strong>Array Operation</strong><br>
+                <table class="table"></table>
+                "]
+                Diagram0Node18 ==> Diagram0Node19
+                Diagram0Node19["fa:fa-turn-up<br><strong>Return</strong>"]
+                Diagram0Node19 x-.-x Diagram0Node2
+                Diagram0Node1 ==> |Then|Diagram0Node3
+                Diagram0Node1 ==> |Else|Diagram0Node5
+                Diagram0Node2(("fa:fa-code-branch"))
+                Diagram0Node2 x-.-x Diagram0Node20
+                Diagram0Node20((("fa:fa-stop")))
+                subgraph Diagram0SubGraph0[pineValley]
+                direction TB
+                Diagram0Node6(("fa:fa-play"))
+                Diagram0Node6 ==> Diagram0Node7
+                Diagram0Node7["fa:fa-right-from-bracket fa:fa-network-wired<br><strong>Resource Call</strong><br>http
+                get<br>
+                <table class="table">
+                    <tr>
+                        <td><strong>Variables</strong></td>
+                    </tr>
+                    <tr>
+                        <td>New Variable</td>
+                        <td>res</td>
+                    </tr>
+                </table>
+                "]
+                Diagram0Node7 ==> Diagram0Node8
+                Diagram0Node8["fa:fa-arrow-up-right-from-square<br><strong>Async Result</strong>"]
+                end
+                Diagram0SubGraph0 -.-> Diagram0Node14
+                subgraph Diagram0SubGraph1[grandOak]
+                direction TB
+                Diagram0Node9(("fa:fa-play"))
+                Diagram0Node9 ==> Diagram0Node10
+                Diagram0Node10["fa:fa-envelope<br><strong>New JSON</strong><br>
+                <table class="table">
+                    <tr>
+                        <td><strong>Variables</strong></td>
+                    </tr>
+                    <tr>
+                        <td>New Variable</td>
+                        <td>req</td>
+                    </tr>
+                </table>
+                "]
+                Diagram0Node10 ==> Diagram0Node11
+                Diagram0Node11["fa:fa-right-from-bracket fa:fa-network-wired<br><strong>Resource Call</strong><br>http
+                post<br>
+                <table class="table">
+                    <tr>
+                        <td><strong>Variables</strong></td>
+                    </tr>
+                    <tr>
+                        <td>New Variable</td>
+                        <td>res</td>
+                    </tr>
+                </table>
+                "]
+                Diagram0Node11 ==> Diagram0Node12
+                Diagram0Node12["fa:fa-arrow-up-right-from-square<br><strong>Async Result</strong>"]
+                end
+                Diagram0SubGraph1 -.-> Diagram0Node14
+            </div>
+        </div>
     </div>
-</div>
-</div>
-<hr>
-<h2>[TRIGGER] main</h2>
-<div class="row row-cols-2"
-">
-<div class="col">
-    <h3>Overview</h3>
-    <h4>Main Flow</h4><br>
-    <ul id="overview-main">
-        <li>
-            <i class="fa fa-arrow-right-to-bracket"></i> Trigger
+    <hr>
+    <h2>[TRIGGER] main</h2>
+    <div class="row row-cols-2">
+        <div class="col">
+            <h3>Overview</h3>
+            <h4>Main Flow</h4><br>
+            <ul id="overview-main">
+                <li>
+                    <i class="fa fa-arrow-right-to-bracket"></i> Trigger
+                </li>
+                <li>
+                    <i class="fa fa-envelope"></i> New Array
+                </li>
+                <li>
+                    <i class="fa fa-code-merge"></i> If
+                    <div>
+                        <a aria-expanded="false" class="dropdown-toggle" data-bs-toggle="collapse"
+                           href="#overview-Then"><i class="fa fa-code-merge"></i> Then</a>
+                        <ul class="collapse" id="overview-Then">
+                            <li>
+                                <i class="fa fa-cogs"></i> println
         </li>
+                        </ul>
+                    </div>
+                    <div>
+                        <a aria-expanded="false" class="dropdown-toggle" data-bs-toggle="collapse"
+                           href="#overview-Else"><i class="fa fa-code-merge"></i> Else</a>
+                        <ul class="collapse" id="overview-Else">
         <li>
-            <i class="fa fa-gears"></i> Expression
+            <i class="fa fa-turn-up"></i> Return
         </li>
+                        </ul>
+                    </div>
+                </li>
+                <li>
+                    <i class="fa fa-cogs"></i> println
+                </li>
     </ul>
-    <h4>Async Flows</h4><br>
-    <strong>w1</strong>
-    <ul id="overview-w1">
-        <li>
-            <i class="fa fa-gears"></i> Expression
-        </li>
-    </ul>
-    <strong>w2</strong>
-    <ul id="overview-w2">
-        <li>
-            <i class="fa fa-gears"></i> Expression
-        </li>
-    </ul>
-</div>
-<div class="diagram col">
-    <h3>Diagram</h3>
-    <div class="mermaid">
-        flowchart TB
-        Diagram0Node0["fa:fa-arrow-right-to-bracket<br><strong>Trigger</strong>"]
-        Diagram0Node0 ==> Diagram0Node1
-        Diagram0Node1["fa:fa-gears<br><strong>Expression</strong>"]
-        Diagram0Node1 --> |Start|Diagram0SubGraph0
-        Diagram0Node1 --> |Start|Diagram0SubGraph1
-        Diagram0Node1 ==> Diagram0Node6
-        Diagram0Node6((("fa:fa-stop")))
-        subgraph Diagram0SubGraph0[w1]
-        direction TB
-        Diagram0Node2(("fa:fa-play"))
-        Diagram0Node2 ==> Diagram0Node3
-        Diagram0Node3["fa:fa-gears<br><strong>Expression</strong>"]
-        end
-        subgraph Diagram0SubGraph1[w2]
-        direction TB
-        Diagram0Node4(("fa:fa-play"))
-        Diagram0Node4 ==> Diagram0Node5
-        Diagram0Node5["fa:fa-gears<br><strong>Expression</strong>"]
-        end
+        </div>
+        <div class="diagram col">
+            <h3>Diagram</h3>
+            <div class="mermaid">
+                flowchart TB
+                Diagram0Node0["fa:fa-arrow-right-to-bracket<br><strong>Trigger</strong><br>
+                <table class="table"></table>
+                "]
+                Diagram0Node0 ==> Diagram0Node1
+                Diagram0Node1["fa:fa-envelope<br><strong>New Array</strong><br>
+                <table class="table">
+                    <tr>
+                        <td><strong>Variables</strong></td>
+                    </tr>
+                    <tr>
+                        <td>New Variable</td>
+                        <td>arr</td>
+                    </tr>
+                </table>
+                "]
+                Diagram0Node1 ==> Diagram0Node2
+                Diagram0Node2["fa:fa-code-merge<br><strong>If</strong><br>
+                <table class="table"></table>
+                "]
+                Diagram0Node4["fa:fa-cogs<br><strong>println</strong><br>
+                <table class="table"></table>
+                "]
+                Diagram0Node4 ==> Diagram0Node3
+                Diagram0Node5["fa:fa-turn-up<br><strong>Return</strong>"]
+                Diagram0Node5 x-.-x Diagram0Node3
+                Diagram0Node2 ==> |Then|Diagram0Node4
+                Diagram0Node2 ==> |Else|Diagram0Node5
+                Diagram0Node3(("fa:fa-code-branch"))
+                Diagram0Node3 ==> Diagram0Node6
+                Diagram0Node6["fa:fa-cogs<br><strong>println</strong><br>
+                <table class="table"></table>
+                "]
+                Diagram0Node6 ==> Diagram0Node7
+                Diagram0Node7((("fa:fa-stop")))
+            </div>
+        </div>
     </div>
-</div>
-</div>
-<hr>
+    <hr>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
