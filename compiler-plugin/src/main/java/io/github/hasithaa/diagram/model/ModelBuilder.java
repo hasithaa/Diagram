@@ -30,6 +30,7 @@ public class ModelBuilder {
     int nodeCount = 0;
     int subGraphCount = 0;
     Stack<List<Node>> currentNodeList;
+    Diagram currentDiagram = null;
 
     ModelBuilder() {
         this.model = new Model();
@@ -59,6 +60,7 @@ public class ModelBuilder {
 
     public Diagram addDiagram() {
         Diagram diagram = new Diagram();
+        currentDiagram = diagram;
         diagram.iId = "Diagram" + diagramCount;
         this.model.diagrams.add(diagram);
         nodeCount = 0;
@@ -70,7 +72,7 @@ public class ModelBuilder {
     }
 
     public Node createNode(Node.Kind kind) {
-        Node node = new Node("Node" + nodeCount++);
+        Node node = new Node(currentDiagram.iId + "Node" + nodeCount++);
         node.kind = kind;
         return node;
     }
@@ -91,20 +93,20 @@ public class ModelBuilder {
     }
 
     public Edge addEdge(Node source, Subgraph target) {
-        Edge edge = new Edge("Edge" + edgeCount++, source, target);
+        Edge edge = new Edge(currentDiagram.iId + "Edge" + edgeCount++, source, target);
         source.edges.add(edge);
         return edge;
     }
 
     public Edge addEdge(Subgraph source, Node target) {
-        Edge edge = new Edge("Edge" + edgeCount++, source, target);
+        Edge edge = new Edge(currentDiagram.iId + "Edge" + edgeCount++, source, target);
         source.edges.add(edge);
         target.incomingEdges.add(edge);
         return edge;
     }
 
     public Edge addEdge(Node source, Node target) {
-        Edge edge = new Edge("Edge" + edgeCount++, source, target);
+        Edge edge = new Edge(currentDiagram.iId + "Edge" + edgeCount++, source, target);
         source.edges.add(edge);
         if (target != null) {
             target.incomingEdges.add(edge);
@@ -113,7 +115,8 @@ public class ModelBuilder {
     }
 
     public Subgraph startSubGraph(String label) {
-        Subgraph subGraph = new Subgraph("SubGraph" + subGraphCount++, Subgraph.SubgraphKind.WORKER);
+        Subgraph subGraph = new Subgraph(currentDiagram.iId + "SubGraph" + subGraphCount++,
+                                         Subgraph.SubgraphKind.WORKER);
         subGraph.label = label;
         getCurrentDiagram().subgraphs.add(subGraph);
         if (!currentNodeList.peek().isEmpty()) {
@@ -160,7 +163,10 @@ public class ModelBuilder {
     }
 
     private Diagram getCurrentDiagram() {
-        return this.model.diagrams.get(model.diagrams.size() - 1);
+        if (currentDiagram == null) {
+            currentDiagram = this.model.diagrams.get(model.diagrams.size() - 1);
+        }
+        return currentDiagram;
     }
 
     public void addFormData(String key, FormData formData) {

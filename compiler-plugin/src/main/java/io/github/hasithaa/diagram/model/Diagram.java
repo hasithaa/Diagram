@@ -18,14 +18,24 @@
 package io.github.hasithaa.diagram.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Diagram implements JsonElement, MermaidElement {
 
+    DiagramType diagramType;
     List<Node> nodes = new ArrayList<>();
     List<Subgraph> subgraphs = new ArrayList<>();
     String iId;
     private String label;
+
+    public DiagramType getDiagramType() {
+        return diagramType;
+    }
+
+    void setDiagramType(DiagramType diagramType) {
+        this.diagramType = diagramType;
+    }
 
     @Override
     public String getJsonString(int wsCount) {
@@ -58,7 +68,7 @@ public class Diagram implements JsonElement, MermaidElement {
         return label;
     }
 
-    public void setLabel(String label) {
+    void setLabel(String label) {
         this.label = label;
     }
 
@@ -74,5 +84,20 @@ public class Diagram implements JsonElement, MermaidElement {
             mermaid.append(subgraph.getMermaidString(wsCount + 2));
         }
         return mermaid.toString();
+    }
+
+    public List<Node> getNodes() {
+        return Collections.unmodifiableList(nodes);
+    }
+
+    public List<Subgraph> getSubgraphs() {
+        return Collections.unmodifiableList(subgraphs);
+    }
+
+    enum DiagramType {
+        API,
+        RPC,
+        TRIGGER,
+        FUNCTION,
     }
 }

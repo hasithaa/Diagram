@@ -19,44 +19,20 @@ package io.github.hasithaa.diagram;
 
 import io.ballerina.projects.Project;
 import io.ballerina.projects.util.ProjectPaths;
-import io.github.hasithaa.diagram.CodeAnalyzer.DiagramFile;
-import io.github.hasithaa.diagram.flowchart.FlowChart;
 import io.github.hasithaa.diagram.model.Diagram;
 import io.github.hasithaa.diagram.model.Model;
+import io.github.hasithaa.diagram.model.Node;
+import io.github.hasithaa.diagram.model.Subgraph;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 public interface DiagramSerializer {
-
-    static void serialize(List<DiagramFile> diagrams, Project project) throws IOException {
-        Path packageRootPath = ProjectPaths.packageRoot(project.sourceRoot());
-        Path diagramDirectory = packageRootPath.resolve("diagrams");
-        if (!Files.exists(diagramDirectory)) {
-            Files.createDirectory(diagramDirectory);
-        }
-        for (DiagramFile diagram : diagrams) {
-            Path diagramPath = diagramDirectory.resolve(diagram.name() + ".md");
-            if (!Files.exists(diagramPath)) {
-                Files.createFile(diagramPath);
-            }
-            StringBuilder sb = new StringBuilder();
-            sb.append("# ").append(diagram.name()).append("\n\n");
-            diagram.list().forEach(fc -> sb.append(getFlowChartDoc(fc)));
-            Files.writeString(diagramPath, sb.toString(), StandardOpenOption.TRUNCATE_EXISTING);
-        }
-
-    }
-
-    static String getFlowChartDoc(FlowChart flowChart) {
-        String sb = "\n## Diagram\n\n```mermaid\n" +
-                flowChart.generateMermaidSyntax() +
-                "```\n---\n";
-        return sb;
-    }
 
     static void serialize(Model model, Project project) throws IOException {
         Path packageRootPath = ProjectPaths.packageRoot(project.sourceRoot());
@@ -99,18 +75,26 @@ public interface DiagramSerializer {
         sb.append("</head>\n");
         sb.append("<body>\n");
         sb.append("    <h1>").append(model.getLabel()).append("</h1>\n");
-        sb.append("    <p><button class=\"btn btn-primary\" type=\"button\" data-bs-toggle=\"collapse\"")
-          .append(" data-bs-target=\".forms\" aria-expanded=\"false\">Toggle Data</button></p>\n");
+        sb.append("<div class=\"container\">\n");
         for (Diagram diagram : model.getDiagrams()) {
-            sb.append("    <div class=\"diagram forms show\" \">\n");
-            sb.append("    <div class=\"card card-body\">\n");
-            sb.append("    <h2>").append(diagram.getLabel()).append("</h2>\n");
-            sb.append("    <div class=\"mermaid\">\n");
+            sb.append("    <h2>").append("[").append(diagram.getDiagramType()).append("] ").append(diagram.getLabel())
+              .append(
+                      "</h2>\n");
+            sb.append("    <div class=\"row row-cols-2\" \">\n");
+            sb.append("         <div class=\"col\">\n");
+            sb.append("             <h3>Overview</h3>\n");
+            sb.append(getDiagramOverview(diagram));
+            sb.append("         </div>\n");
+            sb.append("         <div class=\"diagram col\">\n");
+            sb.append("             <h3>Diagram</h3>\n");
+            sb.append("             <div class=\"mermaid\">\n");
             sb.append(diagram.getMermaidString(1));
+            sb.append("             </div>\n");
+            sb.append("         </div>\n");
             sb.append("    </div>\n");
-            sb.append("    </div>\n");
-            sb.append("    </div>\n");
+            sb.append("    <hr>\n");
         }
+        sb.append("</div>\n");
         sb.append("    <script src=\"https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js\"></script>\n");
         sb.append("    <script src=\"https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js\">")
           .append("</script>\n");
@@ -118,6 +102,52 @@ public interface DiagramSerializer {
         sb.append("</body>\n");
         sb.append("</html>");
         return sb.toString();
+    }
+
+    private static String getDiagramOverview(Diagram diagram) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("<h4>Main Flow</h4><br>\n");
+        getOverview(diagram.getNodes(), sb, 1, "overview-" + diagram.getLabel(), true);
+        if (!diagram.getSubgraphs().isEmpty()) {
+            sb.append("<h4>Async Flows</h4><br>\n");
+            for (Subgraph subgraph : diagram.getSubgraphs()) {
+                sb.append("<strong>").append(subgraph.getLabel()).append("</strong>\n");
+                getOverview(subgraph.getNodes(), sb, 2, "overview-" + subgraph.getLabel(), true);
+            }
+        }
+        return sb.toString();
+    }
+
+    private static void getOverview(List<Node> nodeList, StringBuilder sb, int level, String id, boolean show) {
+        final String ws = "    ".repeat(level);
+        sb.append(ws).append("<ul ").append("id=\"").append(id).append("\" ");
+        if (!show) {
+            sb.append("class=\"collapse\"");
+        }
+        sb.append(">\n");
+        for (Node node : nodeList) {
+            if (node.getHeading() == null || node.getHeading().isEmpty()) {
+                continue;
+            }
+            sb.append(ws).append("<li>\n");
+            String icon = Arrays.stream(node.getIcon().split(" ")).map(s -> "<i class=\"fa " + s + "\"></i>")
+                                .reduce("", String::concat);
+            sb.append(ws).append(icon).append(" ").append(node.getHeading()).append("\n");
+            if (node.hasChildren()) {
+                for (Map.Entry<String, List<Node>> entry : node.getChildren().entrySet()) {
+                    sb.append(ws).append("<div>\n");
+                    sb.append(ws)
+                      .append("<a href=\"")
+                      .append("#overview-").append(entry.getKey())
+                      .append("\" data-bs-toggle=\"collapse\" aria-expanded=\"false\" class=\"dropdown-toggle\">")
+                      .append(icon).append(" ").append(entry.getKey()).append("</a>\n");
+                    getOverview(entry.getValue(), sb, level + 1, "overview-" + entry.getKey(), false);
+                    sb.append(ws).append("</div>\n");
+                }
+            }
+            sb.append(ws).append("</li>\n");
+        }
+        sb.append(ws).append("</ul>\n");
     }
 
 }

@@ -123,6 +123,10 @@ public class Node implements JsonElement, MermaidElement, Linkable {
         return json.toString();
     }
 
+    public boolean hasChildren() {
+        return children != null && !children.isEmpty();
+    }
+
     public Map<String, List<Node>> getChildren() {
         if (children == null) {
             children = new LinkedHashMap<>();
@@ -152,7 +156,7 @@ public class Node implements JsonElement, MermaidElement, Linkable {
     private String getMermaidNode() {
         StringBuilder sb = new StringBuilder();
         sb.append(getNodeStart()).append("\"");
-        sb.append(getIcon());
+        sb.append(getIcon().replaceAll("fa-", "fa:fa-"));
         String heading = getHeading();
         if (heading != null && !heading.isEmpty()) {
             sb.append("<br><strong>").append(getHeading()).append("</strong>");
@@ -183,33 +187,35 @@ public class Node implements JsonElement, MermaidElement, Linkable {
         return "]";
     }
 
-    private String getIcon() {
+    public String getIcon() {
         String icon = switch (kind) {
-            case IF -> "fa:fa-code-merge";
-            case CLONE -> "fa:fa-clone";
-            case WAIT -> "fa:fa-clock";
-            case NETWORK_EVENT -> "fa:fa-network-wired fa:fa-arrow-right-to-bracket";
-            case NETWORK_REMOTE_CALL, NETWORK_RESOURCE_CALL -> "fa:fa-right-from-bracket fa:fa-network-wired";
-            case KONNECTOR -> "fa:fa-code-branch";
-            case LIBRARY_FUNCTION -> "fa:fa-cogs";
-            case DATA_MAPPING -> "fa:fa-timeline";
-            case DATA_CONVERT -> "fa:fa-code fa:fa-right-left { }";
-            case END -> "fa:fa-stop";
-            case DATA_NEW_MESSAGE -> "fa:fa-envelope";
-            case DATA_VALIDATION -> "fa:fa-envelope-circle-check";
-            case KNOWN_FUNCTION_CALL -> "fa:fa-gear";
-            case RETURN -> "fa:fa-turn-up";
-            case ASYNC_START -> "fa:fa-play";
-            case ASYNC_RETURN -> "fa:fa-arrow-up-right-from-square";
-            default -> "fa:fa-gears";
+            case IF -> "fa-code-merge";
+            case CLONE -> "fa-clone";
+            case WAIT -> "fa-clock";
+            case NETWORK_EVENT -> "fa-network-wired fa-arrow-right-to-bracket";
+            case TRIGGER -> "fa-arrow-right-to-bracket";
+            case FUNCTION_START -> "fa-turn-down";
+            case NETWORK_REMOTE_CALL, NETWORK_RESOURCE_CALL -> "fa-right-from-bracket fa-network-wired";
+            case KONNECTOR -> "fa-code-branch";
+            case LIBRARY_FUNCTION -> "fa-cogs";
+            case DATA_MAPPING -> "fa-timeline";
+            case DATA_CONVERT -> "fa-file-code fa-right-left fa-file-csv";
+            case END -> "fa-stop";
+            case DATA_NEW_MESSAGE -> "fa-envelope";
+            case DATA_VALIDATION -> "fa-envelope-circle-check";
+            case KNOWN_FUNCTION_CALL -> "fa-gear";
+            case RETURN -> "fa-turn-up";
+            case ASYNC_START -> "fa-play";
+            case ASYNC_RETURN -> "fa-arrow-up-right-from-square";
+            default -> "fa-gears";
         };
         if (returnable && kind != Kind.RETURN && kind != Kind.ASYNC_RETURN) {
-            icon = icon + " (fa:fa-turn-up)";
+            icon = icon + " fa-turn-up";
         }
         return icon;
     }
 
-    private String getHeading() {
+    public String getHeading() {
         return switch (kind) {
             case DATA_NEW_MESSAGE -> "New " + subKind;
             case KONNECTOR, ASYNC_START -> "";

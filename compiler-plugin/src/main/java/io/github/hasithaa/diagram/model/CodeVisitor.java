@@ -123,6 +123,7 @@ public class CodeVisitor extends NodeVisitor {
         Node node;
         if (symbol.get() instanceof ResourceMethodSymbol resourceSymbol) {
             // TODO : improve this further
+            diagram.setDiagramType(Diagram.DiagramType.API);
             String methodName = resourceSymbol.getName().orElse("Unknown");
             diagram.setLabel(methodName + " " + resourceSymbol.resourcePath().signature());
             node = modelBuilder.addNewNode(Node.Kind.NETWORK_EVENT);
@@ -137,14 +138,18 @@ public class CodeVisitor extends NodeVisitor {
             if (functionSymbol instanceof MethodSymbol methodSymbol) {
                 if (methodSymbol.qualifiers().contains(Qualifier.REMOTE)) {
                     extractServiceDeclarationFormData();
+                    diagram.setDiagramType(Diagram.DiagramType.RPC);
                 }
             }
             diagram.setLabel(functionSymbol.getName().orElse("Unknown"));
             node = modelBuilder.addNewNode(Node.Kind.FUNCTION_START);
             if (functionSymbol.getName().isPresent() && functionSymbol.getName().get().equals("main")) {
                 node.label = "Trigger";
+                node.kind = Node.Kind.TRIGGER;
+                diagram.setDiagramType(Diagram.DiagramType.TRIGGER);
             } else {
                 node.label = "Function Start";
+                diagram.setDiagramType(Diagram.DiagramType.FUNCTION);
             }
             modelBuilder.addFormData("Function", new FormData("Name").setTypeKind(FormData.FormDataTypeKind.IDENTIFIER)
                                                                      .setValue(functionSymbol.getName()

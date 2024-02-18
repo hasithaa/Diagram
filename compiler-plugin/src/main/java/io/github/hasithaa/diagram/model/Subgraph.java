@@ -18,6 +18,7 @@
 package io.github.hasithaa.diagram.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Subgraph implements JsonElement, MermaidElement, Linkable {
@@ -71,6 +72,14 @@ public class Subgraph implements JsonElement, MermaidElement, Linkable {
         mermaid.append(ws).append("end\n");
         edges.forEach(edge -> mermaid.append(ws).append(edge.getMermaidString(wsCount)));
         return mermaid.toString();
+    }
+
+    public List<Node> getNodes() {
+        return Collections.unmodifiableList(nodes);
+    }
+
+    public String getLabel() {
+        return label;
     }
 
     enum SubgraphKind {
