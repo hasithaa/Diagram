@@ -9,6 +9,6 @@ observabilityIncluded = true
 
 [[dependency]]
 org = "hasitha"
-name = "diagram"
+name = "bgraph"
 version = "0.1.0"
 repository = "local"

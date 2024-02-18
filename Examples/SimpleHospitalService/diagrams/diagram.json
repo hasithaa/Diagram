@@ -3069,7 +3069,7 @@
                 "type": "IDENTIFIER",
                 "allowedTypes": [
                 ],
-                "value": "\"Hello World;\"",
+                "value": "\"Hello World!\"",
                 "possibleValues": [
                 ],
                 "editable": true,

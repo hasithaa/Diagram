@@ -33,12 +33,10 @@
                 "editable": true,
                 "flags": [
                 ]
-              }
-            ],
-            "Service": [
+              },
               {
                 "index": -1,
-                "label": "AttachPoint",
+                "label": "BasePath",
                 "type": "DEFAULT",
                 "allowedTypes": [
                 ],
@@ -46,6 +44,21 @@
                 "possibleValues": [
                 ],
                 "editable": false,
+                "flags": [
+                ]
+              }
+            ],
+            "Function": [
+              {
+                "index": -1,
+                "label": "Name",
+                "type": "IDENTIFIER",
+                "allowedTypes": [
+                ],
+                "value": "get",
+                "possibleValues": [
+                ],
+                "editable": true,
                 "flags": [
                 ]
               }
@@ -118,7 +131,7 @@
           "label": "If",
           "kind": "IF",
           "formData": {
-            "Condition": [
+            "Expressions": [
               {
                 "index": -1,
                 "label": "Condition",
@@ -142,14 +155,14 @@
           "children": {
             "Then": [
               {
-                "label": "Remote Call",
-                "kind": "NETWORK_REMOTE_CALL",
+                "label": "Resource Call",
+                "kind": "NETWORK_RESOURCE_CALL",
                 "sublabel": "http get",
                 "formData": {
                   "Error": [
                     {
                       "index": -1,
-                      "label": "Fail On Error",
+                      "label": "FailOnError",
                       "type": "BOOLEAN",
                       "allowedTypes": [
                       ],
@@ -164,7 +177,7 @@
                   "Variables": [
                     {
                       "index": -1,
-                      "label": "result",
+                      "label": "New Variable",
                       "type": "DEFAULT",
                       "allowedTypes": [
                         [
@@ -184,11 +197,95 @@
                   "Params": [
                     {
                       "index": -1,
-                      "label": "expression",
+                      "label": "path",
                       "type": "IDENTIFIER",
                       "allowedTypes": [
                       ],
-                      "value": "mapleRidgeEp->get(\"/doctor/\" + doctorType)",
+                      "value": "string",
+                      "possibleValues": [
+                      ],
+                      "editable": true,
+                      "flags": [
+                      ]
+                    },
+                    {
+                      "index": -1,
+                      "label": "headers",
+                      "type": "IDENTIFIER",
+                      "allowedTypes": [
+                      ],
+                      "value": "map<string|string[]>?",
+                      "possibleValues": [
+                      ],
+                      "editable": true,
+                      "flags": [
+                      ]
+                    },
+                    {
+                      "index": -1,
+                      "label": "targetType",
+                      "type": "IDENTIFIER",
+                      "allowedTypes": [
+                      ],
+                      "value": "ballerina/http:2.10.7:TargetType",
+                      "possibleValues": [
+                      ],
+                      "editable": true,
+                      "flags": [
+                      ]
+                    }
+                  ],
+                  "Return": [
+                    {
+                      "index": -1,
+                      "label": "Return",
+                      "type": "IDENTIFIER",
+                      "allowedTypes": [
+                      ],
+                      "value": "targetType|ballerina/http:2.10.7:ClientError",
+                      "possibleValues": [
+                      ],
+                      "editable": true,
+                      "flags": [
+                      ]
+                    }
+                  ],
+                  "Qualifiers": [
+                    {
+                      "index": -1,
+                      "label": "Qualifier",
+                      "type": "IDENTIFIER",
+                      "allowedTypes": [
+                      ],
+                      "value": "ISOLATED",
+                      "possibleValues": [
+                      ],
+                      "editable": true,
+                      "flags": [
+                      ]
+                    },
+                    {
+                      "index": -1,
+                      "label": "Qualifier",
+                      "type": "IDENTIFIER",
+                      "allowedTypes": [
+                      ],
+                      "value": "REMOTE",
+                      "possibleValues": [
+                      ],
+                      "editable": true,
+                      "flags": [
+                      ]
+                    }
+                  ],
+                  "Expressions": [
+                    {
+                      "index": -1,
+                      "label": "Arg",
+                      "type": "IDENTIFIER",
+                      "allowedTypes": [
+                      ],
+                      "value": "\"/doctor/\" + doctorType",
                       "possibleValues": [
                       ],
                       "editable": true,
@@ -221,6 +318,21 @@
                 "label": "Return",
                 "kind": "RETURN",
                 "formData": {
+                  "Expressions": [
+                    {
+                      "index": -1,
+                      "label": "Expression",
+                      "type": "DEFAULT",
+                      "allowedTypes": [
+                      ],
+                      "value": "res",
+                      "possibleValues": [
+                      ],
+                      "editable": true,
+                      "flags": [
+                      ]
+                    }
+                  ]
                 },
                 "lineRange": {
                   "fileName": "main.bal",
@@ -288,10 +400,25 @@
                 "kind": "DATA_NEW_MESSAGE",
                 "subkind": "Array",
                 "formData": {
+                  "Expressions": [
+                    {
+                      "index": -1,
+                      "label": "Data",
+                      "type": "ARRAY",
+                      "allowedTypes": [
+                      ],
+                      "value": "[]",
+                      "possibleValues": [
+                      ],
+                      "editable": true,
+                      "flags": [
+                      ]
+                    }
+                  ],
                   "Variables": [
                     {
                       "index": -1,
-                      "label": "result",
+                      "label": "New Variable",
                       "type": "DEFAULT",
                       "allowedTypes": [
                         [
@@ -336,7 +463,7 @@
                   "Variables": [
                     {
                       "index": -1,
-                      "label": "result",
+                      "label": "New Variable",
                       "type": "MAPPING",
                       "allowedTypes": [
                         [
@@ -381,7 +508,7 @@
                   "Variables": [
                     {
                       "index": -1,
-                      "label": "result",
+                      "label": "New Variable",
                       "type": "DEFAULT",
                       "allowedTypes": [
                         [
@@ -395,6 +522,21 @@
                       "flags": [
                         "Local",
                         "New"
+                      ]
+                    }
+                  ],
+                  "Expressions": [
+                    {
+                      "index": -1,
+                      "label": "Expression",
+                      "type": "DEFAULT",
+                      "allowedTypes": [
+                      ],
+                      "value": "check res.pineValley",
+                      "possibleValues": [
+                      ],
+                      "editable": true,
+                      "flags": [
                       ]
                     }
                   ]
@@ -426,7 +568,7 @@
                   "Variables": [
                     {
                       "index": -1,
-                      "label": "result",
+                      "label": "New Variable",
                       "type": "DEFAULT",
                       "allowedTypes": [
                         [
@@ -440,6 +582,21 @@
                       "flags": [
                         "Local",
                         "New"
+                      ]
+                    }
+                  ],
+                  "Expressions": [
+                    {
+                      "index": -1,
+                      "label": "Expression",
+                      "type": "DEFAULT",
+                      "allowedTypes": [
+                      ],
+                      "value": "check res.grandOak",
+                      "possibleValues": [
+                      ],
+                      "editable": true,
+                      "flags": [
                       ]
                     }
                   ]
@@ -469,14 +626,14 @@
                 "kind": "KNOWN_FUNCTION_CALL",
                 "subkind": "ARRAY",
                 "formData": {
-                  "Params": [
+                  "Expressions": [
                     {
                       "index": -1,
-                      "label": "expression",
+                      "label": "Rest Arg",
                       "type": "IDENTIFIER",
                       "allowedTypes": [
                       ],
-                      "value": "            result.push(...pineValleyRes)",
+                      "value": "pineValleyRes",
                       "possibleValues": [
                       ],
                       "editable": true,
@@ -510,14 +667,14 @@
                 "kind": "KNOWN_FUNCTION_CALL",
                 "subkind": "ARRAY",
                 "formData": {
-                  "Params": [
+                  "Expressions": [
                     {
                       "index": -1,
-                      "label": "expression",
+                      "label": "Rest Arg",
                       "type": "IDENTIFIER",
                       "allowedTypes": [
                       ],
-                      "value": "            result.push(...grandOakRes)",
+                      "value": "grandOakRes",
                       "possibleValues": [
                       ],
                       "editable": true,
@@ -550,6 +707,21 @@
                 "label": "Return",
                 "kind": "RETURN",
                 "formData": {
+                  "Expressions": [
+                    {
+                      "index": -1,
+                      "label": "Expression",
+                      "type": "DEFAULT",
+                      "allowedTypes": [
+                      ],
+                      "value": "result",
+                      "possibleValues": [
+                      ],
+                      "editable": true,
+                      "flags": [
+                      ]
+                    }
+                  ]
                 },
                 "lineRange": {
                   "fileName": "main.bal",
@@ -661,14 +833,14 @@
               "editable": true
             },
             {
-              "label": "Remote Call",
-              "kind": "NETWORK_REMOTE_CALL",
+              "label": "Resource Call",
+              "kind": "NETWORK_RESOURCE_CALL",
               "sublabel": "http get",
               "formData": {
                 "Error": [
                   {
                     "index": -1,
-                    "label": "Fail On Error",
+                    "label": "FailOnError",
                     "type": "BOOLEAN",
                     "allowedTypes": [
                     ],
@@ -683,7 +855,7 @@
                 "Variables": [
                   {
                     "index": -1,
-                    "label": "result",
+                    "label": "New Variable",
                     "type": "DEFAULT",
                     "allowedTypes": [
                       [
@@ -703,11 +875,95 @@
                 "Params": [
                   {
                     "index": -1,
-                    "label": "expression",
+                    "label": "path",
                     "type": "IDENTIFIER",
                     "allowedTypes": [
                     ],
-                    "value": "pineValleyEp->get(\"/doctor/\" + doctorType)",
+                    "value": "string",
+                    "possibleValues": [
+                    ],
+                    "editable": true,
+                    "flags": [
+                    ]
+                  },
+                  {
+                    "index": -1,
+                    "label": "headers",
+                    "type": "IDENTIFIER",
+                    "allowedTypes": [
+                    ],
+                    "value": "map<string|string[]>?",
+                    "possibleValues": [
+                    ],
+                    "editable": true,
+                    "flags": [
+                    ]
+                  },
+                  {
+                    "index": -1,
+                    "label": "targetType",
+                    "type": "IDENTIFIER",
+                    "allowedTypes": [
+                    ],
+                    "value": "ballerina/http:2.10.7:TargetType",
+                    "possibleValues": [
+                    ],
+                    "editable": true,
+                    "flags": [
+                    ]
+                  }
+                ],
+                "Return": [
+                  {
+                    "index": -1,
+                    "label": "Return",
+                    "type": "IDENTIFIER",
+                    "allowedTypes": [
+                    ],
+                    "value": "targetType|ballerina/http:2.10.7:ClientError",
+                    "possibleValues": [
+                    ],
+                    "editable": true,
+                    "flags": [
+                    ]
+                  }
+                ],
+                "Qualifiers": [
+                  {
+                    "index": -1,
+                    "label": "Qualifier",
+                    "type": "IDENTIFIER",
+                    "allowedTypes": [
+                    ],
+                    "value": "ISOLATED",
+                    "possibleValues": [
+                    ],
+                    "editable": true,
+                    "flags": [
+                    ]
+                  },
+                  {
+                    "index": -1,
+                    "label": "Qualifier",
+                    "type": "IDENTIFIER",
+                    "allowedTypes": [
+                    ],
+                    "value": "REMOTE",
+                    "possibleValues": [
+                    ],
+                    "editable": true,
+                    "flags": [
+                    ]
+                  }
+                ],
+                "Expressions": [
+                  {
+                    "index": -1,
+                    "label": "Arg",
+                    "type": "IDENTIFIER",
+                    "allowedTypes": [
+                    ],
+                    "value": "\"/doctor/\" + doctorType",
                     "possibleValues": [
                     ],
                     "editable": true,
@@ -738,6 +994,21 @@
               "label": "Async Result",
               "kind": "ASYNC_RETURN",
               "formData": {
+                "Expressions": [
+                  {
+                    "index": -1,
+                    "label": "Expression",
+                    "type": "DEFAULT",
+                    "allowedTypes": [
+                    ],
+                    "value": "res",
+                    "possibleValues": [
+                    ],
+                    "editable": true,
+                    "flags": [
+                    ]
+                  }
+                ]
               },
               "lineRange": {
                 "fileName": "main.bal",
@@ -782,10 +1053,25 @@
               "kind": "DATA_NEW_MESSAGE",
               "subkind": "JSON",
               "formData": {
+                "Expressions": [
+                  {
+                    "index": -1,
+                    "label": "Data",
+                    "type": "MAPPING",
+                    "allowedTypes": [
+                    ],
+                    "value": "{doctorType: doctorType}",
+                    "possibleValues": [
+                    ],
+                    "editable": true,
+                    "flags": [
+                    ]
+                  }
+                ],
                 "Variables": [
                   {
                     "index": -1,
-                    "label": "result",
+                    "label": "New Variable",
                     "type": "DEFAULT",
                     "allowedTypes": [
                       [
@@ -822,14 +1108,14 @@
               "editable": true
             },
             {
-              "label": "Remote Call",
-              "kind": "NETWORK_REMOTE_CALL",
+              "label": "Resource Call",
+              "kind": "NETWORK_RESOURCE_CALL",
               "sublabel": "http post",
               "formData": {
                 "Error": [
                   {
                     "index": -1,
-                    "label": "Fail On Error",
+                    "label": "FailOnError",
                     "type": "BOOLEAN",
                     "allowedTypes": [
                     ],
@@ -844,7 +1130,7 @@
                 "Variables": [
                   {
                     "index": -1,
-                    "label": "result",
+                    "label": "New Variable",
                     "type": "DEFAULT",
                     "allowedTypes": [
                       [
@@ -864,11 +1150,134 @@
                 "Params": [
                   {
                     "index": -1,
-                    "label": "expression",
+                    "label": "path",
                     "type": "IDENTIFIER",
                     "allowedTypes": [
                     ],
-                    "value": "grandOakEp->post(\"/doctor/\", req)",
+                    "value": "string",
+                    "possibleValues": [
+                    ],
+                    "editable": true,
+                    "flags": [
+                    ]
+                  },
+                  {
+                    "index": -1,
+                    "label": "message",
+                    "type": "IDENTIFIER",
+                    "allowedTypes": [
+                    ],
+                    "value": "ballerina/http:2.10.7:RequestMessage",
+                    "possibleValues": [
+                    ],
+                    "editable": true,
+                    "flags": [
+                    ]
+                  },
+                  {
+                    "index": -1,
+                    "label": "headers",
+                    "type": "IDENTIFIER",
+                    "allowedTypes": [
+                    ],
+                    "value": "map<string|string[]>?",
+                    "possibleValues": [
+                    ],
+                    "editable": true,
+                    "flags": [
+                    ]
+                  },
+                  {
+                    "index": -1,
+                    "label": "mediaType",
+                    "type": "IDENTIFIER",
+                    "allowedTypes": [
+                    ],
+                    "value": "string?",
+                    "possibleValues": [
+                    ],
+                    "editable": true,
+                    "flags": [
+                    ]
+                  },
+                  {
+                    "index": -1,
+                    "label": "targetType",
+                    "type": "IDENTIFIER",
+                    "allowedTypes": [
+                    ],
+                    "value": "ballerina/http:2.10.7:TargetType",
+                    "possibleValues": [
+                    ],
+                    "editable": true,
+                    "flags": [
+                    ]
+                  }
+                ],
+                "Return": [
+                  {
+                    "index": -1,
+                    "label": "Return",
+                    "type": "IDENTIFIER",
+                    "allowedTypes": [
+                    ],
+                    "value": "targetType|ballerina/http:2.10.7:ClientError",
+                    "possibleValues": [
+                    ],
+                    "editable": true,
+                    "flags": [
+                    ]
+                  }
+                ],
+                "Qualifiers": [
+                  {
+                    "index": -1,
+                    "label": "Qualifier",
+                    "type": "IDENTIFIER",
+                    "allowedTypes": [
+                    ],
+                    "value": "ISOLATED",
+                    "possibleValues": [
+                    ],
+                    "editable": true,
+                    "flags": [
+                    ]
+                  },
+                  {
+                    "index": -1,
+                    "label": "Qualifier",
+                    "type": "IDENTIFIER",
+                    "allowedTypes": [
+                    ],
+                    "value": "REMOTE",
+                    "possibleValues": [
+                    ],
+                    "editable": true,
+                    "flags": [
+                    ]
+                  }
+                ],
+                "Expressions": [
+                  {
+                    "index": -1,
+                    "label": "Arg",
+                    "type": "IDENTIFIER",
+                    "allowedTypes": [
+                    ],
+                    "value": "\"/doctor/\"",
+                    "possibleValues": [
+                    ],
+                    "editable": true,
+                    "flags": [
+                    ]
+                  },
+                  {
+                    "index": -1,
+                    "label": "Arg",
+                    "type": "IDENTIFIER",
+                    "allowedTypes": [
+                    ],
+                    "value": "req",
                     "possibleValues": [
                     ],
                     "editable": true,
@@ -899,6 +1308,21 @@
               "label": "Async Result",
               "kind": "ASYNC_RETURN",
               "formData": {
+                "Expressions": [
+                  {
+                    "index": -1,
+                    "label": "Expression",
+                    "type": "DEFAULT",
+                    "allowedTypes": [
+                    ],
+                    "value": "res",
+                    "possibleValues": [
+                    ],
+                    "editable": true,
+                    "flags": [
+                    ]
+                  }
+                ]
               },
               "lineRange": {
                 "fileName": "main.bal",
@@ -950,12 +1374,10 @@
                 "editable": true,
                 "flags": [
                 ]
-              }
-            ],
-            "Service": [
+              },
               {
                 "index": -1,
-                "label": "AttachPoint",
+                "label": "BasePath",
                 "type": "DEFAULT",
                 "allowedTypes": [
                 ],
@@ -963,6 +1385,21 @@
                 "possibleValues": [
                 ],
                 "editable": false,
+                "flags": [
+                ]
+              }
+            ],
+            "Function": [
+              {
+                "index": -1,
+                "label": "Name",
+                "type": "IDENTIFIER",
+                "allowedTypes": [
+                ],
+                "value": "post",
+                "possibleValues": [
+                ],
+                "editable": true,
                 "flags": [
                 ]
               }
@@ -1032,14 +1469,14 @@
           "editable": true
         },
         {
-          "label": "Remote Call",
-          "kind": "NETWORK_REMOTE_CALL",
+          "label": "Resource Call",
+          "kind": "NETWORK_RESOURCE_CALL",
           "sublabel": "http get",
           "formData": {
             "Error": [
               {
                 "index": -1,
-                "label": "Fail On Error",
+                "label": "FailOnError",
                 "type": "BOOLEAN",
                 "allowedTypes": [
                 ],
@@ -1054,7 +1491,7 @@
             "Variables": [
               {
                 "index": -1,
-                "label": "result",
+                "label": "New Variable",
                 "type": "DEFAULT",
                 "allowedTypes": [
                   [
@@ -1074,11 +1511,95 @@
             "Params": [
               {
                 "index": -1,
-                "label": "expression",
+                "label": "path",
                 "type": "IDENTIFIER",
                 "allowedTypes": [
                 ],
-                "value": "mapleRidgeEp->get(\"/doctor/\" + doctorType)",
+                "value": "string",
+                "possibleValues": [
+                ],
+                "editable": true,
+                "flags": [
+                ]
+              },
+              {
+                "index": -1,
+                "label": "headers",
+                "type": "IDENTIFIER",
+                "allowedTypes": [
+                ],
+                "value": "map<string|string[]>?",
+                "possibleValues": [
+                ],
+                "editable": true,
+                "flags": [
+                ]
+              },
+              {
+                "index": -1,
+                "label": "targetType",
+                "type": "IDENTIFIER",
+                "allowedTypes": [
+                ],
+                "value": "ballerina/http:2.10.7:TargetType",
+                "possibleValues": [
+                ],
+                "editable": true,
+                "flags": [
+                ]
+              }
+            ],
+            "Return": [
+              {
+                "index": -1,
+                "label": "Return",
+                "type": "IDENTIFIER",
+                "allowedTypes": [
+                ],
+                "value": "targetType|ballerina/http:2.10.7:ClientError",
+                "possibleValues": [
+                ],
+                "editable": true,
+                "flags": [
+                ]
+              }
+            ],
+            "Qualifiers": [
+              {
+                "index": -1,
+                "label": "Qualifier",
+                "type": "IDENTIFIER",
+                "allowedTypes": [
+                ],
+                "value": "ISOLATED",
+                "possibleValues": [
+                ],
+                "editable": true,
+                "flags": [
+                ]
+              },
+              {
+                "index": -1,
+                "label": "Qualifier",
+                "type": "IDENTIFIER",
+                "allowedTypes": [
+                ],
+                "value": "REMOTE",
+                "possibleValues": [
+                ],
+                "editable": true,
+                "flags": [
+                ]
+              }
+            ],
+            "Expressions": [
+              {
+                "index": -1,
+                "label": "Arg",
+                "type": "IDENTIFIER",
+                "allowedTypes": [
+                ],
+                "value": "\"/doctor/\" + doctorType",
                 "possibleValues": [
                 ],
                 "editable": true,
@@ -1108,14 +1629,14 @@
           "editable": true
         },
         {
-          "label": "Remote Call",
-          "kind": "NETWORK_REMOTE_CALL",
+          "label": "Resource Call",
+          "kind": "NETWORK_RESOURCE_CALL",
           "sublabel": "http post",
           "formData": {
             "Error": [
               {
                 "index": -1,
-                "label": "Fail On Error",
+                "label": "FailOnError",
                 "type": "BOOLEAN",
                 "allowedTypes": [
                 ],
@@ -1130,7 +1651,7 @@
             "Variables": [
               {
                 "index": -1,
-                "label": "result",
+                "label": "New Variable",
                 "type": "MAPPING",
                 "allowedTypes": [
                   [
@@ -1150,11 +1671,134 @@
             "Params": [
               {
                 "index": -1,
-                "label": "expression",
+                "label": "path",
                 "type": "IDENTIFIER",
                 "allowedTypes": [
                 ],
-                "value": "insurance->post(\"/doctor/\", {\"doctor\": doctor.doctorType})",
+                "value": "string",
+                "possibleValues": [
+                ],
+                "editable": true,
+                "flags": [
+                ]
+              },
+              {
+                "index": -1,
+                "label": "message",
+                "type": "IDENTIFIER",
+                "allowedTypes": [
+                ],
+                "value": "ballerina/http:2.10.7:RequestMessage",
+                "possibleValues": [
+                ],
+                "editable": true,
+                "flags": [
+                ]
+              },
+              {
+                "index": -1,
+                "label": "headers",
+                "type": "IDENTIFIER",
+                "allowedTypes": [
+                ],
+                "value": "map<string|string[]>?",
+                "possibleValues": [
+                ],
+                "editable": true,
+                "flags": [
+                ]
+              },
+              {
+                "index": -1,
+                "label": "mediaType",
+                "type": "IDENTIFIER",
+                "allowedTypes": [
+                ],
+                "value": "string?",
+                "possibleValues": [
+                ],
+                "editable": true,
+                "flags": [
+                ]
+              },
+              {
+                "index": -1,
+                "label": "targetType",
+                "type": "IDENTIFIER",
+                "allowedTypes": [
+                ],
+                "value": "ballerina/http:2.10.7:TargetType",
+                "possibleValues": [
+                ],
+                "editable": true,
+                "flags": [
+                ]
+              }
+            ],
+            "Return": [
+              {
+                "index": -1,
+                "label": "Return",
+                "type": "IDENTIFIER",
+                "allowedTypes": [
+                ],
+                "value": "targetType|ballerina/http:2.10.7:ClientError",
+                "possibleValues": [
+                ],
+                "editable": true,
+                "flags": [
+                ]
+              }
+            ],
+            "Qualifiers": [
+              {
+                "index": -1,
+                "label": "Qualifier",
+                "type": "IDENTIFIER",
+                "allowedTypes": [
+                ],
+                "value": "ISOLATED",
+                "possibleValues": [
+                ],
+                "editable": true,
+                "flags": [
+                ]
+              },
+              {
+                "index": -1,
+                "label": "Qualifier",
+                "type": "IDENTIFIER",
+                "allowedTypes": [
+                ],
+                "value": "REMOTE",
+                "possibleValues": [
+                ],
+                "editable": true,
+                "flags": [
+                ]
+              }
+            ],
+            "Expressions": [
+              {
+                "index": -1,
+                "label": "Arg",
+                "type": "IDENTIFIER",
+                "allowedTypes": [
+                ],
+                "value": "\"/doctor/\"",
+                "possibleValues": [
+                ],
+                "editable": true,
+                "flags": [
+                ]
+              },
+              {
+                "index": -1,
+                "label": "Arg",
+                "type": "IDENTIFIER",
+                "allowedTypes": [
+                ],
+                "value": "{\"doctor\": doctor.doctorType}",
                 "possibleValues": [
                 ],
                 "editable": true,
@@ -1187,7 +1831,7 @@
           "label": "If",
           "kind": "IF",
           "formData": {
-            "Condition": [
+            "Expressions": [
               {
                 "index": -1,
                 "label": "Condition",
@@ -1215,6 +1859,21 @@
                 "kind": "DATA_NEW_MESSAGE",
                 "subkind": "JSON",
                 "formData": {
+                  "Expressions": [
+                    {
+                      "index": -1,
+                      "label": "Data",
+                      "type": "MAPPING",
+                      "allowedTypes": [
+                      ],
+                      "value": "{\"status\": \"error\"}",
+                      "possibleValues": [
+                      ],
+                      "editable": true,
+                      "flags": [
+                      ]
+                    }
+                  ]
                 },
                 "lineRange": {
                   "fileName": "main.bal",
@@ -1281,7 +1940,7 @@
           "label": "If",
           "kind": "IF",
           "formData": {
-            "Condition": [
+            "Expressions": [
               {
                 "index": -1,
                 "label": "Condition",
@@ -1310,7 +1969,7 @@
                 "label": "If",
                 "kind": "IF",
                 "formData": {
-                  "Condition": [
+                  "Expressions": [
                     {
                       "index": -1,
                       "label": "Condition",
@@ -1427,11 +2086,70 @@
             "Params": [
               {
                 "index": -1,
-                "label": "expression",
+                "label": "values",
                 "type": "IDENTIFIER",
                 "allowedTypes": [
                 ],
-                "value": "            io:println(\"Data Submit\")",
+                "value": "ballerina/io:1.6.0:Printable[]",
+                "possibleValues": [
+                ],
+                "editable": true,
+                "flags": [
+                  "rest"
+                ]
+              }
+            ],
+            "Return": [
+              {
+                "index": -1,
+                "label": "Return",
+                "type": "IDENTIFIER",
+                "allowedTypes": [
+                ],
+                "value": "()",
+                "possibleValues": [
+                ],
+                "editable": true,
+                "flags": [
+                ]
+              }
+            ],
+            "Qualifiers": [
+              {
+                "index": -1,
+                "label": "Qualifier",
+                "type": "IDENTIFIER",
+                "allowedTypes": [
+                ],
+                "value": "PUBLIC",
+                "possibleValues": [
+                ],
+                "editable": true,
+                "flags": [
+                ]
+              },
+              {
+                "index": -1,
+                "label": "Qualifier",
+                "type": "IDENTIFIER",
+                "allowedTypes": [
+                ],
+                "value": "ISOLATED",
+                "possibleValues": [
+                ],
+                "editable": true,
+                "flags": [
+                ]
+              }
+            ],
+            "Expressions": [
+              {
+                "index": -1,
+                "label": "Arg",
+                "type": "IDENTIFIER",
+                "allowedTypes": [
+                ],
+                "value": "\"Data Submit\"",
                 "possibleValues": [
                 ],
                 "editable": true,
@@ -1465,6 +2183,21 @@
           "kind": "DATA_NEW_MESSAGE",
           "subkind": "JSON",
           "formData": {
+            "Expressions": [
+              {
+                "index": -1,
+                "label": "Data",
+                "type": "MAPPING",
+                "allowedTypes": [
+                ],
+                "value": "{\"status\": \"success\"}",
+                "possibleValues": [
+                ],
+                "editable": true,
+                "flags": [
+                ]
+              }
+            ]
           },
           "lineRange": {
             "fileName": "main.bal",

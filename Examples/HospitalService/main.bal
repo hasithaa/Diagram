@@ -1,7 +1,7 @@
 import ballerina/http;
 import ballerina/io;
 
-import hasitha/diagram as _;
+import hasitha/bgraph as _;
 
 final http:Client pineValleyEp = check new ("http://localhost:9091/pineValley/");
 final http:Client grandOakEp = check new ("http://localhost:9092/grandOak/");

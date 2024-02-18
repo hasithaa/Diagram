@@ -2,7 +2,7 @@ import ballerina/http;
 import ballerina/io;
 import ballerina/xmldata;
 
-import hasitha/diagram as _;
+import hasitha/bgraph as _;
 
 function transformMapleRidge(MapleRidgeDoctor doctor) returns DoctorDetails => {
     name: doctor.doctorName,
@@ -117,5 +117,5 @@ public function main() {
     } else {
         return;
     }
-    io:println("Hello World;");
+    io:println("Hello World!");
 }
