@@ -220,7 +220,7 @@
                 "kind": "NETWORK_REMOTE_CALL",
                 "sublabel": "http post",
                 "formData": {
-                  "Error Handle": [
+                  "Error": [
                     {
                       "index": -1,
                       "label": "FailOnError",
@@ -364,6 +364,21 @@
                       "flags": [
                       ]
                     }
+                  ],
+                  "Expressions": [
+                    {
+                      "index": -1,
+                      "label": "Arg",
+                      "type": "IDENTIFIER",
+                      "allowedTypes": [
+                      ],
+                      "value": "payload",
+                      "possibleValues": [
+                      ],
+                      "editable": true,
+                      "flags": [
+                      ]
+                    }
                   ]
                 },
                 "lineRange": {
@@ -390,7 +405,7 @@
                 "label": "Data Schema Validation",
                 "kind": "DATA_VALIDATION",
                 "formData": {
-                  "Error Handle": [
+                  "Error": [
                     {
                       "index": -1,
                       "label": "FailOnError",
@@ -514,6 +529,21 @@
                       "flags": [
                       ]
                     }
+                  ],
+                  "Expressions": [
+                    {
+                      "index": -1,
+                      "label": "Arg",
+                      "type": "IDENTIFIER",
+                      "allowedTypes": [
+                      ],
+                      "value": "aMapleRidgeDoctor",
+                      "possibleValues": [
+                      ],
+                      "editable": true,
+                      "flags": [
+                      ]
+                    }
                   ]
                 },
                 "lineRange": {
@@ -540,6 +570,21 @@
                 "label": "Return",
                 "kind": "RETURN",
                 "formData": {
+                  "Expressions": [
+                    {
+                      "index": -1,
+                      "label": "Expression",
+                      "type": "DEFAULT",
+                      "allowedTypes": [
+                      ],
+                      "value": "aDoctorDetail",
+                      "possibleValues": [
+                      ],
+                      "editable": true,
+                      "flags": [
+                      ]
+                    }
+                  ]
                 },
                 "lineRange": {
                   "fileName": "main.bal",
@@ -633,7 +678,7 @@
                 "kind": "NETWORK_RESOURCE_CALL",
                 "sublabel": "http post",
                 "formData": {
-                  "Error Handle": [
+                  "Error": [
                     {
                       "index": -1,
                       "label": "FailOnError",
@@ -777,6 +822,34 @@
                       "flags": [
                       ]
                     }
+                  ],
+                  "Expressions": [
+                    {
+                      "index": -1,
+                      "label": "Arg",
+                      "type": "IDENTIFIER",
+                      "allowedTypes": [
+                      ],
+                      "value": "\"/doctor/\" + doctorType",
+                      "possibleValues": [
+                      ],
+                      "editable": true,
+                      "flags": [
+                      ]
+                    },
+                    {
+                      "index": -1,
+                      "label": "Arg",
+                      "type": "IDENTIFIER",
+                      "allowedTypes": [
+                      ],
+                      "value": "data",
+                      "possibleValues": [
+                      ],
+                      "editable": true,
+                      "flags": [
+                      ]
+                    }
                   ]
                 },
                 "lineRange": {
@@ -803,7 +876,7 @@
                 "label": "Data Conversion",
                 "kind": "DATA_CONVERT",
                 "formData": {
-                  "Error Handle": [
+                  "Error": [
                     {
                       "index": -1,
                       "label": "FailOnError",
@@ -908,6 +981,21 @@
                       "flags": [
                       ]
                     }
+                  ],
+                  "Expressions": [
+                    {
+                      "index": -1,
+                      "label": "Arg",
+                      "type": "IDENTIFIER",
+                      "allowedTypes": [
+                      ],
+                      "value": "aResponse",
+                      "possibleValues": [
+                      ],
+                      "editable": true,
+                      "flags": [
+                      ]
+                    }
                   ]
                 },
                 "lineRange": {
@@ -934,7 +1022,7 @@
                 "label": "Data Schema Validation",
                 "kind": "DATA_VALIDATION",
                 "formData": {
-                  "Error Handle": [
+                  "Error": [
                     {
                       "index": -1,
                       "label": "FailOnError",
@@ -1032,6 +1120,21 @@
                       "allowedTypes": [
                       ],
                       "value": "ISOLATED",
+                      "possibleValues": [
+                      ],
+                      "editable": true,
+                      "flags": [
+                      ]
+                    }
+                  ],
+                  "Expressions": [
+                    {
+                      "index": -1,
+                      "label": "Arg",
+                      "type": "IDENTIFIER",
+                      "allowedTypes": [
+                      ],
+                      "value": "aPineValleyDoctor",
                       "possibleValues": [
                       ],
                       "editable": true,
@@ -1287,7 +1390,7 @@
                 "kind": "NETWORK_RESOURCE_CALL",
                 "sublabel": "http get",
                 "formData": {
-                  "Error Handle": [
+                  "Error": [
                     {
                       "index": -1,
                       "label": "FailOnError",
@@ -1405,6 +1508,21 @@
                       "flags": [
                       ]
                     }
+                  ],
+                  "Expressions": [
+                    {
+                      "index": -1,
+                      "label": "Arg",
+                      "type": "IDENTIFIER",
+                      "allowedTypes": [
+                      ],
+                      "value": "\"/doctor/\" + doctorType",
+                      "possibleValues": [
+                      ],
+                      "editable": true,
+                      "flags": [
+                      ]
+                    }
                   ]
                 },
                 "lineRange": {
@@ -1431,6 +1549,21 @@
                 "label": "Return",
                 "kind": "RETURN",
                 "formData": {
+                  "Expressions": [
+                    {
+                      "index": -1,
+                      "label": "Expression",
+                      "type": "DEFAULT",
+                      "allowedTypes": [
+                      ],
+                      "value": "res",
+                      "possibleValues": [
+                      ],
+                      "editable": true,
+                      "flags": [
+                      ]
+                    }
+                  ]
                 },
                 "lineRange": {
                   "fileName": "main.bal",
@@ -1604,7 +1737,7 @@
                 "kind": "KNOWN_FUNCTION_CALL",
                 "subkind": "MAP",
                 "formData": {
-                  "Error Handle": [
+                  "Error": [
                     {
                       "index": -1,
                       "label": "FailOnError",
@@ -1642,7 +1775,7 @@
                   "Expressions": [
                     {
                       "index": -1,
-                      "label": "Params",
+                      "label": "Arg",
                       "type": "IDENTIFIER",
                       "allowedTypes": [
                       ],
@@ -1680,7 +1813,7 @@
                 "kind": "KNOWN_FUNCTION_CALL",
                 "subkind": "MAP",
                 "formData": {
-                  "Error Handle": [
+                  "Error": [
                     {
                       "index": -1,
                       "label": "FailOnError",
@@ -1718,7 +1851,7 @@
                   "Expressions": [
                     {
                       "index": -1,
-                      "label": "Params",
+                      "label": "Arg",
                       "type": "IDENTIFIER",
                       "allowedTypes": [
                       ],
@@ -1759,7 +1892,7 @@
                   "Expressions": [
                     {
                       "index": -1,
-                      "label": "Params",
+                      "label": "Rest Arg",
                       "type": "IDENTIFIER",
                       "allowedTypes": [
                       ],
@@ -1800,7 +1933,7 @@
                   "Expressions": [
                     {
                       "index": -1,
-                      "label": "Params",
+                      "label": "Rest Arg",
                       "type": "IDENTIFIER",
                       "allowedTypes": [
                       ],
@@ -1837,6 +1970,21 @@
                 "label": "Return",
                 "kind": "RETURN",
                 "formData": {
+                  "Expressions": [
+                    {
+                      "index": -1,
+                      "label": "Expression",
+                      "type": "DEFAULT",
+                      "allowedTypes": [
+                      ],
+                      "value": "result",
+                      "possibleValues": [
+                      ],
+                      "editable": true,
+                      "flags": [
+                      ]
+                    }
+                  ]
                 },
                 "lineRange": {
                   "fileName": "main.bal",
@@ -1952,7 +2100,7 @@
               "kind": "NETWORK_RESOURCE_CALL",
               "sublabel": "http get",
               "formData": {
-                "Error Handle": [
+                "Error": [
                   {
                     "index": -1,
                     "label": "FailOnError",
@@ -2070,6 +2218,21 @@
                     "flags": [
                     ]
                   }
+                ],
+                "Expressions": [
+                  {
+                    "index": -1,
+                    "label": "Arg",
+                    "type": "IDENTIFIER",
+                    "allowedTypes": [
+                    ],
+                    "value": "\"/doctor/\" + doctorType",
+                    "possibleValues": [
+                    ],
+                    "editable": true,
+                    "flags": [
+                    ]
+                  }
                 ]
               },
               "lineRange": {
@@ -2094,6 +2257,21 @@
               "label": "Async Result",
               "kind": "ASYNC_RETURN",
               "formData": {
+                "Expressions": [
+                  {
+                    "index": -1,
+                    "label": "Expression",
+                    "type": "DEFAULT",
+                    "allowedTypes": [
+                    ],
+                    "value": "res",
+                    "possibleValues": [
+                    ],
+                    "editable": true,
+                    "flags": [
+                    ]
+                  }
+                ]
               },
               "lineRange": {
                 "fileName": "main.bal",
@@ -2197,7 +2375,7 @@
               "kind": "NETWORK_RESOURCE_CALL",
               "sublabel": "http post",
               "formData": {
-                "Error Handle": [
+                "Error": [
                   {
                     "index": -1,
                     "label": "FailOnError",
@@ -2341,6 +2519,34 @@
                     "flags": [
                     ]
                   }
+                ],
+                "Expressions": [
+                  {
+                    "index": -1,
+                    "label": "Arg",
+                    "type": "IDENTIFIER",
+                    "allowedTypes": [
+                    ],
+                    "value": "\"/doctor/\"",
+                    "possibleValues": [
+                    ],
+                    "editable": true,
+                    "flags": [
+                    ]
+                  },
+                  {
+                    "index": -1,
+                    "label": "Arg",
+                    "type": "IDENTIFIER",
+                    "allowedTypes": [
+                    ],
+                    "value": "req",
+                    "possibleValues": [
+                    ],
+                    "editable": true,
+                    "flags": [
+                    ]
+                  }
                 ]
               },
               "lineRange": {
@@ -2365,6 +2571,21 @@
               "label": "Async Result",
               "kind": "ASYNC_RETURN",
               "formData": {
+                "Expressions": [
+                  {
+                    "index": -1,
+                    "label": "Expression",
+                    "type": "DEFAULT",
+                    "allowedTypes": [
+                    ],
+                    "value": "res",
+                    "possibleValues": [
+                    ],
+                    "editable": true,
+                    "flags": [
+                    ]
+                  }
+                ]
               },
               "lineRange": {
                 "fileName": "main.bal",
@@ -2439,7 +2660,7 @@
           "lineRange": {
             "fileName": "main.bal",
             "startLine": 111,
-            "endLine": 119
+            "endLine": 120
           },
           "children": {
           },
@@ -2518,6 +2739,66 @@
           "editable": true
         },
         {
+          "label": "Expression",
+          "kind": "EXPRESSION",
+          "formData": {
+            "Variables": [
+              {
+                "index": -1,
+                "label": "New Variable",
+                "type": "INT",
+                "allowedTypes": [
+                  [
+                    "int"
+                  ]
+                ],
+                "value": "sum",
+                "possibleValues": [
+                ],
+                "editable": true,
+                "flags": [
+                  "Local",
+                  "New"
+                ]
+              }
+            ],
+            "Expressions": [
+              {
+                "index": -1,
+                "label": "Expression",
+                "type": "DEFAULT",
+                "allowedTypes": [
+                ],
+                "value": "0",
+                "possibleValues": [
+                ],
+                "editable": true,
+                "flags": [
+                ]
+              }
+            ]
+          },
+          "lineRange": {
+            "fileName": "main.bal",
+            "startLine": 113,
+            "endLine": 113
+          },
+          "children": {
+          },
+          "edges": [
+            {
+              "source": "Diagram0Node2",
+              "target": "Diagram0Node3",
+              "kind": "DEFAULT",
+              "iId": "Diagram0Edge2"
+            }
+          ],
+          "iId": "Diagram0Node2",
+          "terminal": false,
+          "returnable": false,
+          "editable": true
+        },
+        {
           "label": "If",
           "kind": "IF",
           "formData": {
@@ -2539,8 +2820,8 @@
           },
           "lineRange": {
             "fileName": "main.bal",
-            "startLine": 113,
-            "endLine": 117
+            "startLine": 114,
+            "endLine": 118
           },
           "children": {
             "Then": [
@@ -2606,24 +2887,39 @@
                       "flags": [
                       ]
                     }
+                  ],
+                  "Expressions": [
+                    {
+                      "index": -1,
+                      "label": "Arg",
+                      "type": "IDENTIFIER",
+                      "allowedTypes": [
+                      ],
+                      "value": "\"Length is greater than 3\"",
+                      "possibleValues": [
+                      ],
+                      "editable": true,
+                      "flags": [
+                      ]
+                    }
                   ]
                 },
                 "lineRange": {
                   "fileName": "main.bal",
-                  "startLine": 114,
-                  "endLine": 114
+                  "startLine": 115,
+                  "endLine": 115
                 },
                 "children": {
                 },
                 "edges": [
                   {
-                    "source": "Diagram0Node4",
-                    "target": "Diagram0Node3",
+                    "source": "Diagram0Node5",
+                    "target": "Diagram0Node4",
                     "kind": "DEFAULT",
-                    "iId": "Diagram0Edge3"
+                    "iId": "Diagram0Edge4"
                   }
                 ],
-                "iId": "Diagram0Node4",
+                "iId": "Diagram0Node5",
                 "terminal": false,
                 "returnable": false,
                 "editable": true
@@ -2637,20 +2933,20 @@
                 },
                 "lineRange": {
                   "fileName": "main.bal",
-                  "startLine": 116,
-                  "endLine": 116
+                  "startLine": 117,
+                  "endLine": 117
                 },
                 "children": {
                 },
                 "edges": [
                   {
-                    "source": "Diagram0Node5",
-                    "target": "Diagram0Node3",
+                    "source": "Diagram0Node6",
+                    "target": "Diagram0Node4",
                     "kind": "UNREACHABLE",
-                    "iId": "Diagram0Edge5"
+                    "iId": "Diagram0Edge6"
                   }
                 ],
-                "iId": "Diagram0Node5",
+                "iId": "Diagram0Node6",
                 "terminal": true,
                 "returnable": true,
                 "editable": true
@@ -2660,20 +2956,20 @@
           "edges": [
             {
               "label": "Then",
-              "source": "Diagram0Node2",
-              "target": "Diagram0Node4",
+              "source": "Diagram0Node3",
+              "target": "Diagram0Node5",
               "kind": "DEFAULT",
-              "iId": "Diagram0Edge2"
+              "iId": "Diagram0Edge3"
             },
             {
               "label": "Else",
-              "source": "Diagram0Node2",
-              "target": "Diagram0Node5",
+              "source": "Diagram0Node3",
+              "target": "Diagram0Node6",
               "kind": "DEFAULT",
-              "iId": "Diagram0Edge4"
+              "iId": "Diagram0Edge5"
             }
           ],
-          "iId": "Diagram0Node2",
+          "iId": "Diagram0Node3",
           "terminal": false,
           "returnable": false,
           "editable": true
@@ -2685,20 +2981,20 @@
           },
           "lineRange": {
             "fileName": "main.bal",
-            "startLine": 113,
-            "endLine": 117
+            "startLine": 114,
+            "endLine": 118
           },
           "children": {
           },
           "edges": [
             {
-              "source": "Diagram0Node3",
-              "target": "Diagram0Node6",
+              "source": "Diagram0Node4",
+              "target": "Diagram0Node7",
               "kind": "DEFAULT",
-              "iId": "Diagram0Edge6"
+              "iId": "Diagram0Edge7"
             }
           ],
-          "iId": "Diagram0Node3",
+          "iId": "Diagram0Node4",
           "terminal": false,
           "returnable": false,
           "editable": true
@@ -2765,24 +3061,39 @@
                 "flags": [
                 ]
               }
+            ],
+            "Expressions": [
+              {
+                "index": -1,
+                "label": "Arg",
+                "type": "IDENTIFIER",
+                "allowedTypes": [
+                ],
+                "value": "\"Hello World;\"",
+                "possibleValues": [
+                ],
+                "editable": true,
+                "flags": [
+                ]
+              }
             ]
           },
           "lineRange": {
             "fileName": "main.bal",
-            "startLine": 118,
-            "endLine": 118
+            "startLine": 119,
+            "endLine": 119
           },
           "children": {
           },
           "edges": [
             {
-              "source": "Diagram0Node6",
-              "target": "Diagram0Node7",
+              "source": "Diagram0Node7",
+              "target": "Diagram0Node8",
               "kind": "DEFAULT",
-              "iId": "Diagram0Edge7"
+              "iId": "Diagram0Edge8"
             }
           ],
-          "iId": "Diagram0Node6",
+          "iId": "Diagram0Node7",
           "terminal": false,
           "returnable": false,
           "editable": true
@@ -2797,7 +3108,7 @@
           },
           "edges": [
           ],
-          "iId": "Diagram0Node7",
+          "iId": "Diagram0Node8",
           "terminal": false,
           "returnable": false,
           "editable": true

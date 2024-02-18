@@ -24,17 +24,11 @@ public interface MermaidElement {
     default String safeHtmlString(String value) {
         if (value != null && value.contains("\"")) {
             return value
-                    .replace("<", "&lt;")
-                    .replace(">", "&gt;")
-                    .replace("&", "&amp;")
-                    .replace("{", "&#123;")
-                    .replace("}", "&#125;")
-                    .replace("\\", "&#92;")
-                    .replace("[", "&#91;")
-                    .replace("]", "&#93;")
-                    .replace("/", "&#47;")
-                    .replace("\"", "&quot;");
-
+                    .replace("\n", "")
+                    .replace("<", "&amp;lt;")
+                    .replace(">", "&amp;gt;")
+                    .replace("&", "&amp;amp;")
+                    .replace("\"", "&amp;quot;");
         }
         return value;
     }

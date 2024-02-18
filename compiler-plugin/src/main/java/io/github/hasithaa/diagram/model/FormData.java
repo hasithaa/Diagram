@@ -118,16 +118,9 @@ public class FormData implements JsonElement, MermaidElement {
     public String getMermaidString(int wsCount) {
         String mermaid = "<tr>" +
                 "<td>" + safeHtmlString(label) + "</td>" +
-                "<td>" + safeHtmlString(getShortString(value)) + "</td>" +
+                "<td><pre><code>" + safeHtmlString(value) + "</code></pre></td>" +
                 "</tr>";
         return mermaid;
-    }
-
-    private String getShortString(String value) {
-        if (value.length() > 20) {
-            return value.substring(0, 20) + "...";
-        }
-        return value;
     }
 
     enum FormDataTypeKind {

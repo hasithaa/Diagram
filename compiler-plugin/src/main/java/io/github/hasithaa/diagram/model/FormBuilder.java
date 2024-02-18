@@ -106,54 +106,49 @@ public class FormBuilder {
         FormData formData = new FormData("FailOnError");
         formData.setTypeKind(FormData.FormDataTypeKind.BOOLEAN);
         formData.setValue("true");
-        modelBuilder.addFormData("Error Handle", formData);
+        modelBuilder.addFormData("Error", formData);
     }
 
     void handleFunctionCall(FunctionCallExpressionNode stNode) {
         var symbol = semanticModel.symbol(stNode);
         if (symbol.isPresent() && symbol.get() instanceof FunctionSymbol functionSymbol) {
             extractFunctionSymbolFormData(functionSymbol);
-        } else {
-            // TODO: Think more on this.
-            handleFunctionArguments(stNode.arguments());
         }
+        handleFunctionArguments(stNode.arguments());
     }
 
     void handleMethodCall(MethodCallExpressionNode stNode) {
         var symbol = semanticModel.symbol(stNode);
         if (symbol.isPresent() && symbol.get() instanceof MethodSymbol functionSymbol) {
             extractFunctionSymbolFormData(functionSymbol);
-        } else {
-            handleFunctionArguments(stNode.arguments());
         }
+        handleFunctionArguments(stNode.arguments());
     }
 
     void handleRemoteCall(RemoteMethodCallActionNode stNode) {
         var symbol = semanticModel.symbol(stNode);
         if (symbol.isPresent() && symbol.get() instanceof MethodSymbol functionSymbol) {
             extractFunctionSymbolFormData(functionSymbol);
-        } else {
-            handleFunctionArguments(stNode.arguments());
         }
+        handleFunctionArguments(stNode.arguments());
     }
 
     void handleClientCall(ClientResourceAccessActionNode stNode) {
         var symbol = semanticModel.symbol(stNode);
         if (symbol.isPresent() && symbol.get() instanceof MethodSymbol functionSymbol) {
             extractFunctionSymbolFormData(functionSymbol);
-        } else {
-            stNode.arguments().ifPresent(args -> handleFunctionArguments(args.arguments()));
         }
+        stNode.arguments().ifPresent(args -> handleFunctionArguments(args.arguments()));
     }
 
     private void handleFunctionArguments(SeparatedNodeList<FunctionArgumentNode> args) {
         for (FunctionArgumentNode arg : args) {
             if (arg instanceof PositionalArgumentNode posArg) {
-                handleExpression(posArg.expression(), "Params", FormData.FormDataTypeKind.IDENTIFIER);
+                handleExpression(posArg.expression(), "Arg", FormData.FormDataTypeKind.IDENTIFIER);
             } else if (arg instanceof NamedArgumentNode nameArg) {
-                handleExpression(nameArg.expression(), "Params", FormData.FormDataTypeKind.IDENTIFIER);
+                handleExpression(nameArg.expression(), "Named Arg", FormData.FormDataTypeKind.IDENTIFIER);
             } else if (arg instanceof RestArgumentNode restArg) {
-                handleExpression(restArg.expression(), "Params", FormData.FormDataTypeKind.IDENTIFIER);
+                handleExpression(restArg.expression(), "Rest Arg", FormData.FormDataTypeKind.IDENTIFIER);
             }
         }
     }
@@ -180,7 +175,7 @@ public class FormBuilder {
         // TODO : Improve this further.
     }
 
-    void handleVariableDeclarationFormData(Node node, VariableDeclarationNode stNode) {
+    void handleVariableDeclarationFormData(VariableDeclarationNode stNode) {
         Optional<Symbol> symbol = semanticModel.symbol(stNode.typedBindingPattern().bindingPattern());
         if (symbol.isPresent()) {
             if (symbol.get().kind() == SymbolKind.VARIABLE) {
@@ -196,7 +191,7 @@ public class FormBuilder {
         }
     }
 
-    void handleAssignmentStatementFormData(Node node, AssignmentStatementNode stNode) {
+    void handleAssignmentStatementFormData(AssignmentStatementNode stNode) {
         semanticModel.symbol(stNode.varRef()).ifPresent(symbol -> {
             if (symbol instanceof VariableSymbol variableSymbol) {
                 FormData formData = new FormData("Updated Variable");
@@ -209,8 +204,8 @@ public class FormBuilder {
         });
     }
 
-    void handleExpressionStatementFromData(Node node, ExpressionStatementNode stNode) {
-        // DO NOTHING for now. Improve this further.
+    void handleExpressionStatementFromData(ExpressionStatementNode stNode) {
+
     }
 
     void extractFunctionSymbolFormData(FunctionSymbol functionSymbol) {

@@ -111,6 +111,7 @@ type Result DoctorType[];
 
 public function main() {
     int[] arr = [1, 2, 3, 4, 5];
+    int sum = 0;
     if arr.length() > 3 {
         io:println("Length is greater than 3");
     } else {

@@ -65,8 +65,8 @@ public class CodeVisitor extends NodeVisitor {
     private final Stack<StatementNode> stmtNodeStack = new Stack<>();
     private final List<Symbol> dataMapping = new ArrayList<>();
     private final Map<WorkerSymbol, Subgraph> workerSymbols = new HashMap<>();
-    private String moduleID;
     private final FormBuilder formBuilder;
+    private String moduleID;
 
     public CodeVisitor(SemanticModel semanticModel, String name) {
         this.semanticModel = semanticModel;
@@ -331,6 +331,11 @@ public class CodeVisitor extends NodeVisitor {
         node.label = "Expression";
         node.lineRange = stNode.lineRange();
         handleStatementNode(node, stNode, true);
+        stNode.children().forEach(child -> {
+            if (child instanceof ExpressionNode expressionNode) {
+                formBuilder.handleExpression(expressionNode, "Expression", FormData.FormDataTypeKind.DEFAULT);
+            }
+        });
     }
 
     private void handleNewMessage(ExpressionNode stNode) {
@@ -506,11 +511,11 @@ public class CodeVisitor extends NodeVisitor {
 
     private void handleStatementNode(Node node, StatementNode stNode, boolean defaultCase) {
         if (stNode instanceof VariableDeclarationNode stmt) {
-            formBuilder.handleVariableDeclarationFormData(node, stmt);
+            formBuilder.handleVariableDeclarationFormData(stmt);
         } else if (stNode instanceof AssignmentStatementNode stmt) {
-            formBuilder.handleAssignmentStatementFormData(node, stmt);
+            formBuilder.handleAssignmentStatementFormData(stmt);
         } else if (stNode instanceof ExpressionStatementNode stmt) {
-            formBuilder.handleExpressionStatementFromData(node, stmt);
+            formBuilder.handleExpressionStatementFromData(stmt);
         } else if (stNode instanceof ReturnStatementNode stmt) {
 
             // Fix incorrect node kind

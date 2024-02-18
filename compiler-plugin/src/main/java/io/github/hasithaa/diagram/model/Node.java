@@ -172,6 +172,11 @@ public class Node implements JsonElement, MermaidElement, Linkable {
                 formData.getOrDefault("Network", new ArrayList<>()).forEach(
                         formData -> sb.append(formData.getMermaidString(0)));
             }
+            if (formData.containsKey("Expressions")) {
+                sb.append("<tr><td><strong>Expressions</strong></td></tr>");
+                formData.getOrDefault("Expressions", new ArrayList<>()).forEach(
+                        formData -> sb.append(formData.getMermaidString(0)));
+            }
             if (formData.containsKey("Variables")) {
                 sb.append("<tr><td><strong>Variables</strong></td></tr>");
                 formData.getOrDefault("Variables", new ArrayList<>()).forEach(
