@@ -472,27 +472,6 @@
                 "editable": true
               },
               {
-                "label": "Resource Call",
-                "kind": "NETWORK_RESOURCE_CALL",
-                "formData": {
-                },
-                "lineRange": null,
-                "children": {
-                },
-                "edges": [
-                  {
-                    "source": "Node9",
-                    "target": "Node10",
-                    "kind": "DEFAULT",
-                    "iId": "Edge8"
-                  }
-                ],
-                "iId": "Node9",
-                "terminal": false,
-                "returnable": false,
-                "editable": true
-              },
-              {
                 "label": "Remote Call",
                 "kind": "NETWORK_REMOTE_CALL",
                 "sublabel": "http post",
@@ -557,13 +536,13 @@
                 },
                 "edges": [
                   {
-                    "source": "Node10",
-                    "target": "Node11",
+                    "source": "Node9",
+                    "target": "Node10",
                     "kind": "DEFAULT",
-                    "iId": "Edge9"
+                    "iId": "Edge8"
                   }
                 ],
-                "iId": "Node10",
+                "iId": "Node9",
                 "terminal": false,
                 "returnable": false,
                 "editable": true
@@ -632,13 +611,13 @@
                 },
                 "edges": [
                   {
-                    "source": "Node11",
-                    "target": "Node12",
+                    "source": "Node10",
+                    "target": "Node11",
                     "kind": "DEFAULT",
-                    "iId": "Edge10"
+                    "iId": "Edge9"
                   }
                 ],
-                "iId": "Node11",
+                "iId": "Node10",
                 "terminal": false,
                 "returnable": false,
                 "editable": true
@@ -707,13 +686,13 @@
                 },
                 "edges": [
                   {
-                    "source": "Node12",
-                    "target": "Node13",
+                    "source": "Node11",
+                    "target": "Node12",
                     "kind": "DEFAULT",
-                    "iId": "Edge11"
+                    "iId": "Edge10"
                   }
                 ],
-                "iId": "Node12",
+                "iId": "Node11",
                 "terminal": false,
                 "returnable": false,
                 "editable": true
@@ -747,13 +726,13 @@
                 },
                 "edges": [
                   {
-                    "source": "Node13",
+                    "source": "Node12",
                     "target": "Node2",
                     "kind": "UNREACHABLE",
-                    "iId": "Edge13"
+                    "iId": "Edge12"
                   }
                 ],
-                "iId": "Node13",
+                "iId": "Node12",
                 "terminal": true,
                 "returnable": true,
                 "editable": true
@@ -773,7 +752,7 @@
               "source": "Node1",
               "target": "Node8",
               "kind": "DEFAULT",
-              "iId": "Edge12"
+              "iId": "Edge11"
             }
           ],
           "iId": "Node1",
@@ -796,9 +775,9 @@
           "edges": [
             {
               "source": "Node2",
-              "target": "Node14",
+              "target": "Node13",
               "kind": "UNREACHABLE",
-              "iId": "Edge14"
+              "iId": "Edge13"
             }
           ],
           "iId": "Node2",
@@ -816,7 +795,7 @@
           },
           "edges": [
           ],
-          "iId": "Node14",
+          "iId": "Node13",
           "terminal": false,
           "returnable": false,
           "editable": true
@@ -968,27 +947,6 @@
           "children": {
             "Then": [
               {
-                "label": "Resource Call",
-                "kind": "NETWORK_RESOURCE_CALL",
-                "formData": {
-                },
-                "lineRange": null,
-                "children": {
-                },
-                "edges": [
-                  {
-                    "source": "Node3",
-                    "target": "Node4",
-                    "kind": "DEFAULT",
-                    "iId": "Edge1"
-                  }
-                ],
-                "iId": "Node3",
-                "terminal": false,
-                "returnable": false,
-                "editable": true
-              },
-              {
                 "label": "Remote Call",
                 "kind": "NETWORK_REMOTE_CALL",
                 "sublabel": "http get",
@@ -1053,13 +1011,13 @@
                 },
                 "edges": [
                   {
-                    "source": "Node4",
-                    "target": "Node5",
+                    "source": "Node3",
+                    "target": "Node4",
                     "kind": "DEFAULT",
-                    "iId": "Edge2"
+                    "iId": "Edge1"
                   }
                 ],
-                "iId": "Node4",
+                "iId": "Node3",
                 "terminal": false,
                 "returnable": false,
                 "editable": true
@@ -1078,13 +1036,13 @@
                 },
                 "edges": [
                   {
-                    "source": "Node5",
+                    "source": "Node4",
                     "target": "Node2",
                     "kind": "UNREACHABLE",
-                    "iId": "Edge4"
+                    "iId": "Edge3"
                   }
                 ],
-                "iId": "Node5",
+                "iId": "Node4",
                 "terminal": true,
                 "returnable": true,
                 "editable": true
@@ -1106,26 +1064,26 @@
                 "edges": [
                   {
                     "label": "Start",
-                    "source": "Node6",
+                    "source": "Node5",
                     "target": "SubGraph0",
                     "kind": "IMPLICIT",
-                    "iId": "Edge5"
+                    "iId": "Edge4"
                   },
                   {
                     "label": "Start",
-                    "source": "Node6",
+                    "source": "Node5",
                     "target": "SubGraph1",
                     "kind": "IMPLICIT",
-                    "iId": "Edge9"
+                    "iId": "Edge7"
                   },
                   {
-                    "source": "Node6",
-                    "target": "Node16",
+                    "source": "Node5",
+                    "target": "Node13",
                     "kind": "DEFAULT",
-                    "iId": "Edge14"
+                    "iId": "Edge11"
                   }
                 ],
-                "iId": "Node6",
+                "iId": "Node5",
                 "terminal": false,
                 "returnable": false,
                 "editable": true
@@ -1165,13 +1123,13 @@
                 },
                 "edges": [
                   {
-                    "source": "Node16",
-                    "target": "Node17",
+                    "source": "Node13",
+                    "target": "Node14",
                     "kind": "DEFAULT",
-                    "iId": "Edge15"
+                    "iId": "Edge12"
                   }
                 ],
-                "iId": "Node16",
+                "iId": "Node13",
                 "terminal": false,
                 "returnable": false,
                 "editable": true
@@ -1210,13 +1168,13 @@
                 },
                 "edges": [
                   {
-                    "source": "Node17",
-                    "target": "Node18",
+                    "source": "Node14",
+                    "target": "Node15",
                     "kind": "DEFAULT",
-                    "iId": "Edge18"
+                    "iId": "Edge15"
                   }
                 ],
-                "iId": "Node17",
+                "iId": "Node14",
                 "terminal": false,
                 "returnable": false,
                 "editable": true
@@ -1286,13 +1244,13 @@
                 },
                 "edges": [
                   {
-                    "source": "Node18",
-                    "target": "Node19",
+                    "source": "Node15",
+                    "target": "Node16",
                     "kind": "DEFAULT",
-                    "iId": "Edge19"
+                    "iId": "Edge16"
                   }
                 ],
-                "iId": "Node18",
+                "iId": "Node15",
                 "terminal": false,
                 "returnable": false,
                 "editable": true
@@ -1362,13 +1320,13 @@
                 },
                 "edges": [
                   {
-                    "source": "Node19",
-                    "target": "Node20",
+                    "source": "Node16",
+                    "target": "Node17",
                     "kind": "DEFAULT",
-                    "iId": "Edge20"
+                    "iId": "Edge17"
                   }
                 ],
-                "iId": "Node19",
+                "iId": "Node16",
                 "terminal": false,
                 "returnable": false,
                 "editable": true
@@ -1403,13 +1361,13 @@
                 },
                 "edges": [
                   {
-                    "source": "Node20",
-                    "target": "Node21",
+                    "source": "Node17",
+                    "target": "Node18",
                     "kind": "DEFAULT",
-                    "iId": "Edge21"
+                    "iId": "Edge18"
                   }
                 ],
-                "iId": "Node20",
+                "iId": "Node17",
                 "terminal": false,
                 "returnable": false,
                 "editable": true
@@ -1444,13 +1402,13 @@
                 },
                 "edges": [
                   {
-                    "source": "Node21",
-                    "target": "Node22",
+                    "source": "Node18",
+                    "target": "Node19",
                     "kind": "DEFAULT",
-                    "iId": "Edge22"
+                    "iId": "Edge19"
                   }
                 ],
-                "iId": "Node21",
+                "iId": "Node18",
                 "terminal": false,
                 "returnable": false,
                 "editable": true
@@ -1469,13 +1427,13 @@
                 },
                 "edges": [
                   {
-                    "source": "Node22",
+                    "source": "Node19",
                     "target": "Node2",
                     "kind": "UNREACHABLE",
-                    "iId": "Edge24"
+                    "iId": "Edge21"
                   }
                 ],
-                "iId": "Node22",
+                "iId": "Node19",
                 "terminal": true,
                 "returnable": true,
                 "editable": true
@@ -1488,14 +1446,14 @@
               "source": "Node1",
               "target": "Node3",
               "kind": "DEFAULT",
-              "iId": "Edge3"
+              "iId": "Edge2"
             },
             {
               "label": "Else",
               "source": "Node1",
-              "target": "Node6",
+              "target": "Node5",
               "kind": "DEFAULT",
-              "iId": "Edge23"
+              "iId": "Edge20"
             }
           ],
           "iId": "Node1",
@@ -1518,9 +1476,9 @@
           "edges": [
             {
               "source": "Node2",
-              "target": "Node23",
+              "target": "Node20",
               "kind": "UNREACHABLE",
-              "iId": "Edge25"
+              "iId": "Edge22"
             }
           ],
           "iId": "Node2",
@@ -1538,7 +1496,7 @@
           },
           "edges": [
           ],
-          "iId": "Node23",
+          "iId": "Node20",
           "terminal": false,
           "returnable": false,
           "editable": true
@@ -1558,32 +1516,13 @@
               "lineRange": null,
               "edges": [
                 {
-                  "source": "Node7",
-                  "target": "Node8",
+                  "source": "Node6",
+                  "target": "Node7",
                   "kind": "DEFAULT",
-                  "iId": "Edge6"
+                  "iId": "Edge5"
                 }
               ],
-              "iId": "Node7",
-              "terminal": false,
-              "returnable": false,
-              "editable": true
-            },
-            {
-              "label": "Resource Call",
-              "kind": "NETWORK_RESOURCE_CALL",
-              "formData": {
-              },
-              "lineRange": null,
-              "edges": [
-                {
-                  "source": "Node8",
-                  "target": "Node9",
-                  "kind": "DEFAULT",
-                  "iId": "Edge7"
-                }
-              ],
-              "iId": "Node8",
+              "iId": "Node6",
               "terminal": false,
               "returnable": false,
               "editable": true
@@ -1651,13 +1590,13 @@
               },
               "edges": [
                 {
-                  "source": "Node9",
-                  "target": "Node10",
+                  "source": "Node7",
+                  "target": "Node8",
                   "kind": "DEFAULT",
-                  "iId": "Edge8"
+                  "iId": "Edge6"
                 }
               ],
-              "iId": "Node9",
+              "iId": "Node7",
               "terminal": false,
               "returnable": false,
               "editable": true
@@ -1674,7 +1613,7 @@
               },
               "edges": [
               ],
-              "iId": "Node10",
+              "iId": "Node8",
               "terminal": true,
               "returnable": true,
               "editable": true
@@ -1694,13 +1633,13 @@
               "lineRange": null,
               "edges": [
                 {
-                  "source": "Node11",
-                  "target": "Node12",
+                  "source": "Node9",
+                  "target": "Node10",
                   "kind": "DEFAULT",
-                  "iId": "Edge10"
+                  "iId": "Edge8"
                 }
               ],
-              "iId": "Node11",
+              "iId": "Node9",
               "terminal": false,
               "returnable": false,
               "editable": true
@@ -1738,32 +1677,13 @@
               },
               "edges": [
                 {
-                  "source": "Node12",
-                  "target": "Node13",
+                  "source": "Node10",
+                  "target": "Node11",
                   "kind": "DEFAULT",
-                  "iId": "Edge11"
+                  "iId": "Edge9"
                 }
               ],
-              "iId": "Node12",
-              "terminal": false,
-              "returnable": false,
-              "editable": true
-            },
-            {
-              "label": "Resource Call",
-              "kind": "NETWORK_RESOURCE_CALL",
-              "formData": {
-              },
-              "lineRange": null,
-              "edges": [
-                {
-                  "source": "Node13",
-                  "target": "Node14",
-                  "kind": "DEFAULT",
-                  "iId": "Edge12"
-                }
-              ],
-              "iId": "Node13",
+              "iId": "Node10",
               "terminal": false,
               "returnable": false,
               "editable": true
@@ -1831,13 +1751,13 @@
               },
               "edges": [
                 {
-                  "source": "Node14",
-                  "target": "Node15",
+                  "source": "Node11",
+                  "target": "Node12",
                   "kind": "DEFAULT",
-                  "iId": "Edge13"
+                  "iId": "Edge10"
                 }
               ],
-              "iId": "Node14",
+              "iId": "Node11",
               "terminal": false,
               "returnable": false,
               "editable": true
@@ -1854,7 +1774,7 @@
               },
               "edges": [
               ],
-              "iId": "Node15",
+              "iId": "Node12",
               "terminal": true,
               "returnable": true,
               "editable": true
@@ -1863,6 +1783,282 @@
         }
       ],
       "label": "get doctors/[string doctorType]",
+      "iId": "Diagram0"
+    },
+    {
+      "nodes": [
+        {
+          "label": "Trigger",
+          "kind": "FUNCTION_START",
+          "formData": {
+            "Function": [
+              {
+                "index": -1,
+                "label": "Name",
+                "type": "IDENTIFIER",
+                "allowedTypes": [
+                ],
+                "value": "main",
+                "possibleValues": [
+                ],
+                "editable": true,
+                "flags": [
+                ]
+              }
+            ],
+            "Return": [
+              {
+                "index": -1,
+                "label": "Return",
+                "type": "IDENTIFIER",
+                "allowedTypes": [
+                ],
+                "value": "()",
+                "possibleValues": [
+                ],
+                "editable": true,
+                "flags": [
+                ]
+              }
+            ],
+            "Qualifiers": [
+              {
+                "index": -1,
+                "label": "Qualifier",
+                "type": "IDENTIFIER",
+                "allowedTypes": [
+                ],
+                "value": "PUBLIC",
+                "possibleValues": [
+                ],
+                "editable": true,
+                "flags": [
+                ]
+              }
+            ]
+          },
+          "lineRange": {
+            "fileName": "main.bal",
+            "startLine": 111,
+            "endLine": 120
+          },
+          "children": {
+          },
+          "edges": [
+            {
+              "source": "Node0",
+              "target": "Node1",
+              "kind": "DEFAULT",
+              "iId": "Edge0"
+            }
+          ],
+          "iId": "Node0",
+          "terminal": false,
+          "returnable": false,
+          "editable": true
+        },
+        {
+          "label": "Expression",
+          "kind": "EXPRESSION",
+          "formData": {
+            "Variables": [
+              {
+                "index": -1,
+                "label": "result",
+                "type": "INT",
+                "allowedTypes": [
+                  [
+                    "int"
+                  ]
+                ],
+                "value": "i",
+                "possibleValues": [
+                ],
+                "editable": true,
+                "flags": [
+                  "Local",
+                  "New"
+                ]
+              }
+            ]
+          },
+          "lineRange": {
+            "fileName": "main.bal",
+            "startLine": 112,
+            "endLine": 112
+          },
+          "children": {
+          },
+          "edges": [
+            {
+              "label": "Start",
+              "source": "Node1",
+              "target": "SubGraph0",
+              "kind": "IMPLICIT",
+              "iId": "Edge1"
+            },
+            {
+              "label": "Start",
+              "source": "Node1",
+              "target": "SubGraph1",
+              "kind": "IMPLICIT",
+              "iId": "Edge3"
+            },
+            {
+              "source": "Node1",
+              "target": "Node6",
+              "kind": "DEFAULT",
+              "iId": "Edge5"
+            }
+          ],
+          "iId": "Node1",
+          "terminal": false,
+          "returnable": false,
+          "editable": true
+        },
+        {
+          "label": "null",
+          "kind": "END",
+          "formData": {
+          },
+          "lineRange": null,
+          "children": {
+          },
+          "edges": [
+          ],
+          "iId": "Node6",
+          "terminal": false,
+          "returnable": false,
+          "editable": true
+        }
+      ],
+      "subgraphs": [
+        {
+          "kind": "WORKER",
+          "label": "w1",
+          "iId": "SubGraph0",
+          "nodes": [
+            {
+              "label": "null",
+              "kind": "ASYNC_START",
+              "formData": {
+              },
+              "lineRange": null,
+              "edges": [
+                {
+                  "source": "Node2",
+                  "target": "Node3",
+                  "kind": "DEFAULT",
+                  "iId": "Edge2"
+                }
+              ],
+              "iId": "Node2",
+              "terminal": false,
+              "returnable": false,
+              "editable": true
+            },
+            {
+              "label": "Expression",
+              "kind": "EXPRESSION",
+              "formData": {
+                "Variables": [
+                  {
+                    "index": -1,
+                    "label": "result",
+                    "type": "INT",
+                    "allowedTypes": [
+                      [
+                        "int"
+                      ]
+                    ],
+                    "value": "i",
+                    "possibleValues": [
+                    ],
+                    "editable": true,
+                    "flags": [
+                      "Update"
+                    ]
+                  }
+                ]
+              },
+              "lineRange": {
+                "fileName": "main.bal",
+                "startLine": 114,
+                "endLine": 114
+              },
+              "edges": [
+              ],
+              "iId": "Node3",
+              "terminal": false,
+              "returnable": false,
+              "editable": true
+            }
+          ]
+        },
+        {
+          "kind": "WORKER",
+          "label": "w2",
+          "iId": "SubGraph1",
+          "nodes": [
+            {
+              "label": "null",
+              "kind": "ASYNC_START",
+              "formData": {
+              },
+              "lineRange": null,
+              "edges": [
+                {
+                  "source": "Node4",
+                  "target": "Node5",
+                  "kind": "DEFAULT",
+                  "iId": "Edge4"
+                }
+              ],
+              "iId": "Node4",
+              "terminal": false,
+              "returnable": false,
+              "editable": true
+            },
+            {
+              "label": "Expression",
+              "kind": "EXPRESSION",
+              "formData": {
+                "Variables": [
+                  {
+                    "index": -1,
+                    "label": "result",
+                    "type": "INT",
+                    "allowedTypes": [
+                      [
+                        "int"
+                      ]
+                    ],
+                    "value": "i",
+                    "possibleValues": [
+                    ],
+                    "editable": true,
+                    "flags": [
+                      "Update"
+                    ]
+                  }
+                ]
+              },
+              "lineRange": {
+                "fileName": "main.bal",
+                "startLine": 118,
+                "endLine": 118
+              },
+              "edges": [
+              ],
+              "iId": "Node5",
+              "terminal": false,
+              "returnable": false,
+              "editable": true
+            }
+          ]
+        }
+      ],
+      "label": "main",
       "iId": "Diagram0"
     }
   ]

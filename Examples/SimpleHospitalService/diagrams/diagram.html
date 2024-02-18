@@ -34,21 +34,19 @@
         Node7 x-.-x Node2
         Node8["fa:fa-envelope<br><strong>New XML</strong>"]
         Node8 ==> Node9
-        Node9["fa:fa-right-from-bracket fa:fa-network-wired<br><strong>Resource Call</strong>"]
+        Node9["fa:fa-right-from-bracket fa:fa-network-wired<br><strong>Remote Call</strong><br>http post"]
         Node9 ==> Node10
-        Node10["fa:fa-right-from-bracket fa:fa-network-wired<br><strong>Remote Call</strong><br>http post"]
+        Node10["fa:fa-code fa:fa-right-left { }<br><strong>Data Conversion</strong>"]
         Node10 ==> Node11
-        Node11["fa:fa-code fa:fa-right-left { }<br><strong>Data Conversion</strong>"]
+        Node11["fa:fa-envelope-circle-check<br><strong>Data Schema Validation</strong>"]
         Node11 ==> Node12
-        Node12["fa:fa-envelope-circle-check<br><strong>Data Schema Validation</strong>"]
-        Node12 ==> Node13
-        Node13["fa:fa-timeline (fa:fa-turn-up)<br><strong>Data Mapping Activity</strong>"]
-        Node13 x-.-x Node2
+        Node12["fa:fa-timeline (fa:fa-turn-up)<br><strong>Data Mapping Activity</strong>"]
+        Node12 x-.-x Node2
         Node1 ==> |Then|Node3
         Node1 ==> |Else|Node8
         Node2(("fa:fa-code-branch"))
-        Node2 x-.-x Node14
-        Node14((("fa:fa-stop")))
+        Node2 x-.-x Node13
+        Node13((("fa:fa-stop")))
     </div>
 </div>
 </div>
@@ -61,59 +59,81 @@
         Node0["fa:fa-network-wired fa:fa-arrow-right-to-bracket<br><strong>Network Event</strong>"]
         Node0 ==> Node1
         Node1["fa:fa-code-merge<br><strong>If</strong>"]
-        Node3["fa:fa-right-from-bracket fa:fa-network-wired<br><strong>Resource Call</strong>"]
+        Node3["fa:fa-right-from-bracket fa:fa-network-wired<br><strong>Remote Call</strong><br>http get"]
         Node3 ==> Node4
-        Node4["fa:fa-right-from-bracket fa:fa-network-wired<br><strong>Remote Call</strong><br>http get"]
-        Node4 ==> Node5
-        Node5["fa:fa-turn-up<br><strong>Return</strong>"]
-        Node5 x-.-x Node2
-        Node6["fa:fa-clone<br><strong>Fork</strong>"]
-        Node6 --> |Start|SubGraph0
-        Node6 --> |Start|SubGraph1
-        Node6 ==> Node16
-        Node16["fa:fa-envelope<br><strong>New Array</strong>"]
+        Node4["fa:fa-turn-up<br><strong>Return</strong>"]
+        Node4 x-.-x Node2
+        Node5["fa:fa-clone<br><strong>Fork</strong>"]
+        Node5 --> |Start|SubGraph0
+        Node5 --> |Start|SubGraph1
+        Node5 ==> Node13
+        Node13["fa:fa-envelope<br><strong>New Array</strong>"]
+        Node13 ==> Node14
+        Node14["fa:fa-clock<br><strong>Wait for All</strong>"]
+        Node14 ==> Node15
+        Node15["fa:fa-gear<br><strong>Mapping Value Operation</strong>"]
+        Node15 ==> Node16
+        Node16["fa:fa-gear<br><strong>Mapping Value Operation</strong>"]
         Node16 ==> Node17
-        Node17["fa:fa-clock<br><strong>Wait for All</strong>"]
+        Node17["fa:fa-gear<br><strong>Array Operation</strong>"]
         Node17 ==> Node18
-        Node18["fa:fa-gear<br><strong>Mapping Value Operation</strong>"]
+        Node18["fa:fa-gear<br><strong>Array Operation</strong>"]
         Node18 ==> Node19
-        Node19["fa:fa-gear<br><strong>Mapping Value Operation</strong>"]
-        Node19 ==> Node20
-        Node20["fa:fa-gear<br><strong>Array Operation</strong>"]
-        Node20 ==> Node21
-        Node21["fa:fa-gear<br><strong>Array Operation</strong>"]
-        Node21 ==> Node22
-        Node22["fa:fa-turn-up<br><strong>Return</strong>"]
-        Node22 x-.-x Node2
+        Node19["fa:fa-turn-up<br><strong>Return</strong>"]
+        Node19 x-.-x Node2
         Node1 ==> |Then|Node3
-        Node1 ==> |Else|Node6
+        Node1 ==> |Else|Node5
         Node2(("fa:fa-code-branch"))
-        Node2 x-.-x Node23
-        Node23((("fa:fa-stop")))
+        Node2 x-.-x Node20
+        Node20((("fa:fa-stop")))
         subgraph SubGraph0[pineValley]
         direction TB
-        Node7(("fa:fa-play"))
+        Node6(("fa:fa-play"))
+        Node6 ==> Node7
+        Node7["fa:fa-right-from-bracket fa:fa-network-wired<br><strong>Remote Call</strong><br>http get"]
         Node7 ==> Node8
-        Node8["fa:fa-right-from-bracket fa:fa-network-wired<br><strong>Resource Call</strong>"]
-        Node8 ==> Node9
-        Node9["fa:fa-right-from-bracket fa:fa-network-wired<br><strong>Remote Call</strong><br>http get"]
-        Node9 ==> Node10
-        Node10["fa:fa-arrow-up-right-from-square<br><strong>Async Result</strong>"]
+        Node8["fa:fa-arrow-up-right-from-square<br><strong>Async Result</strong>"]
         end
-        SubGraph0 -.-> Node17
+        SubGraph0 -.-> Node14
         subgraph SubGraph1[grandOak]
         direction TB
-        Node11(("fa:fa-play"))
+        Node9(("fa:fa-play"))
+        Node9 ==> Node10
+        Node10["fa:fa-envelope<br><strong>New JSON</strong>"]
+        Node10 ==> Node11
+        Node11["fa:fa-right-from-bracket fa:fa-network-wired<br><strong>Remote Call</strong><br>http post"]
         Node11 ==> Node12
-        Node12["fa:fa-envelope<br><strong>New JSON</strong>"]
-        Node12 ==> Node13
-        Node13["fa:fa-right-from-bracket fa:fa-network-wired<br><strong>Resource Call</strong>"]
-        Node13 ==> Node14
-        Node14["fa:fa-right-from-bracket fa:fa-network-wired<br><strong>Remote Call</strong><br>http post"]
-        Node14 ==> Node15
-        Node15["fa:fa-arrow-up-right-from-square<br><strong>Async Result</strong>"]
+        Node12["fa:fa-arrow-up-right-from-square<br><strong>Async Result</strong>"]
         end
-        SubGraph1 -.-> Node17
+        SubGraph1 -.-> Node14
+    </div>
+</div>
+</div>
+<div class="diagram forms show"
+">
+<div class="card card-body">
+    <h2>main</h2>
+    <div class="mermaid">
+        flowchart TB
+        Node0["fa:fa-gears<br><strong>Trigger</strong>"]
+        Node0 ==> Node1
+        Node1["fa:fa-gears<br><strong>Expression</strong>"]
+        Node1 --> |Start|SubGraph0
+        Node1 --> |Start|SubGraph1
+        Node1 ==> Node6
+        Node6((("fa:fa-stop")))
+        subgraph SubGraph0[w1]
+        direction TB
+        Node2(("fa:fa-play"))
+        Node2 ==> Node3
+        Node3["fa:fa-gears<br><strong>Expression</strong>"]
+        end
+        subgraph SubGraph1[w2]
+        direction TB
+        Node4(("fa:fa-play"))
+        Node4 ==> Node5
+        Node5["fa:fa-gears<br><strong>Expression</strong>"]
+        end
     </div>
 </div>
 </div>

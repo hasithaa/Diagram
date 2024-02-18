@@ -108,3 +108,14 @@ type PineValleyReq record {|
 |};
 
 type Result DoctorType[];
+
+public function main() {
+    int i = 0;
+    worker w1 {
+        i = i + 1;
+        
+    }
+    worker w2 {
+        i = i + 2;
+    }
+}

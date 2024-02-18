@@ -72,9 +72,8 @@ public class CodeVisitor extends NodeVisitor {
     private final Stack<StatementNode> stmtNodeStack = new Stack<>();
     private final Stack<Symbol> symbolStack = new Stack<>();
     private final List<Symbol> dataMapping = new ArrayList<>();
-    private String moduleID;
-
     private final Map<WorkerSymbol, Subgraph> workerSymbols = new HashMap<>();
+    private String moduleID;
 
     public CodeVisitor(SemanticModel semanticModel, String name) {
         this.semanticModel = semanticModel;
@@ -193,15 +192,19 @@ public class CodeVisitor extends NodeVisitor {
         forkNode.lineRange = stNode.lineRange();
         forkNode.label = "Fork";
         for (NamedWorkerDeclarationNode workerDeclaration : stNode.namedWorkerDeclarations()) {
-            Subgraph subgraph = modelBuilder.startSubGraph(workerDeclaration.workerName().text());
-            semanticModel.symbol(workerDeclaration).ifPresent(symbol -> {
-                if (symbol instanceof WorkerSymbol workerSymbol) {
-                    workerSymbols.put(workerSymbol, subgraph);
-                }
-            });
             workerDeclaration.accept(this);
-            modelBuilder.endSubGraph();
         }
+    }
+
+    public void visit(NamedWorkerDeclarationNode stNode) {
+        Subgraph subgraph = modelBuilder.startSubGraph(stNode.workerName().text());
+        semanticModel.symbol(stNode).ifPresent(symbol -> {
+            if (symbol instanceof WorkerSymbol workerSymbol) {
+                workerSymbols.put(workerSymbol, subgraph);
+            }
+        });
+        super.visit(stNode);
+        modelBuilder.endSubGraph();
     }
 
     public void visit(VariableDeclarationNode stNode) {
@@ -469,7 +472,7 @@ public class CodeVisitor extends NodeVisitor {
             Node node = modelBuilder.addNewNode(Node.Kind.NETWORK_RESOURCE_CALL);
             node.label = "Resource Call";
             if (stNode.kind() == SyntaxKind.REMOTE_METHOD_CALL_ACTION) {
-                node = modelBuilder.addNewNode(Node.Kind.NETWORK_REMOTE_CALL);
+                node.kind = Node.Kind.NETWORK_REMOTE_CALL;
                 node.label = "Remote Call";
             }
             node.subLabel = methodSymbol.getModule().get().getName().get() + " " + methodSymbol.getName().orElse(
