@@ -168,7 +168,6 @@
                     </tr>
                 </table>
                 "]
-                Diagram0Node4 x-.-x Diagram0Node2
                 Diagram0Node5["fa:fa-clone<br><strong>Fork</strong>"]
                 Diagram0Node5 --> |Start|Diagram0SubGraph0
                 Diagram0Node5 --> |Start|Diagram0SubGraph1
@@ -297,12 +296,8 @@
                     </tr>
                 </table>
                 "]
-                Diagram0Node19 x-.-x Diagram0Node2
                 Diagram0Node1 ==> |Then|Diagram0Node3
                 Diagram0Node1 ==> |Else|Diagram0Node5
-                Diagram0Node2(("fa:fa-code-branch"))
-                Diagram0Node2 x-.-x Diagram0Node20
-                Diagram0Node20((("fa:fa-stop")))
                 subgraph Diagram0SubGraph0[pineValley]
                 direction TB
                 Diagram0Node6(("fa:fa-play"))
@@ -591,57 +586,7 @@
                     </tr>
                 </table>
                 "]
-                Diagram0Node5 x-.-x Diagram0Node4
                 Diagram0Node3 ==> |Then|Diagram0Node5
-                Diagram0Node4(("fa:fa-code-branch"))
-                Diagram0Node4 x-.-x Diagram0Node6
-                Diagram0Node6["fa:fa-code-merge<br><strong>If</strong><br>
-                <table class="table">
-                    <tr>
-                        <td><strong>Expressions</strong></td>
-                    </tr>
-                    <tr>
-                        <td>Condition</td>
-                        <td>
-                            <pre><code>j.status == &amp;quot;Unknown&amp;quot; </code></pre>
-                        </td>
-                    </tr>
-                </table>
-                "]
-                Diagram0Node8["fa:fa-code-merge<br><strong>If</strong><br>
-                <table class="table">
-                    <tr>
-                        <td><strong>Expressions</strong></td>
-                    </tr>
-                    <tr>
-                        <td>Condition</td>
-                        <td>
-                            <pre><code>j.status == &amp;quot;New&amp;quot; </code></pre>
-                        </td>
-                    </tr>
-                </table>
-                "]
-                Diagram0Node8 x-.-x Diagram0Node9
-                Diagram0Node9(("fa:fa-code-branch"))
-                Diagram0Node9 x-.-x Diagram0Node7
-                Diagram0Node6 x-.-x Diagram0Node7
-                Diagram0Node6 x-.-x |Else|Diagram0Node8
-                Diagram0Node7(("fa:fa-code-branch"))
-                Diagram0Node7 x-.-x Diagram0Node10
-                Diagram0Node10["fa:fa-cogs<br><strong>println</strong><br>
-                <table class="table">
-                    <tr>
-                        <td><strong>Expressions</strong></td>
-                    </tr>
-                    <tr>
-                        <td>Arg</td>
-                        <td>
-                            <pre><code>&amp;quot;Data Submit&amp;quot;</code></pre>
-                        </td>
-                    </tr>
-                </table>
-                "]
-                Diagram0Node10 x-.-x Diagram0Node11
                 Diagram0Node11["fa:fa-envelope fa:fa-turn-up<br><strong>New JSON</strong><br>
                 <table class="table">
                     <tr>
@@ -655,8 +600,6 @@
                     </tr>
                 </table>
                 "]
-                Diagram0Node11 x-.-x Diagram0Node12
-                Diagram0Node12((("fa:fa-stop")))
             </div>
         </div>
     </div>

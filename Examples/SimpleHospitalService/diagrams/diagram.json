@@ -125,6 +125,7 @@
           "iId": "Diagram0Node0",
           "terminal": false,
           "returnable": false,
+          "scope": "default",
           "editable": true
         },
         {
@@ -213,6 +214,7 @@
                 "iId": "Diagram0Node3",
                 "terminal": false,
                 "returnable": false,
+                "scope": "scope0",
                 "editable": true
               },
               {
@@ -399,6 +401,7 @@
                 "iId": "Diagram0Node4",
                 "terminal": false,
                 "returnable": false,
+                "scope": "scope0",
                 "editable": true
               },
               {
@@ -459,6 +462,7 @@
                 "iId": "Diagram0Node5",
                 "terminal": false,
                 "returnable": false,
+                "scope": "scope0",
                 "editable": true
               },
               {
@@ -564,6 +568,7 @@
                 "iId": "Diagram0Node6",
                 "terminal": false,
                 "returnable": false,
+                "scope": "scope0",
                 "editable": true
               },
               {
@@ -599,6 +604,7 @@
                 "iId": "Diagram0Node7",
                 "terminal": true,
                 "returnable": true,
+                "scope": "scope0",
                 "editable": true
               }
             ],
@@ -666,6 +672,7 @@
                 "iId": "Diagram0Node8",
                 "terminal": false,
                 "returnable": false,
+                "scope": "scope1",
                 "editable": true
               },
               {
@@ -865,6 +872,7 @@
                 "iId": "Diagram0Node9",
                 "terminal": false,
                 "returnable": false,
+                "scope": "scope1",
                 "editable": true
               },
               {
@@ -1011,6 +1019,7 @@
                 "iId": "Diagram0Node10",
                 "terminal": false,
                 "returnable": false,
+                "scope": "scope1",
                 "editable": true
               },
               {
@@ -1071,6 +1080,7 @@
                 "iId": "Diagram0Node11",
                 "terminal": false,
                 "returnable": false,
+                "scope": "scope1",
                 "editable": true
               },
               {
@@ -1151,6 +1161,7 @@
                 "iId": "Diagram0Node12",
                 "terminal": true,
                 "returnable": true,
+                "scope": "scope1",
                 "editable": true
               }
             ]
@@ -1174,6 +1185,7 @@
           "iId": "Diagram0Node1",
           "terminal": false,
           "returnable": false,
+          "scope": "default",
           "editable": true
         }
       ],
@@ -1306,6 +1318,7 @@
           "iId": "Diagram0Node0",
           "terminal": false,
           "returnable": false,
+          "scope": "default",
           "editable": true
         },
         {
@@ -1493,6 +1506,7 @@
                 "iId": "Diagram0Node3",
                 "terminal": false,
                 "returnable": false,
+                "scope": "scope2",
                 "editable": true
               },
               {
@@ -1528,6 +1542,7 @@
                 "iId": "Diagram0Node4",
                 "terminal": true,
                 "returnable": true,
+                "scope": "scope2",
                 "editable": true
               }
             ],
@@ -1569,6 +1584,7 @@
                 "iId": "Diagram0Node5",
                 "terminal": false,
                 "returnable": false,
+                "scope": "scope3",
                 "editable": true
               },
               {
@@ -1630,6 +1646,7 @@
                 "iId": "Diagram0Node13",
                 "terminal": false,
                 "returnable": false,
+                "scope": "scope3",
                 "editable": true
               },
               {
@@ -1675,6 +1692,7 @@
                 "iId": "Diagram0Node14",
                 "terminal": false,
                 "returnable": false,
+                "scope": "scope3",
                 "editable": true
               },
               {
@@ -1751,6 +1769,7 @@
                 "iId": "Diagram0Node15",
                 "terminal": false,
                 "returnable": false,
+                "scope": "scope3",
                 "editable": true
               },
               {
@@ -1827,6 +1846,7 @@
                 "iId": "Diagram0Node16",
                 "terminal": false,
                 "returnable": false,
+                "scope": "scope3",
                 "editable": true
               },
               {
@@ -1868,6 +1888,7 @@
                 "iId": "Diagram0Node17",
                 "terminal": false,
                 "returnable": false,
+                "scope": "scope3",
                 "editable": true
               },
               {
@@ -1909,6 +1930,7 @@
                 "iId": "Diagram0Node18",
                 "terminal": false,
                 "returnable": false,
+                "scope": "scope3",
                 "editable": true
               },
               {
@@ -1939,10 +1961,12 @@
                 "children": {
                 },
                 "edges": [
+
                 ],
                 "iId": "Diagram0Node19",
                 "terminal": true,
                 "returnable": true,
+                "scope": "scope3",
                 "editable": true
               }
             ]
@@ -1966,6 +1990,7 @@
           "iId": "Diagram0Node1",
           "terminal": false,
           "returnable": false,
+          "scope": "default",
           "editable": true
         }
       ],
@@ -1992,6 +2017,7 @@
               "iId": "Diagram0Node6",
               "terminal": false,
               "returnable": false,
+              "scope": "scope4",
               "editable": true
             },
             {
@@ -2150,6 +2176,7 @@
               "iId": "Diagram0Node7",
               "terminal": false,
               "returnable": false,
+              "scope": "scope4",
               "editable": true
             },
             {
@@ -2182,6 +2209,7 @@
               "iId": "Diagram0Node8",
               "terminal": true,
               "returnable": true,
+              "scope": "scope4",
               "editable": true
             }
           ]
@@ -2208,6 +2236,7 @@
               "iId": "Diagram0Node9",
               "terminal": false,
               "returnable": false,
+              "scope": "scope5",
               "editable": true
             },
             {
@@ -2267,6 +2296,7 @@
               "iId": "Diagram0Node10",
               "terminal": false,
               "returnable": false,
+              "scope": "scope5",
               "editable": true
             },
             {
@@ -2464,6 +2494,7 @@
               "iId": "Diagram0Node11",
               "terminal": false,
               "returnable": false,
+              "scope": "scope5",
               "editable": true
             },
             {
@@ -2496,6 +2527,7 @@
               "iId": "Diagram0Node12",
               "terminal": true,
               "returnable": true,
+              "scope": "scope5",
               "editable": true
             }
           ]
@@ -2574,6 +2606,7 @@
           "iId": "Diagram0Node0",
           "terminal": false,
           "returnable": false,
+          "scope": "default",
           "editable": true
         },
         {
@@ -2635,6 +2668,7 @@
           "iId": "Diagram0Node1",
           "terminal": false,
           "returnable": false,
+          "scope": "default",
           "editable": true
         },
         {
@@ -2695,6 +2729,7 @@
           "iId": "Diagram0Node2",
           "terminal": false,
           "returnable": false,
+          "scope": "default",
           "editable": true
         },
         {
@@ -2821,6 +2856,7 @@
                 "iId": "Diagram0Node5",
                 "terminal": false,
                 "returnable": false,
+                "scope": "scope6",
                 "editable": true
               }
             ],
@@ -2838,10 +2874,12 @@
                 "children": {
                 },
                 "edges": [
+
                 ],
                 "iId": "Diagram0Node6",
                 "terminal": true,
                 "returnable": true,
+                "scope": "scope7",
                 "editable": true
               }
             ]
@@ -2865,6 +2903,7 @@
           "iId": "Diagram0Node3",
           "terminal": false,
           "returnable": false,
+          "scope": "default",
           "editable": true
         },
         {
@@ -2890,6 +2929,7 @@
           "iId": "Diagram0Node4",
           "terminal": false,
           "returnable": false,
+          "scope": "default",
           "editable": true
         },
         {
@@ -2989,6 +3029,7 @@
           "iId": "Diagram0Node7",
           "terminal": false,
           "returnable": false,
+          "scope": "default",
           "editable": true
         },
         {
@@ -3004,6 +3045,7 @@
           "iId": "Diagram0Node8",
           "terminal": false,
           "returnable": false,
+          "scope": "default",
           "editable": true
         }
       ],

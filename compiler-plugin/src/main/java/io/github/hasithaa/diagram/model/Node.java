@@ -43,6 +43,7 @@ public class Node implements JsonElement, MermaidElement, Linkable {
     List<Edge> incomingEdges = new ArrayList<>();
     private Map<String, List<Node>> children = null;
     private Map<String, Subgraph> subgraphMap = null;
+    private String scope = "default";
 
     Node(String iId) {
         this.iId = iId;
@@ -51,6 +52,14 @@ public class Node implements JsonElement, MermaidElement, Linkable {
     @Override
     public String getIId() {
         return iId;
+    }
+
+    public String getScope() {
+        return scope;
+    }
+
+    protected void setScope(String scope) {
+        this.scope = scope;
     }
 
     @Override
@@ -121,6 +130,7 @@ public class Node implements JsonElement, MermaidElement, Linkable {
         json.append(ws).append("  \"iId\": \"").append(iId).append("\",\n");
         json.append(ws).append("  \"terminal\": ").append(terminal).append(",\n");
         json.append(ws).append("  \"returnable\": ").append(returnable).append(",\n");
+        json.append(ws).append("  \"scope\": \"").append(scope).append("\",\n");
         json.append(ws).append("  \"editable\": ").append(editable).append("\n");
         json.append(ws).append("}");
         return json.toString();

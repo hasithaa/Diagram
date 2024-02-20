@@ -29,7 +29,8 @@ public class ModelBuilder {
     int edgeCount = 0;
     int nodeCount = 0;
     int subGraphCount = 0;
-    Stack<List<Node>> currentNodeList;
+    int scopeCount = 0;
+    Stack<Scope> currentNodeList;
     Diagram currentDiagram = null;
 
     ModelBuilder() {
@@ -68,7 +69,7 @@ public class ModelBuilder {
         edgeCount = 0;
         subGraphCount = 0;
         currentNodeList = new Stack<>();
-        currentNodeList.push(diagram.nodes);
+        currentNodeList.push(new Scope("default", diagram.nodes));
         return diagram;
     }
 
@@ -79,11 +80,12 @@ public class ModelBuilder {
     }
 
     public void addNode(Node node, boolean partial) {
-        List<Node> nodes = currentNodeList.peek();
+        List<Node> nodes = currentNodeList.peek().nodes;
         if (!nodes.isEmpty() && !partial) {
             Node lastNode = nodes.get(nodes.size() - 1);
             addEdge(lastNode, node);
         }
+        node.setScope(currentNodeList.peek().scope);
         nodes.add(node);
     }
 
@@ -120,14 +122,14 @@ public class ModelBuilder {
                                          Subgraph.SubgraphKind.WORKER);
         subGraph.label = label;
         getCurrentDiagram().subgraphs.add(subGraph);
-        if (!currentNodeList.peek().isEmpty()) {
-            Node lastElement = currentNodeList.peek().get(currentNodeList.peek().size() - 1);
+        if (!currentNodeList.peek().nodes.isEmpty()) {
+            Node lastElement = currentNodeList.peek().nodes.get(currentNodeList.peek().nodes.size() - 1);
             lastElement.getSubgraphMap().put(label, subGraph);
             Edge sourceEdge = addEdge(lastElement, subGraph);
             sourceEdge.kind = Edge.EdgeKind.IMPLICIT;
             sourceEdge.label = "Start";
         }
-        currentNodeList.push(subGraph.nodes);
+        currentNodeList.push(new Scope("scope" + scopeCount++, subGraph.nodes));
         addNewNode(Node.Kind.ASYNC_START);
         return subGraph;
     }
@@ -138,15 +140,15 @@ public class ModelBuilder {
 
     public void startChildFlow(String label) {
         List<Node> children = new ArrayList<>();
-        if (!currentNodeList.peek().isEmpty()) {
-            Node lastElement = currentNodeList.peek().get(currentNodeList.peek().size() - 1);
+        if (!currentNodeList.peek().nodes.isEmpty()) {
+            Node lastElement = currentNodeList.peek().nodes.get(currentNodeList.peek().nodes.size() - 1);
             lastElement.getChildren().put(label, children);
         }
-        currentNodeList.push(children);
+        currentNodeList.push(new Scope("scope" + scopeCount++, children));
     }
 
     public void endChildFlow(Node source, Node target, String label) {
-        List<Node> nodes = currentNodeList.pop();
+        List<Node> nodes = currentNodeList.pop().nodes;
         if (!nodes.isEmpty()) {
             Node firstElement = nodes.get(0);
             Edge sourceEdge = addEdge(source, firstElement);
@@ -171,7 +173,7 @@ public class ModelBuilder {
     }
 
     public void addFormData(String key, FormData formData) {
-        List<Node> peek = currentNodeList.peek();
+        List<Node> peek = currentNodeList.peek().nodes;
         if (!peek.get(peek.size() - 1).formData.containsKey(key)) {
             peek.get(peek.size() - 1).formData.put(key, new ArrayList<>());
         }
@@ -181,5 +183,8 @@ public class ModelBuilder {
 
     public void setLabel(String name) {
         this.model.setLabel(name);
+    }
+
+    record Scope(String scope, List<Node> nodes) {
     }
 }

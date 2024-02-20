@@ -125,6 +125,7 @@
           "iId": "Diagram0Node0",
           "terminal": false,
           "returnable": false,
+          "scope": "default",
           "editable": true
         },
         {
@@ -312,6 +313,7 @@
                 "iId": "Diagram0Node3",
                 "terminal": false,
                 "returnable": false,
+                "scope": "scope0",
                 "editable": true
               },
               {
@@ -342,16 +344,12 @@
                 "children": {
                 },
                 "edges": [
-                  {
-                    "source": "Diagram0Node4",
-                    "target": "Diagram0Node2",
-                    "kind": "UNREACHABLE",
-                    "iId": "Diagram0Edge3"
-                  }
+
                 ],
                 "iId": "Diagram0Node4",
                 "terminal": true,
                 "returnable": true,
+                "scope": "scope0",
                 "editable": true
               }
             ],
@@ -393,6 +391,7 @@
                 "iId": "Diagram0Node5",
                 "terminal": false,
                 "returnable": false,
+                "scope": "scope1",
                 "editable": true
               },
               {
@@ -454,6 +453,7 @@
                 "iId": "Diagram0Node13",
                 "terminal": false,
                 "returnable": false,
+                "scope": "scope1",
                 "editable": true
               },
               {
@@ -499,6 +499,7 @@
                 "iId": "Diagram0Node14",
                 "terminal": false,
                 "returnable": false,
+                "scope": "scope1",
                 "editable": true
               },
               {
@@ -559,6 +560,7 @@
                 "iId": "Diagram0Node15",
                 "terminal": false,
                 "returnable": false,
+                "scope": "scope1",
                 "editable": true
               },
               {
@@ -619,6 +621,7 @@
                 "iId": "Diagram0Node16",
                 "terminal": false,
                 "returnable": false,
+                "scope": "scope1",
                 "editable": true
               },
               {
@@ -660,6 +663,7 @@
                 "iId": "Diagram0Node17",
                 "terminal": false,
                 "returnable": false,
+                "scope": "scope1",
                 "editable": true
               },
               {
@@ -701,6 +705,7 @@
                 "iId": "Diagram0Node18",
                 "terminal": false,
                 "returnable": false,
+                "scope": "scope1",
                 "editable": true
               },
               {
@@ -731,16 +736,12 @@
                 "children": {
                 },
                 "edges": [
-                  {
-                    "source": "Diagram0Node19",
-                    "target": "Diagram0Node2",
-                    "kind": "UNREACHABLE",
-                    "iId": "Diagram0Edge21"
-                  }
+
                 ],
                 "iId": "Diagram0Node19",
                 "terminal": true,
                 "returnable": true,
+                "scope": "scope1",
                 "editable": true
               }
             ]
@@ -764,46 +765,7 @@
           "iId": "Diagram0Node1",
           "terminal": false,
           "returnable": false,
-          "editable": true
-        },
-        {
-          "label": "null",
-          "kind": "KONNECTOR",
-          "formData": {
-          },
-          "lineRange": {
-            "fileName": "main.bal",
-            "startLine": 27,
-            "endLine": 52
-          },
-          "children": {
-          },
-          "edges": [
-            {
-              "source": "Diagram0Node2",
-              "target": "Diagram0Node20",
-              "kind": "UNREACHABLE",
-              "iId": "Diagram0Edge22"
-            }
-          ],
-          "iId": "Diagram0Node2",
-          "terminal": false,
-          "returnable": false,
-          "editable": true
-        },
-        {
-          "label": "null",
-          "kind": "END",
-          "formData": {
-          },
-          "lineRange": null,
-          "children": {
-          },
-          "edges": [
-          ],
-          "iId": "Diagram0Node20",
-          "terminal": false,
-          "returnable": false,
+          "scope": "default",
           "editable": true
         }
       ],
@@ -830,6 +792,7 @@
               "iId": "Diagram0Node6",
               "terminal": false,
               "returnable": false,
+              "scope": "scope2",
               "editable": true
             },
             {
@@ -988,6 +951,7 @@
               "iId": "Diagram0Node7",
               "terminal": false,
               "returnable": false,
+              "scope": "scope2",
               "editable": true
             },
             {
@@ -1020,6 +984,7 @@
               "iId": "Diagram0Node8",
               "terminal": true,
               "returnable": true,
+              "scope": "scope2",
               "editable": true
             }
           ]
@@ -1046,6 +1011,7 @@
               "iId": "Diagram0Node9",
               "terminal": false,
               "returnable": false,
+              "scope": "scope3",
               "editable": true
             },
             {
@@ -1105,6 +1071,7 @@
               "iId": "Diagram0Node10",
               "terminal": false,
               "returnable": false,
+              "scope": "scope3",
               "editable": true
             },
             {
@@ -1302,6 +1269,7 @@
               "iId": "Diagram0Node11",
               "terminal": false,
               "returnable": false,
+              "scope": "scope3",
               "editable": true
             },
             {
@@ -1334,6 +1302,7 @@
               "iId": "Diagram0Node12",
               "terminal": true,
               "returnable": true,
+              "scope": "scope3",
               "editable": true
             }
           ]
@@ -1466,6 +1435,7 @@
           "iId": "Diagram0Node0",
           "terminal": false,
           "returnable": false,
+          "scope": "default",
           "editable": true
         },
         {
@@ -1626,6 +1596,7 @@
           "iId": "Diagram0Node1",
           "terminal": false,
           "returnable": false,
+          "scope": "default",
           "editable": true
         },
         {
@@ -1825,6 +1796,7 @@
           "iId": "Diagram0Node2",
           "terminal": false,
           "returnable": false,
+          "scope": "default",
           "editable": true
         },
         {
@@ -1883,16 +1855,12 @@
                 "children": {
                 },
                 "edges": [
-                  {
-                    "source": "Diagram0Node5",
-                    "target": "Diagram0Node4",
-                    "kind": "UNREACHABLE",
-                    "iId": "Diagram0Edge4"
-                  }
+
                 ],
                 "iId": "Diagram0Node5",
                 "terminal": true,
                 "returnable": true,
+                "scope": "scope4",
                 "editable": true
               }
             ]
@@ -1909,275 +1877,10 @@
           "iId": "Diagram0Node3",
           "terminal": false,
           "returnable": false,
+          "scope": "default",
           "editable": true
         },
-        {
-          "label": "null",
-          "kind": "KONNECTOR",
-          "formData": {
-          },
-          "lineRange": {
-            "fileName": "main.bal",
-            "startLine": 59,
-            "endLine": 61
-          },
-          "children": {
-          },
-          "edges": [
-            {
-              "source": "Diagram0Node4",
-              "target": "Diagram0Node6",
-              "kind": "UNREACHABLE",
-              "iId": "Diagram0Edge5"
-            }
-          ],
-          "iId": "Diagram0Node4",
-          "terminal": false,
-          "returnable": false,
-          "editable": true
-        },
-        {
-          "label": "If",
-          "kind": "IF",
-          "formData": {
-            "Expressions": [
-              {
-                "index": -1,
-                "label": "Condition",
-                "type": "BOOLEAN",
-                "allowedTypes": [
-                ],
-                "value": "j.status == \"Unknown\" ",
-                "possibleValues": [
-                ],
-                "editable": true,
-                "flags": [
-                ]
-              }
-            ]
-          },
-          "lineRange": {
-            "fileName": "main.bal",
-            "startLine": 62,
-            "endLine": 66
-          },
-          "children": {
-            "Then": [
-            ],
-            "Else": [
-              {
-                "label": "If",
-                "kind": "IF",
-                "formData": {
-                  "Expressions": [
-                    {
-                      "index": -1,
-                      "label": "Condition",
-                      "type": "BOOLEAN",
-                      "allowedTypes": [
-                      ],
-                      "value": "j.status == \"New\" ",
-                      "possibleValues": [
-                      ],
-                      "editable": true,
-                      "flags": [
-                      ]
-                    }
-                  ]
-                },
-                "lineRange": {
-                  "fileName": "main.bal",
-                  "startLine": 64,
-                  "endLine": 66
-                },
-                "children": {
-                  "Then": [
-                  ]
-                },
-                "edges": [
-                  {
-                    "source": "Diagram0Node8",
-                    "target": "Diagram0Node9",
-                    "kind": "UNREACHABLE",
-                    "iId": "Diagram0Edge7"
-                  }
-                ],
-                "iId": "Diagram0Node8",
-                "terminal": false,
-                "returnable": false,
-                "editable": true
-              },
-              {
-                "label": "null",
-                "kind": "KONNECTOR",
-                "formData": {
-                },
-                "lineRange": {
-                  "fileName": "main.bal",
-                  "startLine": 64,
-                  "endLine": 66
-                },
-                "children": {
-                },
-                "edges": [
-                  {
-                    "source": "Diagram0Node9",
-                    "target": "Diagram0Node7",
-                    "kind": "UNREACHABLE",
-                    "iId": "Diagram0Edge9"
-                  }
-                ],
-                "iId": "Diagram0Node9",
-                "terminal": false,
-                "returnable": false,
-                "editable": true
-              }
-            ]
-          },
-          "edges": [
-            {
-              "source": "Diagram0Node6",
-              "target": "Diagram0Node7",
-              "kind": "UNREACHABLE",
-              "iId": "Diagram0Edge6"
-            },
-            {
-              "label": "Else",
-              "source": "Diagram0Node6",
-              "target": "Diagram0Node8",
-              "kind": "UNREACHABLE",
-              "iId": "Diagram0Edge8"
-            }
-          ],
-          "iId": "Diagram0Node6",
-          "terminal": false,
-          "returnable": false,
-          "editable": true
-        },
-        {
-          "label": "null",
-          "kind": "KONNECTOR",
-          "formData": {
-          },
-          "lineRange": {
-            "fileName": "main.bal",
-            "startLine": 62,
-            "endLine": 66
-          },
-          "children": {
-          },
-          "edges": [
-            {
-              "source": "Diagram0Node7",
-              "target": "Diagram0Node10",
-              "kind": "UNREACHABLE",
-              "iId": "Diagram0Edge10"
-            }
-          ],
-          "iId": "Diagram0Node7",
-          "terminal": false,
-          "returnable": false,
-          "editable": true
-        },
-        {
-          "label": "println",
-          "kind": "LIBRARY_FUNCTION",
-          "formData": {
-            "Params": [
-              {
-                "index": -1,
-                "label": "values",
-                "type": "IDENTIFIER",
-                "allowedTypes": [
-                ],
-                "value": "ballerina/io:1.6.0:Printable[]",
-                "possibleValues": [
-                ],
-                "editable": true,
-                "flags": [
-                  "rest"
-                ]
-              }
-            ],
-            "Return": [
-              {
-                "index": -1,
-                "label": "Return",
-                "type": "IDENTIFIER",
-                "allowedTypes": [
-                ],
-                "value": "()",
-                "possibleValues": [
-                ],
-                "editable": true,
-                "flags": [
-                ]
-              }
-            ],
-            "Qualifiers": [
-              {
-                "index": -1,
-                "label": "Qualifier",
-                "type": "IDENTIFIER",
-                "allowedTypes": [
-                ],
-                "value": "PUBLIC",
-                "possibleValues": [
-                ],
-                "editable": true,
-                "flags": [
-                ]
-              },
-              {
-                "index": -1,
-                "label": "Qualifier",
-                "type": "IDENTIFIER",
-                "allowedTypes": [
-                ],
-                "value": "ISOLATED",
-                "possibleValues": [
-                ],
-                "editable": true,
-                "flags": [
-                ]
-              }
-            ],
-            "Expressions": [
-              {
-                "index": -1,
-                "label": "Arg",
-                "type": "IDENTIFIER",
-                "allowedTypes": [
-                ],
-                "value": "\"Data Submit\"",
-                "possibleValues": [
-                ],
-                "editable": true,
-                "flags": [
-                ]
-              }
-            ]
-          },
-          "lineRange": {
-            "fileName": "main.bal",
-            "startLine": 67,
-            "endLine": 67
-          },
-          "children": {
-          },
-          "edges": [
-            {
-              "source": "Diagram0Node10",
-              "target": "Diagram0Node11",
-              "kind": "UNREACHABLE",
-              "iId": "Diagram0Edge11"
-            }
-          ],
-          "iId": "Diagram0Node10",
-          "terminal": false,
-          "returnable": false,
-          "editable": true
-        },
+        ,,,,
         {
           "label": "New Message",
           "kind": "DATA_NEW_MESSAGE",
@@ -2207,31 +1910,11 @@
           "children": {
           },
           "edges": [
-            {
-              "source": "Diagram0Node11",
-              "target": "Diagram0Node12",
-              "kind": "UNREACHABLE",
-              "iId": "Diagram0Edge12"
-            }
           ],
           "iId": "Diagram0Node11",
           "terminal": true,
           "returnable": true,
-          "editable": true
-        },
-        {
-          "label": "null",
-          "kind": "END",
-          "formData": {
-          },
-          "lineRange": null,
-          "children": {
-          },
-          "edges": [
-          ],
-          "iId": "Diagram0Node12",
-          "terminal": false,
-          "returnable": false,
+          "scope": "default",
           "editable": true
         }
       ],
