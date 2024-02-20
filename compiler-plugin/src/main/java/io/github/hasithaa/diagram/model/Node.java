@@ -55,6 +55,9 @@ public class Node implements JsonElement, MermaidElement, Linkable {
 
     @Override
     public String getJsonString(int wsCount) {
+        if (terminal && !returnable) {
+            return "";
+        }
         String ws = getWs(wsCount);
         StringBuilder json = new StringBuilder();
         json.append(ws).append("{\n");
@@ -143,6 +146,9 @@ public class Node implements JsonElement, MermaidElement, Linkable {
 
     @Override
     public String getMermaidString(int wsCount) {
+        if (terminal && !returnable) {
+            return "";
+        }
         String ws = getWs(wsCount);
         StringBuilder mermaid = new StringBuilder();
         mermaid.append(ws).append(iId).append(getMermaidNode()).append("\n");

@@ -35,6 +35,9 @@ public class Edge implements JsonElement, MermaidElement {
 
     @Override
     public String getJsonString(int wsCount) {
+        if (kind == EdgeKind.UNREACHABLE) {
+            return "";
+        }
         String ws = getWs(wsCount);
         StringBuilder json = new StringBuilder();
         json.append(ws).append("{\n");
@@ -51,6 +54,9 @@ public class Edge implements JsonElement, MermaidElement {
 
     @Override
     public String getMermaidString(int wsCount) {
+        if (kind == EdgeKind.UNREACHABLE) {
+            return "";
+        }
         String ws = getWs(wsCount);
         StringBuilder mermaid = new StringBuilder();
         String connection = " ==> ";

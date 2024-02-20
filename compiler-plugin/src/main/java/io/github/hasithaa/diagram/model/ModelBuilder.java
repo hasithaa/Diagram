@@ -53,6 +53,7 @@ public class ModelBuilder {
             if (!node.incomingEdges.isEmpty() && node.incomingEdges.stream().allMatch(
                     edge -> edge.kind == Edge.EdgeKind.UNREACHABLE)) {
                 node.edges.forEach(edge -> edge.kind = Edge.EdgeKind.UNREACHABLE);
+                node.terminal = true;
             }
             node.getChildren().forEach((label, children) -> optimizeNodes(children));
         }

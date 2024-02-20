@@ -594,12 +594,7 @@
                 "children": {
                 },
                 "edges": [
-                  {
-                    "source": "Diagram0Node7",
-                    "target": "Diagram0Node2",
-                    "kind": "UNREACHABLE",
-                    "iId": "Diagram0Edge6"
-                  }
+
                 ],
                 "iId": "Diagram0Node7",
                 "terminal": true,
@@ -1151,12 +1146,7 @@
                 "children": {
                 },
                 "edges": [
-                  {
-                    "source": "Diagram0Node12",
-                    "target": "Diagram0Node2",
-                    "kind": "UNREACHABLE",
-                    "iId": "Diagram0Edge12"
-                  }
+
                 ],
                 "iId": "Diagram0Node12",
                 "terminal": true,
@@ -1182,46 +1172,6 @@
             }
           ],
           "iId": "Diagram0Node1",
-          "terminal": false,
-          "returnable": false,
-          "editable": true
-        },
-        {
-          "label": "null",
-          "kind": "KONNECTOR",
-          "formData": {
-          },
-          "lineRange": {
-            "fileName": "main.bal",
-            "startLine": 26,
-            "endLine": 41
-          },
-          "children": {
-          },
-          "edges": [
-            {
-              "source": "Diagram0Node2",
-              "target": "Diagram0Node13",
-              "kind": "UNREACHABLE",
-              "iId": "Diagram0Edge13"
-            }
-          ],
-          "iId": "Diagram0Node2",
-          "terminal": false,
-          "returnable": false,
-          "editable": true
-        },
-        {
-          "label": "null",
-          "kind": "END",
-          "formData": {
-          },
-          "lineRange": null,
-          "children": {
-          },
-          "edges": [
-          ],
-          "iId": "Diagram0Node13",
           "terminal": false,
           "returnable": false,
           "editable": true
@@ -1573,12 +1523,7 @@
                 "children": {
                 },
                 "edges": [
-                  {
-                    "source": "Diagram0Node4",
-                    "target": "Diagram0Node2",
-                    "kind": "UNREACHABLE",
-                    "iId": "Diagram0Edge3"
-                  }
+
                 ],
                 "iId": "Diagram0Node4",
                 "terminal": true,
@@ -1994,12 +1939,6 @@
                 "children": {
                 },
                 "edges": [
-                  {
-                    "source": "Diagram0Node19",
-                    "target": "Diagram0Node2",
-                    "kind": "UNREACHABLE",
-                    "iId": "Diagram0Edge21"
-                  }
                 ],
                 "iId": "Diagram0Node19",
                 "terminal": true,
@@ -2025,46 +1964,6 @@
             }
           ],
           "iId": "Diagram0Node1",
-          "terminal": false,
-          "returnable": false,
-          "editable": true
-        },
-        {
-          "label": "null",
-          "kind": "KONNECTOR",
-          "formData": {
-          },
-          "lineRange": {
-            "fileName": "main.bal",
-            "startLine": 46,
-            "endLine": 70
-          },
-          "children": {
-          },
-          "edges": [
-            {
-              "source": "Diagram0Node2",
-              "target": "Diagram0Node20",
-              "kind": "UNREACHABLE",
-              "iId": "Diagram0Edge22"
-            }
-          ],
-          "iId": "Diagram0Node2",
-          "terminal": false,
-          "returnable": false,
-          "editable": true
-        },
-        {
-          "label": "null",
-          "kind": "END",
-          "formData": {
-          },
-          "lineRange": null,
-          "children": {
-          },
-          "edges": [
-          ],
-          "iId": "Diagram0Node20",
           "terminal": false,
           "returnable": false,
           "editable": true
@@ -2939,12 +2838,6 @@
                 "children": {
                 },
                 "edges": [
-                  {
-                    "source": "Diagram0Node6",
-                    "target": "Diagram0Node4",
-                    "kind": "UNREACHABLE",
-                    "iId": "Diagram0Edge6"
-                  }
                 ],
                 "iId": "Diagram0Node6",
                 "terminal": true,
