@@ -1880,7 +1880,7 @@
           "scope": "default",
           "editable": true
         },
-        ,,,,
+,,,,
         {
           "label": "New Message",
           "kind": "DATA_NEW_MESSAGE",
@@ -1910,6 +1910,7 @@
           "children": {
           },
           "edges": [
+
           ],
           "iId": "Diagram0Node11",
           "terminal": true,
