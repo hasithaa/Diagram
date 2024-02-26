@@ -52,186 +52,190 @@
           "value": "name == \"kandy\""
         }
       },
-      "thenBranch": {
-        "kind": "BLOCK",
-        "children": [
-          {
-            "label": "HTTP GET",
-            "kind": "HTTP_API_GET_CALL",
-            "nodeProperties": {
-              "client": {
-                "key": "Client",
-                "type": "http:Client",
-                "typeKind": "BTYPE",
-                "optional": false,
-                "editable": true,
-                "documentation": "HTTP Client Connection",
-                "value": "asiri"
+      "branches": [
+        {
+          "kind": "BLOCK",
+          "key": "thenBranch",
+          "children": [
+            {
+              "label": "HTTP GET",
+              "kind": "HTTP_API_GET_CALL",
+              "nodeProperties": {
+                "client": {
+                  "key": "Client",
+                  "type": "http:Client",
+                  "typeKind": "BTYPE",
+                  "optional": false,
+                  "editable": true,
+                  "documentation": "HTTP Client Connection",
+                  "value": "asiri"
+                },
+                "path": {
+                  "key": "Path",
+                  "type": "string",
+                  "typeKind": "BTYPE",
+                  "optional": false,
+                  "editable": true,
+                  "documentation": "HTTP Path",
+                  "value": "/doctors/kandy"
+                },
+                "targetType": {
+                  "key": "Target Type",
+                  "typeKind": "BTYPE",
+                  "type": "http:Response|anydata",
+                  "optional": false,
+                  "editable": true,
+                  "documentation": "HTTP Response Type",
+                  "value": "json"
+                },
+                "variable": {
+                  "key": "Variable",
+                  "typeKind": "BTYPE",
+                  "optional": false,
+                  "editable": true,
+                  "documentation": "Result Variable",
+                  "value": "j",
+                  "type": "json"
+                }
               },
-              "path": {
-                "key": "Path",
-                "type": "string",
-                "typeKind": "BTYPE",
-                "optional": false,
-                "editable": true,
-                "documentation": "HTTP Path",
-                "value": "/doctors/kandy"
-              },
-              "targetType": {
-                "key": "Target Type",
-                "typeKind": "BTYPE",
-                "type": "http:Response|anydata",
-                "optional": false,
-                "editable": true,
-                "documentation": "HTTP Response Type",
-                "value": "json"
-              },
-              "variable": {
-                "key": "Variable",
-                "typeKind": "BTYPE",
-                "optional": false,
-                "editable": true,
-                "documentation": "Result Variable",
-                "value": "j",
-                "type": "json"
+              "returning": false,
+              "fixed": false,
+              "id": "3",
+              "lineRange": {
+                "fileName": "",
+                "startLine": [
+                  9,
+                  13
+                ],
+                "endLine": [
+                  9,
+                  57
+                ]
               }
             },
-            "returning": false,
-            "fixed": false,
-            "id": "3",
-            "lineRange": {
-              "fileName": "",
-              "startLine": [
-                9,
-                13
-              ],
-              "endLine": [
-                9,
-                57
-              ]
+            {
+              "kind": "RETURN",
+              "label": "Return",
+              "nodeProperties": {
+                "expression": {
+                  "key": "Expression",
+                  "type": "json",
+                  "typeKind": "BTYPE",
+                  "optional": false,
+                  "editable": true,
+                  "documentation": "Return value",
+                  "value": "j"
+                }
+              },
+              "returning": true,
+              "fixed": false,
+              "id": "5",
+              "lineRange": {
+                "fileName": "main.bal",
+                "startLine": [
+                  10,
+                  13
+                ],
+                "endLine": [
+                  10,
+                  22
+                ]
+              }
             }
-          },
-          {
-            "kind": "RETURN",
-            "label": "Return",
-            "nodeProperties": {
-              "expression": {
-                "key": "Expression",
-                "type": "json",
-                "typeKind": "BTYPE",
-                "optional": false,
-                "editable": true,
-                "documentation": "Return value",
-                "value": "j"
+          ]
+        },
+        {
+          "kind": "BLOCK",
+          "key": "elseBranch",
+          "children": [
+            {
+              "label": "HTTP GET",
+              "kind": "HTTP_API_GET_CALL",
+              "nodeProperties": {
+                "client": {
+                  "key": "Client",
+                  "type": "http:Client",
+                  "typeKind": "BTYPE",
+                  "optional": false,
+                  "editable": true,
+                  "documentation": "HTTP Client Connection",
+                  "value": "nawaloka"
+                },
+                "path": {
+                  "key": "Path",
+                  "type": "string",
+                  "typeKind": "BTYPE",
+                  "optional": false,
+                  "editable": true,
+                  "documentation": "HTTP Path",
+                  "value": "/doctors"
+                },
+                "targetType": {
+                  "key": "Target Type",
+                  "typeKind": "BTYPE",
+                  "type": "http:Response|anydata",
+                  "optional": false,
+                  "editable": true,
+                  "documentation": "HTTP Response Type",
+                  "value": "json"
+                },
+                "variable": {
+                  "key": "Variable",
+                  "typeKind": "BTYPE",
+                  "optional": false,
+                  "editable": true,
+                  "documentation": "Result Variable",
+                  "value": "j",
+                  "type": "json"
+                }
+              },
+              "returning": false,
+              "fixed": false,
+              "id": "4",
+              "lineRange": {
+                "fileName": "",
+                "startLine": [
+                  12,
+                  13
+                ],
+                "endLine": [
+                  12,
+                  60
+                ]
               }
             },
-            "returning": true,
-            "fixed": false,
-            "id": "5",
-            "lineRange": {
-              "fileName": "main.bal",
-              "startLine": [
-                10,
-                13
-              ],
-              "endLine": [
-                10,
-                22
-              ]
-            }
-          }
-        ]
-      },
-      "elseBranch": {
-        "kind": "BLOCK",
-        "children": [
-          {
-            "label": "HTTP GET",
-            "kind": "HTTP_API_GET_CALL",
-            "nodeProperties": {
-              "client": {
-                "key": "Client",
-                "type": "http:Client",
-                "typeKind": "BTYPE",
-                "optional": false,
-                "editable": true,
-                "documentation": "HTTP Client Connection",
-                "value": "nawaloka"
+            {
+              "kind": "RETURN",
+              "label": "Return",
+              "nodeProperties": {
+                "expression": {
+                  "key": "Expression",
+                  "type": "json",
+                  "typeKind": "BTYPE",
+                  "optional": false,
+                  "editable": true,
+                  "documentation": "Return value",
+                  "value": "j"
+                }
               },
-              "path": {
-                "key": "Path",
-                "type": "string",
-                "typeKind": "BTYPE",
-                "optional": false,
-                "editable": true,
-                "documentation": "HTTP Path",
-                "value": "/doctors"
-              },
-              "targetType": {
-                "key": "Target Type",
-                "typeKind": "BTYPE",
-                "type": "http:Response|anydata",
-                "optional": false,
-                "editable": true,
-                "documentation": "HTTP Response Type",
-                "value": "json"
-              },
-              "variable": {
-                "key": "Variable",
-                "typeKind": "BTYPE",
-                "optional": false,
-                "editable": true,
-                "documentation": "Result Variable",
-                "value": "j",
-                "type": "json"
+              "returning": true,
+              "fixed": false,
+              "id": "6",
+              "lineRange": {
+                "fileName": "",
+                "startLine": [
+                  13,
+                  13
+                ],
+                "endLine": [
+                  13,
+                  22
+                ]
               }
-            },
-            "returning": false,
-            "fixed": false,
-            "id": "4",
-            "lineRange": {
-              "fileName": "",
-              "startLine": [
-                12,
-                13
-              ],
-              "endLine": [
-                12,
-                60
-              ]
             }
-          },
-          {
-            "kind": "RETURN",
-            "label": "Return",
-            "nodeProperties": {
-              "expression": {
-                "key": "Expression",
-                "type": "json",
-                "typeKind": "BTYPE",
-                "optional": false,
-                "editable": true,
-                "documentation": "Return value",
-                "value": "j"
-              }
-            },
-            "returning": true,
-            "fixed": false,
-            "id": "6",
-            "lineRange": {
-              "fileName": "",
-              "startLine": [
-                13,
-                13
-              ],
-              "endLine": [
-                13,
-                22
-              ]
-            }
-          }
-        ]
-      },
+          ]
+        }
+      ],
       "returning": false,
       "fixed": false,
       "id": "2",

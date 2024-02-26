@@ -13,8 +13,7 @@ public function main() returns error? {
     IfNode ifNode = {
         id: "2",
         lineRange: {fileName: "main.bal", startLine: [8, 9], endLine: [14, 10]},
-        elseBranch: {children: []},
-        thenBranch: {children: []},
+        branches: [{children: []}, {children: []}],
         nodeProperties: {
             condition: {value: "name == \"kandy\""}
         }
@@ -56,9 +55,9 @@ public function main() returns error? {
             variable: {'type: "json", value: "j"}
         }
     };
-    ifNode.thenBranch.children.push(get1);
-    ifNode.elseBranch.children.push(get2);
-    ifNode.thenBranch.children.push(ret1);
-    ifNode.elseBranch.children.push(ret2);
+    ifNode.branches[0].children.push(get1);
+    ifNode.branches[1].children.push(get2);
+    ifNode.branches[0].children.push(ret1);
+    ifNode.branches[1].children.push(ret2);
     check io:fileWriteJson("diagram.json", diag.toJson());
 }

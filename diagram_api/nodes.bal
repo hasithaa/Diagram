@@ -11,11 +11,12 @@ type Node record {|
     readonly boolean returning?;
     readonly boolean fixed?;
     map<Expression> nodeProperties?;
-    NodeList...;
+    Branch[] branches?;
 |};
 
-type NodeList record {|
+type Branch record {|
     readonly BLOCK kind = BLOCK;
+    readonly string key;
     Node[] children;
 |};
 
@@ -52,11 +53,28 @@ type IfNode record {|
     record {|
         IfNodeConditionExpression condition = {value: "true"};
     |} nodeProperties;
-    NodeList thenBranch;
-    NodeList elseBranch;
+    [IfBranchThen, IfBranchElse] branches;
     readonly false returning = false;
     readonly false fixed = false;
 |};
+
+enum IF_BRANCH {
+    IF_BRANCH_THEN = "thenBranch",
+    IF_BRANCH_ELSE = "elseBranch"
+}
+
+type IfBranchThen record {|
+    readonly BLOCK kind = BLOCK;
+    readonly IF_BRANCH_THEN key = IF_BRANCH_THEN;
+    Node[] children;
+|};
+
+type IfBranchElse record {|
+    readonly BLOCK kind = BLOCK;
+    readonly IF_BRANCH_ELSE key = IF_BRANCH_ELSE;
+    Node[] children;
+|};
+
 
 type ReturnNode record {|
     *Node;
