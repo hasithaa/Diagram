@@ -26,7 +26,8 @@ repositories {
 dependencies {
     implementation group: 'org.ballerinalang', name: 'ballerina-lang', version: "2201.8.0"
     implementation group: 'org.ballerinalang', name: 'ballerina-parser', version: "2201.8.0"
-    implementation group: 'org.ballerinalang', name: 'ballerina-tools-api', version: "2201.8.0"    
+    implementation group: 'org.ballerinalang', name: 'ballerina-tools-api', version: "2201.8.0"
+    implementation group: 'com.google.code.gson', name: 'gson', version: '2.7'
 
     // Use TestNG framework, also requires calling test.useTestNG() below
     testImplementation 'org.testng:testng:7.4.0'
