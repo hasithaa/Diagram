@@ -1,7 +1,8 @@
-type Diagram record {
-    Node[] nodes;
+type Diagram record {|
     string name;
-};
+    Node[] nodes;
+    Client[] clients = [];
+|};
 
 type Node record {|
     readonly string id;
@@ -12,11 +13,12 @@ type Node record {|
     readonly boolean fixed?;
     map<Expression> nodeProperties?;
     Branch[] branches?;
+    readonly int flags = 0;
 |};
 
 type Branch record {|
     readonly BLOCK kind = BLOCK;
-    readonly string key;
+    readonly string label;
     Node[] children;
 |};
 
@@ -28,6 +30,60 @@ enum NodeKind {
     HTTP_API_POST_CALL,
     EXPRESSION,
     RETURN
+}
+
+type Expression record {|
+    readonly string label;
+    string? 'type;
+    readonly ExpressionTypeKind typeKind = BTYPE;
+    readonly boolean optional?;
+    readonly boolean editable?;
+    readonly string documentation?;
+    string value?;
+|};
+
+enum ExpressionTypeKind {
+    BTYPE,
+    IDENTIFIER,
+    URI_PATH
+}
+
+type ExpressionList record {|
+    readonly string label;
+    readonly string? 'type;
+    Expression[] value;
+    readonly boolean optional?;
+|};
+
+type LineRange record {|
+    string fileName;
+    LinePosition startLine;
+    LinePosition endLine;
+|};
+
+type LinePosition [int, int];
+
+
+type Client record {|
+    readonly string id;
+    readonly string label?;
+    readonly ClientKind kind;
+    readonly LineRange lineRange;
+    readonly ClientScope scope = GLOBAL;
+    readonly string value;
+    readonly int flags = 0;
+|};
+
+// Only for visualization purposes
+enum ClientKind {
+    HTTP,
+    OTHER
+}
+
+enum ClientScope {
+    LOCAL,
+    OBJECT,
+    GLOBAL
 }
 
 // Events (Starting elements)
@@ -59,22 +115,21 @@ type IfNode record {|
 |};
 
 enum IF_BRANCH {
-    IF_BRANCH_THEN = "thenBranch",
-    IF_BRANCH_ELSE = "elseBranch"
+    IF_BRANCH_THEN = "Then",
+    IF_BRANCH_ELSE = "Else"
 }
 
 type IfBranchThen record {|
     readonly BLOCK kind = BLOCK;
-    readonly IF_BRANCH_THEN key = IF_BRANCH_THEN;
+    readonly IF_BRANCH_THEN label = IF_BRANCH_THEN;
     Node[] children;
 |};
 
 type IfBranchElse record {|
     readonly BLOCK kind = BLOCK;
-    readonly IF_BRANCH_ELSE key = IF_BRANCH_ELSE;
+    readonly IF_BRANCH_ELSE label = IF_BRANCH_ELSE;
     Node[] children;
 |};
-
 
 type ReturnNode record {|
     *Node;
@@ -104,19 +159,12 @@ type HttpGetNode record {|
     readonly false fixed = false;
 |};
 
-type IfNodeConditionExpression record {|
-    *Expression;
-    readonly IF_CONDITION key = IF_CONDITION;
-    TYPE_BOOLEAN 'type = TYPE_BOOLEAN;
-    readonly BTYPE typeKind = BTYPE;
-    readonly boolean optional = false;
-    readonly boolean editable = true;
-    readonly IF_CONDITION_DOC documentation = IF_CONDITION_DOC;
-    string value;
-|};
+// Expressions
+
+//// HTTP Event Specific Expressions
 
 type HttpApiEventNodeMethodExpression record {|
-    readonly EVENT_HTTP_API_METHOD key = EVENT_HTTP_API_METHOD;
+    readonly EVENT_HTTP_API_METHOD label = EVENT_HTTP_API_METHOD;
     () 'type = ();
     readonly IDENTIFIER typeKind = IDENTIFIER;
     readonly boolean optional = false;
@@ -126,7 +174,7 @@ type HttpApiEventNodeMethodExpression record {|
 |};
 
 type HttpApiEventNodePathExpression record {|
-    readonly EVENT_HTTP_API_PATH key = EVENT_HTTP_API_PATH;
+    readonly EVENT_HTTP_API_PATH label = EVENT_HTTP_API_PATH;
     () 'type = ();
     readonly URI_PATH typeKind = URI_PATH;
     readonly boolean optional = false;
@@ -135,8 +183,23 @@ type HttpApiEventNodePathExpression record {|
     string value;
 |};
 
+//// If Specific Expressions
+
+type IfNodeConditionExpression record {|
+    *Expression;
+    readonly IF_CONDITION label = IF_CONDITION;
+    TYPE_BOOLEAN 'type = TYPE_BOOLEAN;
+    readonly BTYPE typeKind = BTYPE;
+    readonly boolean optional = false;
+    readonly boolean editable = true;
+    readonly IF_CONDITION_DOC documentation = IF_CONDITION_DOC;
+    string value;
+|};
+
+//// Return Specific Expressions
+
 type ReturnExpression record {|
-    readonly RETURN_EXPRESSION key = RETURN_EXPRESSION;
+    readonly RETURN_EXPRESSION label = RETURN_EXPRESSION;
     string 'type;
     readonly BTYPE typeKind = BTYPE;
     readonly boolean optional = false;
@@ -145,8 +208,10 @@ type ReturnExpression record {|
     string value;
 |};
 
+//// HTTP GET Specific Expressions
+
 type HttpApiGetClientExpression record {|
-    readonly HTTP_API_GET_CLIENT key = HTTP_API_GET_CLIENT;
+    readonly HTTP_API_GET_CLIENT label = HTTP_API_GET_CLIENT;
     readonly HTTP_API_GET_CLIENT_TYPE 'type = HTTP_API_GET_CLIENT_TYPE;
     readonly BTYPE typeKind = BTYPE;
     readonly boolean optional = false;
@@ -156,7 +221,7 @@ type HttpApiGetClientExpression record {|
 |};
 
 type HttpApiGetPathExpression record {|
-    readonly HTTP_API_GET_PATH key = HTTP_API_GET_PATH;
+    readonly HTTP_API_GET_PATH label = HTTP_API_GET_PATH;
     readonly TYPE_STRING 'type = TYPE_STRING;
     readonly BTYPE typeKind = BTYPE;
     readonly boolean optional = false;
@@ -166,7 +231,7 @@ type HttpApiGetPathExpression record {|
 |};
 
 type HttpApiGetHeadersExpression record {|
-    readonly HTTP_API_GET_HEADERS key = HTTP_API_GET_HEADERS;
+    readonly HTTP_API_GET_HEADERS label = HTTP_API_GET_HEADERS;
     readonly HTTP_API_GET_HEADERS_TYPE 'type = HTTP_API_GET_HEADERS_TYPE;
     readonly BTYPE typeKind = BTYPE;
     readonly boolean optional = true;
@@ -176,7 +241,7 @@ type HttpApiGetHeadersExpression record {|
 |};
 
 type HttpApiGetTargetTypeExpression record {|
-    readonly HTTP_API_GET_TARGET_TYPE key = HTTP_API_GET_TARGET_TYPE;
+    readonly HTTP_API_GET_TARGET_TYPE label = HTTP_API_GET_TARGET_TYPE;
     readonly BTYPE typeKind = BTYPE;
     HTTP_API_GET_TARGET_TYPE_TYPE 'type = HTTP_API_GET_TARGET_TYPE_TYPE;
     readonly boolean optional = false;
@@ -185,51 +250,16 @@ type HttpApiGetTargetTypeExpression record {|
     string value;
 |};
 
+//// Common Expressions
+
 type VariableExpression record {|
-    readonly VARIABLE_KEY key = VARIABLE_KEY;
+    readonly VARIABLE_KEY label = VARIABLE_KEY;
     readonly BTYPE typeKind = BTYPE;
     readonly boolean optional = false;
     readonly boolean editable = true;
     readonly VARIABLE_DOC documentation = VARIABLE_DOC;
     string value;
     string 'type;
-|};
-
-type Expression record {
-    readonly string key;
-    string? 'type;
-    readonly ExpressionTypeKind typeKind = BTYPE;
-    readonly boolean optional?;
-    readonly boolean editable?;
-    readonly string documentation?;
-    string value?;
-};
-
-enum ExpressionTypeKind {
-    BTYPE,
-    IDENTIFIER,
-    URI_PATH
-}
-
-type ExpressionList record {|
-    readonly string key;
-    readonly string? 'type;
-    Expression[] value;
-    readonly boolean optional?;
-|};
-
-type LineRange record {|
-    string fileName;
-    LinePosition startLine;
-    LinePosition endLine;
-|};
-
-type LinePosition [int, int];
-
-type HttpGetPropertiesPath record {|
-    *Expression;
-    HTTP_API_GET_PATH key = HTTP_API_GET_PATH;
-    TYPE_STRING 'type = TYPE_STRING;
 |};
 
 const EVENT_HTTP_API_KEY = "HTTP API";

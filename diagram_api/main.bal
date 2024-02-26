@@ -2,6 +2,25 @@ import ballerina/io;
 
 public function main() returns error? {
 
+    Diagram diag = {name: "", nodes: []};
+
+    Client cl1 = {
+        id: "cl1",
+        label: "HTTP Client",
+        kind: HTTP,
+        lineRange: {fileName: "main.bal", startLine: [2, 1], endLine: [2, 63]},
+        value: "asiri"
+    };
+    Client cl2 = {
+        id: "cl2",
+        label: "HTTP Client",
+        kind: HTTP,
+        lineRange: {fileName: "main.bal", startLine: [3, 1], endLine: [3, 66]},
+        value: "nawaloka"
+    };
+    diag.clients.push(cl1);
+    diag.clients.push(cl2);
+
     Node httpApiEventNode = <HttpApiEventNode>{
         id: "1",
         lineRange: {fileName: "main.bal", startLine: [7, 7], endLine: [15, 6]},
@@ -32,7 +51,6 @@ public function main() returns error? {
             expression: {'type: "json", value: "j"}
         }
     };
-    Diagram diag = {name: "", nodes: []};
     diag.nodes.push(httpApiEventNode);
     diag.nodes.push(ifNode);
     HttpGetNode get1 = {
@@ -59,5 +77,5 @@ public function main() returns error? {
     ifNode.branches[1].children.push(get2);
     ifNode.branches[0].children.push(ret1);
     ifNode.branches[1].children.push(ret2);
-    check io:fileWriteJson("diagram.json", diag.toJson());
+    check io:fileWriteJson("diagram.json", diag);
 }
