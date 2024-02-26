@@ -76,7 +76,7 @@ type HttpGetNode record {|
     readonly HTTP_API_GET_KEY label = HTTP_API_GET_KEY;
     readonly HTTP_API_GET_CALL kind = HTTP_API_GET_CALL;
     record {|
-        HttpApiGetClientExpression 'client = {};
+        HttpApiGetClientExpression 'client;
         HttpApiGetPathExpression path = {value: "."};
         HttpApiGetHeadersExpression headers?;
         HttpApiGetTargetTypeExpression targetType;
@@ -98,81 +98,83 @@ type IfNodeConditionExpression record {|
 |};
 
 type HttpApiEventNodeMethodExpression record {|
-    *Expression;
     readonly EVENT_HTTP_API_METHOD key = EVENT_HTTP_API_METHOD;
     () 'type = ();
     readonly IDENTIFIER typeKind = IDENTIFIER;
     readonly boolean optional = false;
     readonly boolean editable = true;
     readonly EVENT_HTTP_API_METHOD_DOC documentation = EVENT_HTTP_API_METHOD_DOC;
+    string value;
 |};
 
 type HttpApiEventNodePathExpression record {|
-    *Expression;
     readonly EVENT_HTTP_API_PATH key = EVENT_HTTP_API_PATH;
     () 'type = ();
     readonly URI_PATH typeKind = URI_PATH;
     readonly boolean optional = false;
     readonly boolean editable = true;
     readonly EVENT_HTTP_API_PATH_DOC documentation = EVENT_HTTP_API_PATH_DOC;
+    string value;
 |};
 
 type ReturnExpression record {|
-    *Expression;
     readonly RETURN_EXPRESSION key = RETURN_EXPRESSION;
+    string 'type;
     readonly BTYPE typeKind = BTYPE;
     readonly boolean optional = false;
     readonly boolean editable = true;
     readonly RETURN_EXPRESSION_DOC documentation = RETURN_EXPRESSION_DOC;
+    string value;
 |};
 
 type HttpApiGetClientExpression record {|
-    *Expression;
     readonly HTTP_API_GET_CLIENT key = HTTP_API_GET_CLIENT;
     readonly HTTP_API_GET_CLIENT_TYPE 'type = HTTP_API_GET_CLIENT_TYPE;
     readonly BTYPE typeKind = BTYPE;
     readonly boolean optional = false;
     readonly boolean editable = true;
     readonly HTTP_API_GET_CLIENT_DOC documentation = HTTP_API_GET_CLIENT_DOC;
+    string value;
 |};
 
 type HttpApiGetPathExpression record {|
-    *Expression;
     readonly HTTP_API_GET_PATH key = HTTP_API_GET_PATH;
     readonly TYPE_STRING 'type = TYPE_STRING;
     readonly BTYPE typeKind = BTYPE;
     readonly boolean optional = false;
     readonly boolean editable = true;
     readonly HTTP_API_GET_PATH_DOC documentation = HTTP_API_GET_PATH_DOC;
+    string value;
 |};
 
 type HttpApiGetHeadersExpression record {|
-    *Expression;
     readonly HTTP_API_GET_HEADERS key = HTTP_API_GET_HEADERS;
     readonly HTTP_API_GET_HEADERS_TYPE 'type = HTTP_API_GET_HEADERS_TYPE;
     readonly BTYPE typeKind = BTYPE;
     readonly boolean optional = true;
     readonly boolean editable = true;
     readonly HTTP_API_GET_HEADERS_DOC documentation = HTTP_API_GET_HEADERS_DOC;
+    string value;
 |};
 
 type HttpApiGetTargetTypeExpression record {|
-    *Expression;
     readonly HTTP_API_GET_TARGET_TYPE key = HTTP_API_GET_TARGET_TYPE;
     readonly BTYPE typeKind = BTYPE;
     HTTP_API_GET_TARGET_TYPE_TYPE 'type = HTTP_API_GET_TARGET_TYPE_TYPE;
     readonly boolean optional = false;
     readonly boolean editable = true;
     readonly HTTP_API_GET_TARGET_TYPE_DOC documentation = HTTP_API_GET_TARGET_TYPE_DOC;
+    string value;
 |};
 
 type VariableExpression record {|
-    *Expression;
     readonly VARIABLE_KEY key = VARIABLE_KEY;
     readonly BTYPE typeKind = BTYPE;
     readonly boolean optional = false;
     readonly boolean editable = true;
     readonly VARIABLE_DOC documentation = VARIABLE_DOC;
+    string value;
+    string 'type;
 |};
 
 type Expression record {
