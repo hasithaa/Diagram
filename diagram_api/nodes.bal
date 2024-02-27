@@ -91,7 +91,7 @@ enum ClientScope {
 type HttpApiEventNode record {|
     *Node;
     readonly EVENT_HTTP_API kind = EVENT_HTTP_API;
-    readonly EVENT_HTTP_API_KEY label = EVENT_HTTP_API_KEY;
+    readonly EVENT_HTTP_API_LABEL label = EVENT_HTTP_API_LABEL;
     record {|
         HttpApiEventNodeMethodExpression method = {value: "GET"};
         HttpApiEventNodePathExpression path = {value: "."};
@@ -105,7 +105,7 @@ type HttpApiEventNode record {|
 type IfNode record {|
     *Node;
     readonly IF kind = IF;
-    readonly IF_KEY label = IF_KEY;
+    readonly IF_LABEL label = IF_LABEL;
     record {|
         IfNodeConditionExpression condition = {value: "true"};
     |} nodeProperties;
@@ -134,7 +134,7 @@ type IfBranchElse record {|
 type ReturnNode record {|
     *Node;
     readonly RETURN kind = RETURN;
-    readonly RETURN_KEY label = RETURN_KEY;
+    readonly RETURN_LABEL label = RETURN_LABEL;
     record {|
         ReturnExpression expression = {'type: "()", value: "()"};
     |} nodeProperties;
@@ -146,7 +146,7 @@ type ReturnNode record {|
 
 type HttpGetNode record {|
     *Node;
-    readonly HTTP_API_GET_KEY label = HTTP_API_GET_KEY;
+    readonly HTTP_API_GET_LABEL label = HTTP_API_GET_LABEL;
     readonly HTTP_API_GET_CALL kind = HTTP_API_GET_CALL;
     record {|
         HttpApiGetClientExpression 'client;
@@ -154,6 +154,20 @@ type HttpGetNode record {|
         HttpApiGetHeadersExpression headers?;
         HttpApiGetTargetTypeExpression targetType;
         VariableExpression variable;
+    |} nodeProperties;
+    readonly false returning = false;
+    readonly false fixed = false;
+|};
+
+// Default Expression Node 
+
+type ExpressionNode record {|
+    *Node;
+    readonly EXPRESSION_LABEL label = EXPRESSION_LABEL;
+    readonly EXPRESSION kind = EXPRESSION;
+    record {|
+        VariableExpression variable;
+        ExpressionRHS expression;
     |} nodeProperties;
     readonly false returning = false;
     readonly false fixed = false;
@@ -253,7 +267,7 @@ type HttpApiGetTargetTypeExpression record {|
 //// Common Expressions
 
 type VariableExpression record {|
-    readonly VARIABLE_KEY label = VARIABLE_KEY;
+    readonly VARIABLE_LABEL label = VARIABLE_LABEL;
     readonly BTYPE typeKind = BTYPE;
     readonly boolean optional = false;
     readonly boolean editable = true;
@@ -262,21 +276,31 @@ type VariableExpression record {|
     string 'type;
 |};
 
-const EVENT_HTTP_API_KEY = "HTTP API";
+type ExpressionRHS record {|
+    readonly EXPRESSION_RHS_LABEL label = EXPRESSION_RHS_LABEL;
+    readonly BTYPE typeKind = BTYPE;
+    readonly boolean optional = false;
+    readonly boolean editable = true;
+    readonly EXPRESSION_RHS_DOC documentation = EXPRESSION_RHS_DOC;
+    string value;
+    string 'type;
+|};
+
+const EVENT_HTTP_API_LABEL = "HTTP API";
 const EVENT_HTTP_API_METHOD = "Method";
 const EVENT_HTTP_API_METHOD_DOC = "HTTP Method";
 const EVENT_HTTP_API_PATH = "Path";
 const EVENT_HTTP_API_PATH_DOC = "HTTP Path";
 
-const IF_KEY = "If";
+const IF_LABEL = "If";
 const IF_CONDITION = "Condition";
 const IF_CONDITION_DOC = "Boolean Condition";
 
-const RETURN_KEY = "Return";
+const RETURN_LABEL = "Return";
 const RETURN_EXPRESSION = "Expression";
 const RETURN_EXPRESSION_DOC = "Return value";
 
-const HTTP_API_GET_KEY = "HTTP GET";
+const HTTP_API_GET_LABEL = "HTTP GET";
 
 const HTTP_API_GET_CLIENT = "Client";
 const HTTP_API_GET_CLIENT_TYPE = "http:Client";
@@ -293,8 +317,19 @@ const HTTP_API_GET_TARGET_TYPE = "Target Type";
 const HTTP_API_GET_TARGET_TYPE_DOC = "HTTP Response Type";
 const HTTP_API_GET_TARGET_TYPE_TYPE = "http:Response|anydata";
 
-const VARIABLE_KEY = "Variable";
+const VARIABLE_LABEL = "Variable";
 const VARIABLE_DOC = "Result Variable";
+
+const EXPRESSION_LABEL = "Custom Expression";
+const EXPRESSION_DOC = "Custom Expression";
+const EXPRESSION_RHS_LABEL = "Expression";
+const EXPRESSION_RHS_DOC = "Expression";
 
 const TYPE_STRING = "string";
 const TYPE_BOOLEAN = "boolean";
+
+const NODE_FLAG_CHECKED = 1 << 0;
+const NODE_FLAG_CHECKPANIC = 1 << 1;
+const NODE_FLAG_FINAL = 1 << 2;
+const NODE_FLAG_REMOTE = 1 << 10;
+const NODE_FLAG_RESOURCE = 1 << 11;
