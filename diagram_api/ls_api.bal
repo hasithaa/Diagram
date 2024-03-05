@@ -36,6 +36,34 @@ type GetSourceCodeApi record {|
     |} response;
 |};
 
+const GET_AVAILABLE_NODES_API = "getAvailableNodes";
+
+type GetAvailableNodesApi record {|
+    *Api;
+    GET_AVAILABLE_NODES_API api = GET_AVAILABLE_NODES_API;
+    record {|
+        LineRange parentNodeLineRange;
+        NodeKind parentNodeKind;
+        string? branchLabel;
+    |} request;
+    record {|
+        NodeKind[] availableNodes;
+    |} response;
+|};
+
+const GET_NODE_TEMPLATE_API = "getNodeTemplate";
+
+type RecordName record {|
+    *Api;
+    GET_NODE_TEMPLATE_API api = GET_NODE_TEMPLATE_API;
+    record {|
+        NodeKind nodeKind;
+    |} request;
+    record {|
+        TextEdit[] textEdits;
+    |} response;
+|};
+
 // Common data types
 
 type TextEdit record {|
